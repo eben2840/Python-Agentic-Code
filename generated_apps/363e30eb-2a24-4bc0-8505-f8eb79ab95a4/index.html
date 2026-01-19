@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Analytics - Elias Abbott</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --secondary-blue: #3b82f6;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .patient-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .patient-avatar {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card:hover::before {
+            width: 8px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .time-filter {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover {
+            background: var(--light-bg);
+            border-color: var(--primary-blue);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+            margin-bottom: 1rem;
+        }
+
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .metric-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .metric-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .metric-btn:hover {
+            border-color: var(--primary-blue);
+            background: var(--light-bg);
+        }
+
+        .metric-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .insights-panel {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #bae6fd;
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .insight-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .trend-up { background: #dcfce7; color: var(--success-green); }
+        .trend-down { background: #fef2f2; color: var(--danger-red); }
+        .trend-stable { background: #fef3c7; color: var(--warning-orange); }
+
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 50%;
+            border: none;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            background: var(--secondary-blue);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 1.5rem 0;
+            }
+            
+            .patient-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .chart-wrapper {
+                height: 300px;
+            }
+            
+            .metric-selector {
+                justify-content: center;
+            }
+            
+            .time-filter {
+                justify-content: center;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container header-content">
+            <div class="patient-info">
+                <div class="patient-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h1 class="h3 mb-1">Elias Abbott</h1>
+                    <p class="mb-0 opacity-75">Patient ID: 851a7b59-feb4-4b4c-9f48-8cf5fad54213</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <div class="stats-grid mb-4">
+            <div class="stat-card fade-in">
+                <div class="stat-icon" style="background: #dcfce7; color: var(--success-green);">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="h5 mb-1">Total Observations</h3>
+                <p class="h4 mb-0 text-success">25</p>
+                <small class="text-muted">Last updated today</small>
+            </div>
+            
+            <div class="stat-card fade-in" style="animation-delay: 0.1s;">
+                <div class="stat-icon" style="background: #fef3c7; color: var(--warning-orange);">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <h3 class="h5 mb-1">Active Conditions</h3>
+                <p class="h4 mb-0 text-warning">5</p>
+                <small class="text-muted">Monitoring required</small>
+            </div>
+            
+            <div class="stat-card fade-in" style="animation-delay: 0.2s;">
+                <div class="stat-icon" style="background: #dbeafe; color: var(--primary-blue);">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <h3 class="h5 mb-1">Medications</h3>
+                <p class="h4 mb-0 text-primary">4</p>
+                <small class="text-muted">Current prescriptions</small>
+            </div>
+            
+            <div class="stat-card fade-in" style="animation-delay: 0.3s;">
+                <div class="stat-icon" style="background: #f0fdf4; color: var(--success-green);">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3 class="h5 mb-1">Health Score</h3>
+                <p class="h4 mb-0 text-success">87%</p>
+                <small class="text-muted">Good overall health</small>
+            </div>
+        </div>
+
+        <div class="metric-selector">
+            <button class="metric-btn active" data-metric="vitals">
+                <i class="fas fa-heartbeat"></i>
+                Vital Signs
+            </button>
+            <button class="metric-btn" data-metric="lab">
+                <i class="fas fa-flask"></i>
+                Lab Results
+            </button>
+            <button class="metric-btn" data-metric="symptoms">
+                <i class="fas fa-thermometer-half"></i>
+                Symptoms
+            </button>
+            <button class="metric-btn" data-metric="medications">
+                <i class="fas fa-pills"></i>
+                Medication Levels
+            </button>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-header">
+                <h2 class="chart-title">
+                    <i class="fas fa-chart-area text-primary"></i>
+                    <span id="chart-title">Vital Signs Trends</span>
+                </h2>
+                <div class="time-filter">
+                    <button class="filter-btn" data-period="7d">7 Days</button>
+                    <button class="filter-btn active" data-period="30d">30 Days</button>
+                    <button class="filter-btn" data-period="90d">90 Days</button>
+                    <button class="filter-btn" data-period="1y">1 Year</button>
+                </div>
+            </div>
+            
+            <div class="chart-wrapper">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                </div>
+                <canvas id="healthChart"></canvas>
+            </div>
+        </div>
+
+        <div class="insights-panel">
+            <h3 class="h5 mb-3">
+                <i class="fas fa-lightbulb text-warning"></i>
+                Health Insights
+            </h3>
+            <div id="insights-container">
+                <div class="insight-item">
+                    <div class="insight-icon trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div>
+                        <strong>Blood Pressure Improving</strong>
+                        <p class="mb-0 text-muted">Your systolic pressure has decreased by 8% over the last month</p>
+                    </div>
+                </div>
+                
+                <div class="insight-item">
+                    <div class="insight-icon trend-stable">
+                        <i class="fas fa-minus"></i>
+                    </div>
+                    <div>
+                        <strong>Heart Rate Stable</strong>
+                        <p class="mb-0 text-muted">Consistent readings within normal range (60-80 bpm)</p>
+                    </div>
+                </div>
+                
+                <div class="insight-item">
+                    <div class="insight-icon trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div>
+                        <strong>Medication Adherence</strong>
+                        <p class="mb-0 text-muted">95% compliance rate - excellent progress!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="fab" onclick="exportData()">
+        <i class="fas fa-download"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let healthChart;
+        let currentMetric = 'vitals';
+        let currentPeriod = '30d';
+
+        // Sample health data
+        const healthData = {
+            vitals: {
+                '7d': {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Systolic BP',
+                        data: [125, 128, 122, 130, 126, 124, 127],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Diastolic BP',
+                        data: [82, 85, 80, 88, 83, 81, 84],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Heart Rate',
+                        data: [72, 75, 70, 78, 74, 71, 76],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                '30d': {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Systolic BP',
+                        data: [132, 128, 125, 122],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Diastolic BP',
+                        data: [88, 85, 82, 80],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Heart Rate',
+                        data: [78, 75, 73, 71],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4
+                    }]
+                }
+            },
+            lab: {
+                '30d': {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Cholesterol',
+                        data: [220, 215, 210, 205],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Blood Sugar',
+                        data: [95, 92, 90, 88],
+                        borderColor: '#06b6d4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        tension: 0.4
+                    }]
+                }
+            },
+            symptoms: {
+                '30d': {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Pain Level',
+                        data: [6, 5, 4, 3],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Fatigue Level',
+                        data: [7, 6, 5, 4],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4
+                    }]
+                }
+            },
+            medications: {
+                '30d': {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Adherence Rate',
+                        data: [85, 90, 92, 95],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4
+                    }]
+                }
+            }
+        };
+
+        function initChart() {
+            const ctx = document.getElementById('healthChart').getContext('2d');
+            
+            healthChart = new Chart(ctx, {
+                type: 'line',
+                data: healthData[currentMetric][currentPeriod] || healthData[currentMetric]['30d'],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: 'white',
+                            bodyColor: 'white',
+                            borderColor: '#2563eb',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            display: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        }
+
+        function updateChart() {
+            showLoading();
+            
+            setTimeout(() => {
+                const data = healthData[currentMetric][currentPeriod] || healthData[currentMetric]['30d'];
+                healthChart.data = data;
+                healthChart.update('active');
+                hideLoading();
+                updateChartTitle();
+            }, 500);
+        }
+
+        function showLoading() {
+            document.querySelector('.loading-spinner').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.querySelector('.loading-spinner').style.display = 'none';
+        }
+
+        function updateChartTitle() {
+            const titles = {
+                vitals: 'Vital Signs Trends',
+                lab: 'Laboratory Results',
+                symptoms: 'Symptom Tracking',
+                medications: 'Medication Adherence'
+            };
+            document.getElementById('chart-title').textContent = titles[currentMetric];
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            initChart();
+            
+            // Metric selector
+            document.querySelectorAll('.metric-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.metric-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentMetric = this.dataset.metric;
+                    updateChart();
+                });
+            });
+            
+            // Time filter
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentPeriod = this.dataset.period;
+                    updateChart();
+                });
+            });
+            
+            // Add pulse animation to stat cards
+            setTimeout(() => {
+                document.querySelectorAll('.stat-card').forEach((card, index) => {
+                    setTimeout(() => {
+                        card.classList.add('pulse');
+                        setTimeout(() => card.classList.remove('pulse'), 2000);
+                    }, index * 200);
+                });
+            }, 1000);
+        });
+
+        function exportData() {
+            const data = {
+                patient: 'Elias Abbott',
+                id: '851a7b59-feb4-4b4c-9f48-8cf5fad54213',
+                exportDate: new Date().toISOString(),
+                currentMetric: currentMetric,
+                currentPeriod: currentPeriod,
+                data: healthData[currentMetric][currentPeriod]
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `health-data-${currentMetric}-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Show success feedback
+            const fab = document.querySelector('.fab');
+            const originalHTML = fab.innerHTML;
+            fab.innerHTML = '<i class="fas fa-check"></i>';
+            fab.style.background = '#10b981';
+            setTimeout(() => {
+                fab.innerHTML = originalHTML;
+                fab.style.background = '';
+            }, 2000);
+        }
+
+        // Touch gestures for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                const metrics = ['vitals', 'lab', 'symptoms', 'medications'];
+                const currentIndex = metrics.indexOf(currentMetric);
+                
+                if (diff > 0 && currentIndex < metrics.length - 1) {
+                    // Swipe left - next metric
+                    document.querySelector(`[data-metric="${metrics[currentIndex + 1]}"]`).click();
+                } else if (diff < 0 && currentIndex > 0) {
+                    // Swipe right - previous metric
+                    document.querySelector(`[data-metric="${metrics[currentIndex - 1]}"]`).click();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+```

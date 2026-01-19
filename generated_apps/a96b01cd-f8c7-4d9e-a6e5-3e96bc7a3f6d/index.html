@@ -1,0 +1,930 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vital Signs Trends Dashboard - Marlene Abernathy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="patient-info">
+                        <h1 class="patient-name">
+                            <i class="fas fa-user-circle me-2"></i>
+                            Marlene Abernathy
+                        </h1>
+                        <p class="patient-id">ID: e8a02560-2e97-4d2c-a734-906670e577b4</p>
+                    </div>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="header-actions">
+                        <button class="btn btn-outline-primary me-2" id="exportBtn">
+                            <i class="fas fa-download me-1"></i>Export
+                        </button>
+                        <button class="btn btn-primary" id="refreshBtn">
+                            <i class="fas fa-sync-alt me-1"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard-main">
+        <div class="container-fluid">
+            <!-- Date Range Selector -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="date-range-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <div class="date-presets">
+                                    <button class="btn btn-outline-secondary preset-btn active" data-range="30">30 Days</button>
+                                    <button class="btn btn-outline-secondary preset-btn" data-range="90">3 Months</button>
+                                    <button class="btn btn-outline-secondary preset-btn" data-range="180">6 Months</button>
+                                    <button class="btn btn-outline-secondary preset-btn" data-range="365">1 Year</button>
+                                    <button class="btn btn-outline-secondary preset-btn" data-range="all">All Data</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="custom-date-range">
+                                    <input type="date" class="form-control d-inline-block" id="startDate" style="width: 45%;">
+                                    <span class="mx-2">to</span>
+                                    <input type="date" class="form-control d-inline-block" id="endDate" style="width: 45%;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vital Signs Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <div class="vital-card" id="bpCard">
+                        <div class="vital-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="vital-content">
+                            <h6 class="vital-label">Blood Pressure</h6>
+                            <div class="vital-value" id="bpValue">--/--</div>
+                            <div class="vital-trend" id="bpTrend">
+                                <i class="fas fa-minus"></i>
+                                <span>No change</span>
+                            </div>
+                            <div class="vital-range">Normal: 120/80</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <div class="vital-card" id="hrCard">
+                        <div class="vital-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="vital-content">
+                            <h6 class="vital-label">Heart Rate</h6>
+                            <div class="vital-value" id="hrValue">-- bpm</div>
+                            <div class="vital-trend" id="hrTrend">
+                                <i class="fas fa-minus"></i>
+                                <span>No change</span>
+                            </div>
+                            <div class="vital-range">Normal: 60-100</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <div class="vital-card" id="tempCard">
+                        <div class="vital-icon">
+                            <i class="fas fa-thermometer-half"></i>
+                        </div>
+                        <div class="vital-content">
+                            <h6 class="vital-label">Temperature</h6>
+                            <div class="vital-value" id="tempValue">-- °F</div>
+                            <div class="vital-trend" id="tempTrend">
+                                <i class="fas fa-minus"></i>
+                                <span>No change</span>
+                            </div>
+                            <div class="vital-range">Normal: 98.6°F</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <div class="vital-card" id="weightCard">
+                        <div class="vital-icon">
+                            <i class="fas fa-weight"></i>
+                        </div>
+                        <div class="vital-content">
+                            <h6 class="vital-label">Weight</h6>
+                            <div class="vital-value" id="weightValue">-- lbs</div>
+                            <div class="vital-trend" id="weightTrend">
+                                <i class="fas fa-minus"></i>
+                                <span>No change</span>
+                            </div>
+                            <div class="vital-range">Target: 140-160</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <div class="vital-card" id="bmiCard">
+                        <div class="vital-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="vital-content">
+                            <h6 class="vital-label">BMI</h6>
+                            <div class="vital-value" id="bmiValue">--</div>
+                            <div class="vital-trend" id="bmiTrend">
+                                <i class="fas fa-minus"></i>
+                                <span>No change</span>
+                            </div>
+                            <div class="vital-range">Normal: 18.5-24.9</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <div class="vital-card alert-card" id="alertsCard">
+                        <div class="vital-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="vital-content">
+                            <h6 class="vital-label">Alerts</h6>
+                            <div class="vital-value" id="alertCount">0</div>
+                            <div class="vital-trend">
+                                <span id="alertText">No alerts</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Chart and Events Panel -->
+            <div class="row">
+                <div class="col-lg-8 mb-4">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h5 class="chart-title">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Vital Signs Timeline
+                            </h5>
+                            <div class="chart-controls">
+                                <div class="btn-group" role="group">
+                                    <input type="checkbox" class="btn-check" id="showBP" checked>
+                                    <label class="btn btn-outline-primary btn-sm" for="showBP">BP</label>
+                                    
+                                    <input type="checkbox" class="btn-check" id="showHR" checked>
+                                    <label class="btn btn-outline-success btn-sm" for="showHR">HR</label>
+                                    
+                                    <input type="checkbox" class="btn-check" id="showTemp" checked>
+                                    <label class="btn btn-outline-warning btn-sm" for="showTemp">Temp</label>
+                                    
+                                    <input type="checkbox" class="btn-check" id="showWeight" checked>
+                                    <label class="btn btn-outline-info btn-sm" for="showWeight">Weight</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="vitalSignsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="events-panel">
+                        <div class="events-header">
+                            <h5 class="events-title">
+                                <i class="fas fa-calendar-alt me-2"></i>
+                                Health Events
+                            </h5>
+                            <div class="events-filters">
+                                <button class="btn btn-sm btn-outline-secondary filter-btn active" data-filter="all">All</button>
+                                <button class="btn btn-sm btn-outline-secondary filter-btn" data-filter="medications">Meds</button>
+                                <button class="btn btn-sm btn-outline-secondary filter-btn" data-filter="conditions">Conditions</button>
+                            </div>
+                        </div>
+                        <div class="events-list" id="eventsList">
+                            <!-- Events will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trend Analysis -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="analysis-card">
+                        <div class="analysis-header">
+                            <h5 class="analysis-title">
+                                <i class="fas fa-brain me-2"></i>
+                                Trend Analysis & Insights
+                            </h5>
+                        </div>
+                        <div class="analysis-content">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="insight-section">
+                                        <h6 class="insight-title">Key Trends</h6>
+                                        <div id="trendInsights" class="insights-list">
+                                            <!-- Insights will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="insight-section">
+                                        <h6 class="insight-title">Statistical Summary</h6>
+                                        <div id="statisticalSummary" class="stats-grid">
+                                            <!-- Statistics will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="loading-text">Loading vital signs data...</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+```
+
+```css
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f8fafc;
+    color: #334155;
+    line-height: 1.6;
+}
+
+/* Header Styles */
+.dashboard-header {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    color: white;
+    padding: 1.5rem 0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.patient-info .patient-name {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.patient-info .patient-id {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+.header-actions .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+}
+
+.header-actions .btn-outline-primary {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.header-actions .btn-outline-primary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: white;
+}
+
+.header-actions .btn-primary {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.header-actions .btn-primary:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Main Dashboard */
+.dashboard-main {
+    padding: 2rem 0;
+    min-height: calc(100vh - 120px);
+}
+
+/* Date Range Selector */
+.date-range-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.date-presets {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.preset-btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.preset-btn.active {
+    background-color: #0ea5e9;
+    border-color: #0ea5e9;
+    color: white;
+}
+
+.custom-date-range input {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 0.875rem;
+}
+
+/* Vital Signs Cards */
+.vital-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.vital-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.vital-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0ea5e9, #06b6d4);
+}
+
+.vital-card.status-normal::before {
+    background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.vital-card.status-elevated::before {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.vital-card.status-critical::before {
+    background: linear-gradient(90deg, #ef4444, #dc2626);
+}
+
+.vital-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+    color: white;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.vital-card.status-normal .vital-icon {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.vital-card.status-elevated .vital-icon {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.vital-card.status-critical .vital-icon {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.vital-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.vital-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.vital-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.vital-trend.trend-up {
+    color: #ef4444;
+}
+
+.vital-trend.trend-down {
+    color: #10b981;
+}
+
+.vital-trend.trend-stable {
+    color: #64748b;
+}
+
+.vital-range {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 400;
+}
+
+.alert-card {
+    border-left: 4px solid #f59e0b;
+}
+
+.alert-card.has-alerts {
+    border-left-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+/* Chart Card */
+.chart-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-shrink: 0;
+}
+
+.chart-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.chart-controls .btn-group {
+    gap: 0.25rem;
+}
+
+.chart-controls .btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+}
+
+.chart-container {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+}
+
+/* Events Panel */
+.events-panel {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.events-header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+.events-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 1rem;
+}
+
+.events-filters {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+}
+
+.filter-btn.active {
+    background-color: #0ea5e9;
+    border-color: #0ea5e9;
+    color: white;
+}
+
+.events-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+}
+
+.event-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.event-item:hover {
+    background-color: #f8fafc;
+}
+
+.event-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.event-medication .event-icon {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+.event-condition .event-icon {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.event-encounter .event-icon {
+    background-color: #d1fae5;
+    color: #059669;
+}
+
+.event-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.event-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+}
+
+.event-date {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+}
+
+.event-description {
+    font-size: 0.75rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+/* Analysis Card */
+.analysis-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.analysis-header {
+    margin-bottom: 1.5rem;
+}
+
+.analysis-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.insight-section {
+    padding: 0 1rem;
+}
+
+.insight-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
+}
+
+.insights-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.insight-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    border-left: 4px solid #0ea5e9;
+}
+
+.insight-item.insight-warning {
+    border-left-color: #f59e0b;
+    background-color: #fffbeb;
+}
+
+.insight-item.insight-critical {
+    border-left-color: #ef4444;
+    background-color: #fef2f2;
+}
+
+.insight-icon {
+    color: #0ea5e9;
+    font-size: 0.875rem;
+    margin-top: 0.125rem;
+}
+
+.insight-item.insight-warning .insight-icon {
+    color: #f59e0b;
+}
+
+.insight-item.insight-critical .insight-icon {
+    color: #ef4444;
+}
+
+.insight-text {
+    font-size: 0.875rem;
+    color: #374151;
+    line-height: 1.5;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.stat-item {
+    padding: 1rem;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.loading-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loading-spinner {
+    text-align: center;
+}
+
+.loading-text {
+    margin-top: 1rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-header {
+        padding: 1rem 0;
+    }
+    
+    .patient-info .patient-name {
+        font-size: 1.5rem;
+    }
+    
+    .header-actions {
+        margin-top: 1rem;
+        text-align: left !important;
+    }
+    
+    .date-presets {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+    
+    .custom-date-range {
+        text-align: center;
+    }
+    
+    .chart-card,
+    .events-panel {
+        height: 400px;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .vital-card {
+        margin-bottom: 1rem;
+    }
+    
+    .insight-section {
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-main {
+        padding: 1rem 0;
+    }
+    
+    .date-range-card {
+        padding: 1rem;
+    }
+    
+    .vital-card {
+        padding: 1rem;
+    }
+    
+    .chart-card,
+    .events-panel {
+        padding: 1rem;
+        height: 350px;
+    }
+    
+    .analysis-card {
+        padding: 1rem;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus styles for accessibility */
+.btn:focus,
+.form-control:focus,
+.preset-btn:focus,
+.filter-btn:focus {
+    outline: 2px solid #0ea5e9;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .vital-card {
+        border: 2px solid #000;
+    }
+    
+    .chart-card,
+    .events-panel,
+    .analysis-card {
+        border: 2px solid #000;
+    }
+}
+```
+
+```javascript
+// Patient data and application state
+let patientData = null;
+let vitalSignsChart = null;
+let currentDateRange = 30;
+let filteredData = [];
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+    initializeApp();
+});
+
+async function initializeApp() {
+    showLoading(true);
+    
+    try {
+        // Load patient data (simulated FHIR data)
+        await loadPatientData();
+        
+        // Initialize date range
+        initializeDateRange();
+        
+        // Setup event listeners
+        setupEventListeners();
+        
+        // Initial data load and visualization
+        await updateDashboard();
+        
+    } catch (error) {
+        console.error('Error initializing app:', error);
+        showError('Failed to load patient data');
+    } finally {
+        showLoading(false);
+    }
+}
+
+async function loadPatientData() {
+    // Simulated FHIR patient data for Marlene Abernathy
+    patientData = {
+        patient: {
+            id: 'e8a02560-2e97-4d2c-a734-906670e577b4',
+            name: 'Marlene Abernathy'
+        },
+        observations: [
+            // Blood Pressure readings
+            { date: '2024-01-15', type: 'blood-pressure', systolic: 128, diastolic: 82, unit: 'mmHg' },
+            { date: '2024-01-22', type: 'blood-pressure', systolic: 132, diastolic: 85, unit
