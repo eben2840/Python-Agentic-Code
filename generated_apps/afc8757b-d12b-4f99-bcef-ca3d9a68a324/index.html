@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ObserveTrack Pro - Elias Abbott</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="app-title">
+                        <i class="fas fa-chart-line me-2"></i>
+                        ObserveTrack Pro
+                    </h1>
+                    <p class="patient-info">
+                        <i class="fas fa-user-circle me-1"></i>
+                        Elias Abbott (ID: 851a7b59)
+                    </p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="header-actions">
+                        <button class="btn btn-outline-light me-2" id="exportBtn">
+                            <i class="fas fa-download me-1"></i>Export PDF
+                        </button>
+                        <button class="btn btn-outline-light" id="shareBtn">
+                            <i class="fas fa-share me-1"></i>Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard-container">
+        <div class="container-fluid">
+            <!-- Filter Controls -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="filter-panel">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <div class="time-filters">
+                                    <label class="form-label">TIME RANGE</label>
+                                    <div class="btn-group" role="group">
+                                        <input type="radio" class="btn-check" name="timeRange" id="last30" value="30" checked>
+                                        <label class="btn btn-outline-primary" for="last30">30 Days</label>
+                                        
+                                        <input type="radio" class="btn-check" name="timeRange" id="lastYear" value="365">
+                                        <label class="btn btn-outline-primary" for="lastYear">1 Year</label>
+                                        
+                                        <input type="radio" class="btn-check" name="timeRange" id="allTime" value="all">
+                                        <label class="btn btn-outline-primary" for="allTime">All Time</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="category-filters">
+                                    <label class="form-label">OBSERVATION TYPES</label>
+                                    <div class="filter-toggles">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="vitalsToggle" checked>
+                                            <label class="form-check-label" for="vitalsToggle">Vital Signs</label>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="labsToggle" checked>
+                                            <label class="form-check-label" for="labsToggle">Lab Results</label>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="assessmentsToggle" checked>
+                                            <label class="form-check-label" for="assessmentsToggle">Assessments</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="search-filter">
+                                    <label class="form-label">SEARCH OBSERVATIONS</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="observationSearch" placeholder="Search by type or value...">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="row">
+                <!-- Current Values Cards -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="summary-card">
+                        <div class="card-header">
+                            <i class="fas fa-heartbeat text-danger"></i>
+                            <span>Blood Pressure</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="current-value" id="bpValue">--/--</div>
+                            <div class="trend-indicator" id="bpTrend">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>vs last reading</span>
+                            </div>
+                            <div class="reference-range">Normal: 120/80 mmHg</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="summary-card">
+                        <div class="card-header">
+                            <i class="fas fa-heart text-primary"></i>
+                            <span>Heart Rate</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="current-value" id="hrValue">--</div>
+                            <div class="trend-indicator" id="hrTrend">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>vs last reading</span>
+                            </div>
+                            <div class="reference-range">Normal: 60-100 bpm</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="summary-card">
+                        <div class="card-header">
+                            <i class="fas fa-thermometer-half text-warning"></i>
+                            <span>Temperature</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="current-value" id="tempValue">--°F</div>
+                            <div class="trend-indicator" id="tempTrend">
+                                <i class="fas fa-minus"></i>
+                                <span>vs last reading</span>
+                            </div>
+                            <div class="reference-range">Normal: 98.6°F</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="summary-card">
+                        <div class="card-header">
+                            <i class="fas fa-weight text-success"></i>
+                            <span>Weight</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="current-value" id="weightValue">-- lbs</div>
+                            <div class="trend-indicator" id="weightTrend">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>vs last reading</span>
+                            </div>
+                            <div class="reference-range">BMI: Normal Range</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Main Trend Chart -->
+                <div class="col-lg-8 mb-4">
+                    <div class="chart-card">
+                        <div class="card-header">
+                            <h3>Multi-Parameter Trend Analysis</h3>
+                            <div class="chart-controls">
+                                <button class="btn btn-sm btn-outline-secondary" id="resetZoom">
+                                    <i class="fas fa-expand-arrows-alt me-1"></i>Reset Zoom
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="trendChart"></canvas>
+                            </div>
+                            <div class="chart-legend" id="chartLegend"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alerts Panel -->
+                <div class="col-lg-4 mb-4">
+                    <div class="alerts-panel">
+                        <div class="card-header">
+                            <h3>
+                                <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                Abnormal Values
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="alertsList" class="alerts-list">
+                                <!-- Alerts will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Observations Table -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="observations-table-card">
+                        <div class="card-header">
+                            <h3>Detailed Observations</h3>
+                            <div class="table-controls">
+                                <select class="form-select form-select-sm" id="tableSort">
+                                    <option value="date">Sort by Date</option>
+                                    <option value="type">Sort by Type</option>
+                                    <option value="value">Sort by Value</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="observationsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Date/Time</th>
+                                            <th>Observation Type</th>
+                                            <th>Value</th>
+                                            <th>Unit</th>
+                                            <th>Status</th>
+                                            <th>Reference Range</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="observationsTableBody">
+                                        <!-- Table rows will be populated by JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Loading patient data...</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

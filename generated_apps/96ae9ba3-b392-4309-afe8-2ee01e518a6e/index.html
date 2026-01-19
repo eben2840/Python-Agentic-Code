@@ -1,0 +1,828 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vital Signs Tracker Pro - Marlene Abernathy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --secondary-blue: #4a90e2;
+            --success-green: #28a745;
+            --warning-orange: #fd7e14;
+            --danger-red: #dc3545;
+            --light-gray: #f8f9fa;
+            --medium-gray: #6c757d;
+            --dark-gray: #343a40;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-hover: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: var(--dark-gray);
+        }
+
+        .app-header {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .patient-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .patient-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .patient-details h4 {
+            margin: 0;
+            color: var(--dark-gray);
+            font-weight: 600;
+        }
+
+        .patient-id {
+            font-size: 0.85rem;
+            color: var(--medium-gray);
+            font-family: 'Courier New', monospace;
+        }
+
+        .time-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .time-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--primary-blue);
+            background: transparent;
+            color: var(--primary-blue);
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .time-btn.active,
+        .time-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .vital-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .vital-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vital-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .vital-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue));
+        }
+
+        .vital-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .vital-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .bp-icon { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .hr-icon { background: linear-gradient(135deg, #e91e63, #ad1457); }
+        .temp-icon { background: linear-gradient(135deg, #ff9800, #f57c00); }
+        .resp-icon { background: linear-gradient(135deg, #2196f3, #1976d2); }
+        .o2-icon { background: linear-gradient(135deg, #4caf50, #388e3c); }
+
+        .vital-title {
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin: 0;
+        }
+
+        .vital-subtitle {
+            font-size: 0.85rem;
+            color: var(--medium-gray);
+            margin: 0;
+        }
+
+        .vital-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin: 0.5rem 0;
+        }
+
+        .vital-unit {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--medium-gray);
+        }
+
+        .vital-range {
+            font-size: 0.85rem;
+            color: var(--medium-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .vital-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .trend-up { color: var(--danger-red); }
+        .trend-down { color: var(--success-green); }
+        .trend-stable { color: var(--medium-gray); }
+
+        .status-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .status-normal { background: var(--success-green); }
+        .status-warning { background: var(--warning-orange); }
+        .status-critical { background: var(--danger-red); }
+
+        .chart-container {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin: 0;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .vital-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: var(--light-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .vital-toggle.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .vital-toggle input {
+            display: none;
+        }
+
+        .correlation-panel {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .correlation-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .correlation-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .correlation-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+
+        .correlation-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .alert-banner {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-icon {
+            color: #856404;
+            font-size: 1.2rem;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light-gray);
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .patient-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .time-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .chart-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .chart-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .vital-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <header class="app-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="patient-info">
+                        <div class="patient-avatar">MA</div>
+                        <div class="patient-details">
+                            <h4>Marlene Abernathy</h4>
+                            <div class="patient-id">ID: e8a02560-2e97-4d2c-a734-906670e577b4</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="time-controls justify-content-md-end justify-content-center d-flex">
+                        <button class="time-btn active" data-period="24h">24 Hours</button>
+                        <button class="time-btn" data-period="7d">7 Days</button>
+                        <button class="time-btn" data-period="30d">30 Days</button>
+                        <button class="time-btn" data-period="1y">1 Year</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="alert-banner fade-in">
+                <i class="fas fa-exclamation-triangle alert-icon"></i>
+                <div>
+                    <strong>Clinical Alert:</strong> Blood pressure trending upward over the last 7 days. Consider medication adjustment review.
+                </div>
+            </div>
+
+            <div class="vital-cards fade-in">
+                <div class="vital-card">
+                    <div class="status-indicator status-warning"></div>
+                    <div class="vital-header">
+                        <div class="vital-icon bp-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div>
+                            <h5 class="vital-title">Blood Pressure</h5>
+                            <p class="vital-subtitle">Systolic/Diastolic</p>
+                        </div>
+                    </div>
+                    <div class="vital-value">142/89 <span class="vital-unit">mmHg</span></div>
+                    <div class="vital-range">Normal: 120/80 mmHg</div>
+                    <div class="vital-trend trend-up">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+8 mmHg from last reading</span>
+                    </div>
+                </div>
+
+                <div class="vital-card">
+                    <div class="status-indicator status-normal"></div>
+                    <div class="vital-header">
+                        <div class="vital-icon hr-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div>
+                            <h5 class="vital-title">Heart Rate</h5>
+                            <p class="vital-subtitle">Pulse</p>
+                        </div>
+                    </div>
+                    <div class="vital-value">78 <span class="vital-unit">bpm</span></div>
+                    <div class="vital-range">Normal: 60-100 bpm</div>
+                    <div class="vital-trend trend-stable">
+                        <i class="fas fa-minus"></i>
+                        <span>Stable</span>
+                    </div>
+                </div>
+
+                <div class="vital-card">
+                    <div class="status-indicator status-normal"></div>
+                    <div class="vital-header">
+                        <div class="vital-icon temp-icon">
+                            <i class="fas fa-thermometer-half"></i>
+                        </div>
+                        <div>
+                            <h5 class="vital-title">Temperature</h5>
+                            <p class="vital-subtitle">Body Temperature</p>
+                        </div>
+                    </div>
+                    <div class="vital-value">98.6 <span class="vital-unit">°F</span></div>
+                    <div class="vital-range">Normal: 97-99°F</div>
+                    <div class="vital-trend trend-down">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>-0.4°F from yesterday</span>
+                    </div>
+                </div>
+
+                <div class="vital-card">
+                    <div class="status-indicator status-normal"></div>
+                    <div class="vital-header">
+                        <div class="vital-icon resp-icon">
+                            <i class="fas fa-lungs"></i>
+                        </div>
+                        <div>
+                            <h5 class="vital-title">Respiratory Rate</h5>
+                            <p class="vital-subtitle">Breaths per minute</p>
+                        </div>
+                    </div>
+                    <div class="vital-value">16 <span class="vital-unit">rpm</span></div>
+                    <div class="vital-range">Normal: 12-20 rpm</div>
+                    <div class="vital-trend trend-stable">
+                        <i class="fas fa-minus"></i>
+                        <span>Within normal range</span>
+                    </div>
+                </div>
+
+                <div class="vital-card">
+                    <div class="status-indicator status-normal"></div>
+                    <div class="vital-header">
+                        <div class="vital-icon o2-icon">
+                            <i class="fas fa-wind"></i>
+                        </div>
+                        <div>
+                            <h5 class="vital-title">Oxygen Saturation</h5>
+                            <p class="vital-subtitle">SpO2</p>
+                        </div>
+                    </div>
+                    <div class="vital-value">98 <span class="vital-unit">%</span></div>
+                    <div class="vital-range">Normal: >95%</div>
+                    <div class="vital-trend trend-stable">
+                        <i class="fas fa-minus"></i>
+                        <span>Excellent</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="chart-container fade-in">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Multi-Vital Timeline</h3>
+                            <div class="chart-controls">
+                                <label class="vital-toggle active">
+                                    <input type="checkbox" checked data-vital="bp">
+                                    <span class="bp-icon" style="width: 12px; height: 12px; border-radius: 50%; margin-right: 5px;"></span>
+                                    Blood Pressure
+                                </label>
+                                <label class="vital-toggle active">
+                                    <input type="checkbox" checked data-vital="hr">
+                                    <span class="hr-icon" style="width: 12px; height: 12px; border-radius: 50%; margin-right: 5px;"></span>
+                                    Heart Rate
+                                </label>
+                                <label class="vital-toggle active">
+                                    <input type="checkbox" checked data-vital="temp">
+                                    <span class="temp-icon" style="width: 12px; height: 12px; border-radius: 50%; margin-right: 5px;"></span>
+                                    Temperature
+                                </label>
+                            </div>
+                        </div>
+                        <canvas id="vitalChart" width="800" height="400"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="correlation-panel fade-in">
+                        <div class="correlation-header">
+                            <i class="fas fa-project-diagram" style="color: var(--primary-blue); font-size: 1.5rem;"></i>
+                            <h4>Clinical Correlations</h4>
+                        </div>
+
+                        <div class="correlation-item">
+                            <div class="correlation-icon">
+                                <i class="fas fa-exclamation"></i>
+                            </div>
+                            <div>
+                                <strong>Hypertension Pattern</strong>
+                                <div style="font-size: 0.85rem; color: var(--medium-gray);">
+                                    BP elevated consistently over 7 days
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="correlation-item">
+                            <div class="correlation-icon">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                            <div>
+                                <strong>Medication Timing</strong>
+                                <div style="font-size: 0.85rem; color: var(--medium-gray);">
+                                    Lisinopril started 3 days ago
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="correlation-item">
+                            <div class="correlation-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <strong>Trend Analysis</strong>
+                                <div style="font-size: 0.85rem; color: var(--medium-gray);">
+                                    HR stable despite BP elevation
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="correlation-item">
+                            <div class="correlation-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div>
+                                <strong>Last Encounter</strong>
+                                <div style="font-size: 0.85rem; color: var(--medium-gray);">
+                                    Routine checkup 5 days ago
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Sample vital signs data
+        const vitalSignsData = {
+            '24h': {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                bloodPressure: {
+                    systolic: [138, 142, 145, 140, 144, 142],
+                    diastolic: [85, 89, 91, 87, 90, 89]
+                },
+                heartRate: [72, 75, 78, 80, 76, 78],
+                temperature: [98.2, 98.4, 98.6, 98.8, 98.5, 98.6],
+                respiratoryRate: [14, 15, 16, 16, 15, 16],
+                oxygenSaturation: [98, 97, 98, 98, 97, 98]
+            },
+            '7d': {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                bloodPressure: {
+                    systolic: [135, 138, 140, 142, 144, 143, 142],
+                    diastolic: [82, 85, 87, 89, 90, 89, 89]
+                },
+                heartRate: [74, 76, 78, 79, 77, 78, 78],
+                temperature: [98.4, 98.5, 98.6, 98.7, 98.6, 98.5, 98.6],
+                respiratoryRate: [15, 15, 16, 16, 15, 16, 16],
+                oxygenSaturation: [98, 97, 98, 98, 97, 98, 98]
+            },
+            '30d': {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                bloodPressure: {
+                    systolic: [132, 136, 140, 142],
+                    diastolic: [80, 83, 86, 89]
+                },
+                heartRate: [72, 75, 77, 78],
+                temperature: [98.3, 98.5, 98.6, 98.6],
+                respiratoryRate: [14, 15, 16, 16],
+                oxygenSaturation: [98, 98, 97, 98]
+            },
+            '1y': {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                bloodPressure: {
+                    systolic: [125, 128, 130, 132, 134, 136, 138, 139, 140, 141, 142, 142],
+                    diastolic: [75, 77, 79, 80, 82, 83, 85, 86, 87, 88, 89, 89]
+                },
+                heartRate: [70, 71, 72, 73, 74, 75, 76, 77, 77, 78, 78, 78],
+                temperature: [98.2, 98.3, 98.4, 98.4, 98.5, 98.5, 98.6, 98.6, 98.6, 98.6, 98.6, 98.6],
+                respiratoryRate: [14, 14, 15, 15, 15, 16, 16, 16, 16, 16, 16, 16],
+                oxygenSaturation: [98, 98, 98, 97, 97, 98, 98, 97, 98, 98, 97, 98]
+            }
+        };
+
+        let currentChart = null;
+        let currentPeriod = '24h';
+
+        // Initialize the chart
+        function initChart() {
+            const ctx = document.getElementById('vitalChart').getContext('2d');
+            
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: vitalSignsData[currentPeriod].labels,
+                    datasets: [
+                        {
+                            label: 'Systolic BP',
+                            data: vitalSignsData[currentPeriod].bloodPressure.systolic,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            borderWidth: 3,
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointHoverRadius: 8
+                        },
+                        {
+                            label: 'Diastolic BP',
+                            data: vitalSignsData[currentPeriod].bloodPressure.diastolic,
+                            borderColor: '#c0392b',
+                            backgroundColor: 'rgba(192, 57, 43, 0.1)',
+                            borderWidth: 3,
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointHoverRadius: 8
+                        },
+                        {
+                            label: 'Heart Rate',
+                            data: vitalSignsData[currentPeriod].heartRate,
+                            borderColor: '#e91e63',
+                            backgroundColor: 'rgba(233, 30, 99, 0.1)',
+                            borderWidth: 3,
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointHoverRadius: 8
+                        },
+                        {
+                            label: 'Temperature',
+                            data: vitalSignsData[currentPeriod].temperature,
+                            borderColor: '#ff9800',
+                            backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                            borderWidth: 3,
+                            fill: false,
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointHoverRadius: 8,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    family: 'Inter',
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: 'white',
+                            bodyColor: 'white',
+                            borderColor: '#0066cc',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: true,
+                            callbacks: {
+                                title: function(context) {
+                                    return `Time: ${context[0].label}`;
+                                },
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        if (label.includes('BP')) {
+                                            label += context.parsed.y + ' mmHg';
+                                        } else if (label.includes('Heart Rate')) {
+                                            label += context.parsed.y + ' bpm';
+                                        } else if (label.includes('Temperature')) {
+                                            label += context.parsed.y + ' °F';
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Time Period',
+                                font: {
+                                    family: 'Inter',
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'BP (mmHg) / HR (bpm)',
+                                font: {
+                                    family: 'Inter',
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            min: 60,
+                            max: 160
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Temperature (°F)',
+                                font: {
+                                    family: 'Inter',
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                            min: 97,
+                            max: 100
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        }
+
+        // Update chart data
+        function updateChart(period) {
+            if (currentChart) {
+                currentChart.data.labels = vital

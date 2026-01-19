@@ -1,0 +1,872 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vital Signs Trend Monitor - Marlene Abernathy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="patient-info">
+                        <i class="fas fa-user-circle patient-avatar"></i>
+                        <div class="patient-details">
+                            <h4 class="patient-name">Marlene Abernathy</h4>
+                            <span class="patient-id">ID: e8a02560-2e97-4d2c-a734-906670e577b4</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="header-actions">
+                        <button class="btn btn-outline-primary btn-sm me-2" id="exportBtn">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm" id="printBtn">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <div class="container-fluid main-container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 sidebar-container">
+                <div class="sidebar">
+                    <!-- Quick Filters -->
+                    <div class="filter-section">
+                        <h5><i class="fas fa-filter"></i> Time Range</h5>
+                        <div class="btn-group-vertical w-100 time-filters" role="group">
+                            <button type="button" class="btn btn-outline-primary" data-range="24h">24 Hours</button>
+                            <button type="button" class="btn btn-outline-primary" data-range="7d">7 Days</button>
+                            <button type="button" class="btn btn-outline-primary active" data-range="30d">30 Days</button>
+                            <button type="button" class="btn btn-outline-primary" data-range="1y">1 Year</button>
+                        </div>
+                    </div>
+
+                    <!-- Vital Signs Toggle -->
+                    <div class="filter-section">
+                        <h5><i class="fas fa-heartbeat"></i> Vital Signs</h5>
+                        <div class="vital-toggles">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="bloodPressure" checked>
+                                <label class="form-check-label" for="bloodPressure">
+                                    <span class="vital-indicator bp"></span> Blood Pressure
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="heartRate" checked>
+                                <label class="form-check-label" for="heartRate">
+                                    <span class="vital-indicator hr"></span> Heart Rate
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="temperature" checked>
+                                <label class="form-check-label" for="temperature">
+                                    <span class="vital-indicator temp"></span> Temperature
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="respRate" checked>
+                                <label class="form-check-label" for="respRate">
+                                    <span class="vital-indicator resp"></span> Respiratory Rate
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="oxygenSat" checked>
+                                <label class="form-check-label" for="oxygenSat">
+                                    <span class="vital-indicator o2"></span> Oxygen Saturation
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Alert Panel -->
+                    <div class="alert-panel">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Alerts</h5>
+                        <div id="alertsList" class="alerts-list">
+                            <!-- Alerts will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9 main-content">
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-2 col-sm-6 mb-3">
+                        <div class="stat-card bp-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h6>Blood Pressure</h6>
+                                <div class="stat-value" id="bpValue">--/--</div>
+                                <small class="stat-trend" id="bpTrend"></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6 mb-3">
+                        <div class="stat-card hr-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h6>Heart Rate</h6>
+                                <div class="stat-value" id="hrValue">-- bpm</div>
+                                <small class="stat-trend" id="hrTrend"></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6 mb-3">
+                        <div class="stat-card temp-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-thermometer-half"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h6>Temperature</h6>
+                                <div class="stat-value" id="tempValue">-- °F</div>
+                                <small class="stat-trend" id="tempTrend"></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6 mb-3">
+                        <div class="stat-card resp-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-lungs"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h6>Respiratory</h6>
+                                <div class="stat-value" id="respValue">-- /min</div>
+                                <small class="stat-trend" id="respTrend"></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6 mb-3">
+                        <div class="stat-card o2-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h6>Oxygen Sat</h6>
+                                <div class="stat-value" id="o2Value">-- %</div>
+                                <small class="stat-trend" id="o2Trend"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h5><i class="fas fa-chart-line"></i> Vital Signs Trends</h5>
+                        <div class="chart-controls">
+                            <button class="btn btn-sm btn-outline-secondary" id="zoomReset">
+                                <i class="fas fa-search-minus"></i> Reset Zoom
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="vitalsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Comparative Analysis -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="analysis-card">
+                            <h6><i class="fas fa-chart-bar"></i> Statistical Summary</h6>
+                            <div id="statisticalSummary" class="summary-content">
+                                <!-- Summary will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="analysis-card">
+                            <h6><i class="fas fa-pills"></i> Contextual Information</h6>
+                            <div id="contextualInfo" class="context-content">
+                                <!-- Context will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-heartbeat fa-2x"></i>
+            <p>Loading vital signs data...</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+```
+
+```css
+/* Healthcare Theme Variables */
+:root {
+    --primary-blue: #2c5aa0;
+    --secondary-blue: #4a90e2;
+    --success-green: #28a745;
+    --warning-yellow: #ffc107;
+    --danger-red: #dc3545;
+    --light-gray: #f8f9fa;
+    --medium-gray: #6c757d;
+    --dark-gray: #343a40;
+    --white: #ffffff;
+    --border-color: #dee2e6;
+    --shadow: 0 2px 10px rgba(0,0,0,0.1);
+    --shadow-hover: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+/* Global Styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--light-gray);
+    margin: 0;
+    padding: 0;
+    color: var(--dark-gray);
+    line-height: 1.6;
+}
+
+/* Header Styles */
+.app-header {
+    background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+    color: var(--white);
+    padding: 1rem 0;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.patient-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.patient-avatar {
+    font-size: 2.5rem;
+    color: var(--white);
+    opacity: 0.9;
+}
+
+.patient-details h4 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.patient-id {
+    font-size: 0.875rem;
+    opacity: 0.8;
+    font-family: 'Courier New', monospace;
+}
+
+.header-actions .btn {
+    border-color: rgba(255,255,255,0.3);
+    color: var(--white);
+    transition: all 0.3s ease;
+}
+
+.header-actions .btn:hover {
+    background-color: rgba(255,255,255,0.1);
+    border-color: var(--white);
+    transform: translateY(-1px);
+}
+
+/* Main Container */
+.main-container {
+    padding: 2rem 0;
+    min-height: calc(100vh - 100px);
+}
+
+/* Sidebar Styles */
+.sidebar-container {
+    padding-right: 1rem;
+}
+
+.sidebar {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 120px;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+}
+
+.filter-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.filter-section h5 {
+    color: var(--primary-blue);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.filter-section h5 i {
+    margin-right: 0.5rem;
+}
+
+/* Time Filters */
+.time-filters .btn {
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.time-filters .btn:hover {
+    transform: translateX(4px);
+}
+
+.time-filters .btn.active {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: var(--white);
+}
+
+/* Vital Signs Toggles */
+.vital-toggles .form-check {
+    margin-bottom: 0.75rem;
+    padding-left: 2rem;
+}
+
+.vital-toggles .form-check-input {
+    margin-top: 0.25rem;
+}
+
+.vital-toggles .form-check-label {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.vital-toggles .form-check-input:checked + .form-check-label {
+    color: var(--primary-blue);
+}
+
+.vital-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    display: inline-block;
+}
+
+.vital-indicator.bp { background-color: #e74c3c; }
+.vital-indicator.hr { background-color: #f39c12; }
+.vital-indicator.temp { background-color: #9b59b6; }
+.vital-indicator.resp { background-color: #3498db; }
+.vital-indicator.o2 { background-color: #2ecc71; }
+
+/* Alert Panel */
+.alert-panel {
+    background: linear-gradient(135deg, #fff5f5, #fef5e7);
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 4px solid var(--warning-yellow);
+}
+
+.alert-panel h5 {
+    color: var(--danger-red);
+    margin-bottom: 1rem;
+}
+
+.alerts-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.alert-item {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--danger-red);
+    font-size: 0.875rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.alert-item.warning {
+    border-left-color: var(--warning-yellow);
+}
+
+.alert-item.info {
+    border-left-color: var(--secondary-blue);
+}
+
+/* Main Content */
+.main-content {
+    padding-left: 1rem;
+}
+
+/* Stat Cards */
+.stat-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+    height: 100%;
+}
+
+.stat-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+}
+
+.stat-card.bp-card { border-left-color: #e74c3c; }
+.stat-card.hr-card { border-left-color: #f39c12; }
+.stat-card.temp-card { border-left-color: #9b59b6; }
+.stat-card.resp-card { border-left-color: #3498db; }
+.stat-card.o2-card { border-left-color: #2ecc71; }
+
+.stat-icon {
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.stat-icon i {
+    font-size: 1.5rem;
+    opacity: 0.7;
+}
+
+.bp-card .stat-icon i { color: #e74c3c; }
+.hr-card .stat-icon i { color: #f39c12; }
+.temp-card .stat-icon i { color: #9b59b6; }
+.resp-card .stat-icon i { color: #3498db; }
+.o2-card .stat-icon i { color: #2ecc71; }
+
+.stat-info h6 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+    color: var(--medium-gray);
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark-gray);
+    margin-bottom: 0.25rem;
+}
+
+.stat-trend {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.stat-trend.up {
+    color: var(--danger-red);
+}
+
+.stat-trend.down {
+    color: var(--success-green);
+}
+
+.stat-trend.stable {
+    color: var(--medium-gray);
+}
+
+/* Chart Container */
+.chart-container {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.chart-header h5 {
+    color: var(--primary-blue);
+    font-weight: 600;
+    margin: 0;
+}
+
+.chart-header h5 i {
+    margin-right: 0.5rem;
+}
+
+.chart-controls .btn {
+    transition: all 0.3s ease;
+}
+
+.chart-controls .btn:hover {
+    transform: translateY(-1px);
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 400px;
+    width: 100%;
+}
+
+/* Analysis Cards */
+.analysis-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    height: 100%;
+}
+
+.analysis-card h6 {
+    color: var(--primary-blue);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.analysis-card h6 i {
+    margin-right: 0.5rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-label {
+    font-weight: 500;
+    color: var(--medium-gray);
+}
+
+.summary-value {
+    font-weight: 600;
+    color: var(--dark-gray);
+}
+
+.context-item {
+    background: var(--light-gray);
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-left: 3px solid var(--secondary-blue);
+}
+
+.context-item:last-child {
+    margin-bottom: 0;
+}
+
+.context-title {
+    font-weight: 600;
+    color: var(--primary-blue);
+    margin-bottom: 0.25rem;
+}
+
+.context-description {
+    font-size: 0.875rem;
+    color: var(--medium-gray);
+    margin: 0;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+
+.loading-spinner {
+    text-align: center;
+    color: var(--primary-blue);
+}
+
+.loading-spinner i {
+    animation: heartbeat 1.5s ease-in-out infinite;
+    margin-bottom: 1rem;
+}
+
+.loading-spinner p {
+    font-weight: 500;
+    margin: 0;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Responsive Design */
+@media (max-width: 991.98px) {
+    .sidebar-container {
+        padding-right: 0;
+        margin-bottom: 2rem;
+    }
+    
+    .main-content {
+        padding-left: 0;
+    }
+    
+    .sidebar {
+        position: static;
+        max-height: none;
+    }
+    
+    .chart-wrapper {
+        height: 300px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .main-container {
+        padding: 1rem 0;
+    }
+    
+    .patient-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .header-actions {
+        text-align: left !important;
+        margin-top: 1rem;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+    
+    .time-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .time-filters .btn {
+        flex: 1;
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .app-header {
+        padding: 0.75rem 0;
+    }
+    
+    .sidebar, .chart-container, .analysis-card {
+        padding: 1rem;
+    }
+    
+    .chart-wrapper {
+        height: 250px;
+    }
+    
+    .patient-details h4 {
+        font-size: 1.1rem;
+    }
+    
+    .patient-id {
+        font-size: 0.8rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .sidebar-container,
+    .header-actions,
+    .chart-controls {
+        display: none !important;
+    }
+    
+    .main-content {
+        width: 100% !important;
+        padding: 0 !important;
+    }
+    
+    .chart-container,
+    .analysis-card {
+        box-shadow: none;
+        border: 1px solid var(--border-color);
+    }
+    
+    body {
+        background: white;
+    }
+}
+
+/* Accessibility Enhancements */
+.btn:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    :root {
+        --shadow: 0 2px 10px rgba(0,0,0,0.3);
+        --border-color: #000;
+    }
+    
+    .stat-card,
+    .chart-container,
+    .analysis-card,
+    .sidebar {
+        border: 2px solid var(--border-color);
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+```
+
+```javascript
+// Mock Patient Data - In real implementation, this would come from FHIR API
+window.PATIENT_DATA = {
+    patient: {
+        id: "e8a02560-2e97-4d2c-a734-906670e577b4",
+        name: "Marlene Abernathy"
+    },
+    observations: [
+        // Blood Pressure readings
+        { date: "2024-01-15", type: "blood_pressure", systolic: 128, diastolic: 82, unit: "mmHg" },
+        { date: "2024-01-10", type: "blood_pressure", systolic: 132, diastolic: 85, unit: "mmHg" },
+        { date: "2024-01-05", type: "blood_pressure", systolic: 125, diastolic: 80, unit: "mmHg" },
+        { date: "2024-01-01", type: "blood_pressure", systolic: 130, diastolic: 83, unit: "mmHg" },
+        { date: "2023-12-28", type: "blood_pressure", systolic: 135, diastolic: 88, unit: "mmHg" },
+        
+        // Heart Rate readings
+        { date: "2024-01-15", type: "heart_rate", value: 72, unit: "bpm" },
+        { date: "2024-01-10", type: "heart_rate", value: 78, unit: "bpm" },
+        { date: "2024-01-05", type: "heart_rate", value: 70, unit: "bpm" },
+        { date: "2024-01-01", type: "heart_rate", value: 75, unit: "bpm" },
+        { date: "2023-12-28", type: "heart_rate", value: 82, unit: "bpm" },
+        
+        // Temperature readings
+        { date: "2024-01-15", type: "temperature", value: 98.6, unit: "°F" },
+        { date: "2024-01-10", type: "temperature", value: 99.1, unit: "°F" },
+        { date: "2024-01-05", type: "temperature", value: 98.4, unit: "°F" },
+        { date: "2024-01-01", type: "temperature", value: 98.7, unit: "°F" },
+        { date: "2023-12-28", type: "temperature", value: 99.3, unit: "°F" },
+        
+        // Respiratory Rate readings
+        { date: "2024-01-15", type: "respiratory_rate", value: 16, unit: "/min" },
+        { date: "2024-01-10", type: "respiratory_rate", value: 18, unit: "/min" },
+        { date: "2024-01-05", type: "respiratory_rate", value: 15, unit: "/min" },
+        { date: "2024-01-01", type: "respiratory_rate", value: 17, unit: "/min" },
+        { date: "2023-12-28", type: "respiratory_rate", value: 19, unit: "/min" },
+        
+        // Oxygen Saturation readings
+        { date: "2024-01-15", type: "oxygen_saturation", value: 98, unit: "%" },
+        { date: "2024-01-10", type: "oxygen_saturation", value: 97, unit: "%" },
+        { date: "2024-01-05", type: "oxygen_saturation", value: 99, unit: "%" },
+        { date: "2024-01-01", type: "oxygen_saturation", value: 98, unit: "%" },
+        { date: "2023-12-28", type: "oxygen_saturation", value: 96, unit: "%" }
+    ],
+    conditions: [
+        { name: "Hypertension", status: "active", onset: "2020-03-15" },
+        { name: "Type 2 Diabetes", status: "active", onset: "2018-07-22" },
+        { name: "Hyperlipidemia", status: "active", onset: "2019-11-10" }
+    ],
+    medications: [
+        { name: "Lisinopril 10mg", dosage: "Once daily", indication: "Hypertension" },
+        { name: "Metformin 500mg", dosage: "Twice daily", indication: "Type 2 Diabetes" }
+    ]
+};
+
+// Application State
+let vitalsChart = null;
+let currentTimeRange = '30d';
+let visibleVitals = {
+    bloodPressure: true,
+    heartRate: true,
+    temperature: true,
+    respRate: true,
+    oxygenSat: true
+};
+
+// Normal Ranges for Vital Signs
+const NORMAL_RANGES = {
+    blood_pressure: { systolic: { min: 90, max: 120 }, diastolic: { min: 60, max

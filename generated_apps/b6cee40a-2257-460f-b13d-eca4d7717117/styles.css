@@ -1,0 +1,577 @@
+/* Healthcare Vital Signs Dashboard Styles */
+:root {
+    --primary-color: #4A90E2;
+    --success-color: #50C878;
+    --danger-color: #E74C3C;
+    --warning-color: #F39C12;
+    --background-color: #F7F9FC;
+    --text-color: #2C3E50;
+    --card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.app-container {
+    min-height: 100vh;
+}
+
+/* Header Styles */
+.app-header {
+    background: linear-gradient(135deg, var(--primary-color), #357ABD);
+    color: white;
+    padding: 1.5rem 0;
+    box-shadow: var(--card-shadow);
+}
+
+.app-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.patient-info {
+    margin: 0.5rem 0 0 0;
+    opacity: 0.9;
+    font-size: 1rem;
+}
+
+.last-updated {
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+#headerActionBtn {
+    font-weight: 500;
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    transition: var(--transition);
+}
+
+#headerActionBtn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Critical Alerts Section */
+.critical-alerts-section {
+    padding: 1rem 0;
+    background: linear-gradient(to right, #FFF5F5, #FFEBEE);
+    border-bottom: 1px solid #FFCDD2;
+}
+
+.critical-alerts-panel {
+    display: none;
+}
+
+.critical-alerts-panel.show {
+    display: block;
+}
+
+.critical-alert {
+    background: white;
+    border-left: 4px solid var(--danger-color);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    box-shadow: var(--card-shadow);
+    animation: alertPulse 2s infinite;
+}
+
+@keyframes alertPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+.alert-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.alert-title {
+    font-weight: 600;
+    color: var(--danger-color);
+    font-size: 1.1rem;
+}
+
+.alert-time {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.alert-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--danger-color);
+}
+
+.alert-threshold {
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+/* Dashboard Main */
+.dashboard-main {
+    padding: 2rem 0;
+}
+
+/* Chart Controls */
+.chart-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.time-range-selector .btn {
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.chart-legend {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    align-items: center;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+/* Chart Card */
+.chart-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #E9ECEF;
+    background: linear-gradient(135deg, #F8F9FA, #E9ECEF);
+}
+
+.chart-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.chart-options {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chart-container {
+    padding: 1.5rem;
+    height: 400px;
+    position: relative;
+}
+
+/* Vital Signs Cards */
+.vital-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 1.5rem;
+    height: 100%;
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.vital-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.vital-card.critical {
+    border-color: var(--danger-color);
+    background: linear-gradient(135deg, #FFF5F5, white);
+}
+
+.vital-card.warning {
+    border-color: var(--warning-color);
+    background: linear-gradient(135deg, #FFFBF0, white);
+}
+
+.vital-card.normal {
+    border-color: var(--success-color);
+    background: linear-gradient(135deg, #F0FFF4, white);
+}
+
+.vital-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.vital-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-color), #357ABD);
+    color: white;
+    font-size: 1.25rem;
+}
+
+.vital-title h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.vital-unit {
+    font-size: 0.875rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.critical {
+    background: var(--danger-color);
+    color: white;
+}
+
+.status-badge.warning {
+    background: var(--warning-color);
+    color: white;
+}
+
+.status-badge.normal {
+    background: var(--success-color);
+    color: white;
+}
+
+.vital-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    color: var(--text-color);
+}
+
+.vital-range {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.vital-sparkline {
+    height: 60px;
+    margin: 1rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.vital-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.vital-trend i {
+    font-size: 1rem;
+}
+
+.vital-trend.up {
+    color: var(--danger-color);
+}
+
+.vital-trend.down {
+    color: var(--success-color);
+}
+
+.vital-trend.stable {
+    color: var(--primary-color);
+}
+
+/* Summary Card */
+.summary-card {
+    background: linear-gradient(135deg, #F8F9FA, #E9ECEF);
+}
+
+.summary-content {
+    margin-top: 1rem;
+}
+
+.summary-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.stat-value.critical {
+    color: var(--danger-color);
+}
+
+.stat-value.warning {
+    color: var(--warning-color);
+}
+
+.stat-value.normal {
+    color: var(--success-color);
+}
+
+.last-reading {
+    font-size: 0.875rem;
+    color: #666;
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #DEE2E6;
+}
+
+/* Comparison Card */
+.comparison-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+}
+
+.comparison-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #E9ECEF;
+    background: linear-gradient(135deg, #F8F9FA, #E9ECEF);
+}
+
+.comparison-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.comparison-content {
+    padding: 1.5rem;
+}
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.comparison-item {
+    padding: 1rem;
+    border-radius: 8px;
+    background: #F8F9FA;
+    border: 1px solid #E9ECEF;
+}
+
+.comparison-vital {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.comparison-values {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comparison-current {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.comparison-previous {
+    font-size: 1rem;
+    color: #666;
+}
+
+.comparison-change {
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.comparison-change.positive {
+    background: #D4EDDA;
+    color: #155724;
+}
+
+.comparison-change.negative {
+    background: #F8D7DA;
+    color: #721C24;
+}
+
+.comparison-change.neutral {
+    background: #D1ECF1;
+    color: #0C5460;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+
+.loading-spinner {
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.loading-spinner i {
+    animation: heartbeat 1.5s infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .app-header {
+        text-align: center;
+    }
+    
+    .app-header .col-md-6:last-child {
+        text-align: center !important;
+        margin-top: 1rem;
+    }
+    
+    #headerActionBtn {
+        margin-bottom: 0.5rem;
+        margin-right: 0 !important;
+    }
+    
+    .chart-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .chart-legend {
+        justify-content: center;
+    }
+    
+    .chart-container {
+        height: 300px;
+        padding: 1rem;
+    }
+    
+    .vital-card {
+        margin-bottom: 1rem;
+    }
+    
+    .comparison-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .summary-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-main {
+        padding: 1rem 0;
+    }
+    
+    .vital-value {
+        font-size: 2rem;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .app-header,
+    .chart-controls,
+    .chart-options,
+    .comparison-controls {
+        display: none;
+    }
+    
+    .vital-card,
+    .chart-card,
+    .comparison-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}

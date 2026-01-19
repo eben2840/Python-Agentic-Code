@@ -1,0 +1,907 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aylin's Health Insights Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #0066cc;
+            --secondary-blue: #4a90e2;
+            --success-green: #28a745;
+            --warning-orange: #ffc107;
+            --danger-red: #dc3545;
+            --light-gray: #f8f9fa;
+            --medium-gray: #6c757d;
+            --dark-gray: #343a40;
+            --white: #ffffff;
+            --border-color: #dee2e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: var(--dark-gray);
+        }
+
+        .dashboard-header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .patient-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .patient-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .patient-details h2 {
+            color: var(--dark-gray);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .patient-id {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stat-card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .stat-icon.vitals { background: var(--success-green); }
+        .stat-icon.conditions { background: var(--warning-orange); }
+        .stat-icon.medications { background: var(--secondary-blue); }
+        .stat-icon.observations { background: var(--primary-blue); }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark-gray);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--medium-gray);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chart-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .time-filter {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .time-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            background: var(--white);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .time-btn:hover, .time-btn.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-radius: 6px;
+            padding: 0.5rem;
+        }
+
+        .filter-item:hover {
+            background: var(--light-gray);
+        }
+
+        .filter-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .filter-checkbox.checked {
+            background: var(--primary-blue);
+            border-color: var(--primary-blue);
+            color: white;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            flex: 1;
+        }
+
+        .filter-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .recent-observations {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .observation-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .observation-item:last-child {
+            border-bottom: none;
+        }
+
+        .observation-name {
+            font-weight: 500;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+
+        .observation-date {
+            font-size: 0.8rem;
+            color: var(--medium-gray);
+        }
+
+        .observation-value {
+            font-weight: 600;
+            color: var(--primary-blue);
+            font-size: 0.9rem;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 400px;
+        }
+
+        .export-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .export-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--primary-blue);
+            background: var(--white);
+            color: var(--primary-blue);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .export-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .alert-badge {
+            background: var(--danger-red);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .trend-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .trend-up { color: var(--success-green); }
+        .trend-down { color: var(--danger-red); }
+        .trend-stable { color: var(--medium-gray); }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .patient-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .chart-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+            
+            .time-filter {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .time-filter {
+                flex-wrap: wrap;
+            }
+        }
+
+        .loading-spinner {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light-gray);
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="patient-info">
+                <div class="patient-avatar">AB</div>
+                <div class="patient-details">
+                    <h2>Aylin Barton</h2>
+                    <div class="patient-id">ID: 5e1be2de-3389-4923-bda9-60af6159d1fc</div>
+                </div>
+                <div class="ms-auto">
+                    <span class="badge bg-success">Active Patient</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats-cards fade-in">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon vitals">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                </div>
+                <div class="stat-value">12</div>
+                <div class="stat-label">Vital Signs</div>
+                <div class="trend-indicator trend-stable">
+                    <i class="fas fa-minus"></i>
+                    <span>Stable</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon observations">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="stat-value">39</div>
+                <div class="stat-label">Total Observations</div>
+                <div class="trend-indicator trend-up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+3 this week</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon conditions">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                </div>
+                <div class="stat-value">7</div>
+                <div class="stat-label">Active Conditions</div>
+                <div class="trend-indicator trend-stable">
+                    <i class="fas fa-minus"></i>
+                    <span>No change</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <div class="stat-icon medications">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                </div>
+                <div class="stat-value">7</div>
+                <div class="stat-label">Current Medications</div>
+                <div class="trend-indicator trend-down">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>-1 this month</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="chart-container fade-in">
+                <div class="chart-header">
+                    <h3 class="chart-title">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Observation Trends
+                    </h3>
+                    <div class="time-filter">
+                        <button class="time-btn" data-period="7d">7 Days</button>
+                        <button class="time-btn active" data-period="30d">30 Days</button>
+                        <button class="time-btn" data-period="90d">90 Days</button>
+                        <button class="time-btn" data-period="1y">1 Year</button>
+                    </div>
+                </div>
+                
+                <div class="loading-spinner" id="chartLoading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <canvas id="trendsChart" class="chart-canvas"></canvas>
+                
+                <div class="export-actions">
+                    <button class="export-btn" onclick="exportChart('pdf')">
+                        <i class="fas fa-file-pdf"></i>
+                        Export PDF
+                    </button>
+                    <button class="export-btn" onclick="exportChart('png')">
+                        <i class="fas fa-image"></i>
+                        Save Image
+                    </button>
+                    <button class="export-btn" onclick="printChart()">
+                        <i class="fas fa-print"></i>
+                        Print
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="sidebar-card fade-in">
+                    <h4 class="sidebar-title">
+                        <i class="fas fa-filter"></i>
+                        Observation Filters
+                    </h4>
+                    
+                    <div class="filter-group">
+                        <div class="filter-item" onclick="toggleFilter('vitals')">
+                            <div class="filter-checkbox checked" id="filter-vitals">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <span class="filter-label">Vital Signs</span>
+                            <div class="filter-color" style="background: #28a745;"></div>
+                        </div>
+                        
+                        <div class="filter-item" onclick="toggleFilter('labs')">
+                            <div class="filter-checkbox checked" id="filter-labs">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <span class="filter-label">Laboratory Results</span>
+                            <div class="filter-color" style="background: #007bff;"></div>
+                        </div>
+                        
+                        <div class="filter-item" onclick="toggleFilter('assessments')">
+                            <div class="filter-checkbox checked" id="filter-assessments">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <span class="filter-label">Clinical Assessments</span>
+                            <div class="filter-color" style="background: #ffc107;"></div>
+                        </div>
+                        
+                        <div class="filter-item" onclick="toggleFilter('measurements')">
+                            <div class="filter-checkbox checked" id="filter-measurements">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <span class="filter-label">Physical Measurements</span>
+                            <div class="filter-color" style="background: #dc3545;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-card fade-in">
+                    <h4 class="sidebar-title">
+                        <i class="fas fa-clock"></i>
+                        Recent Observations
+                    </h4>
+                    
+                    <div class="recent-observations">
+                        <div class="observation-item">
+                            <div>
+                                <div class="observation-name">Blood Pressure</div>
+                                <div class="observation-date">Today, 10:30 AM</div>
+                            </div>
+                            <div class="observation-value">120/80 mmHg</div>
+                        </div>
+                        
+                        <div class="observation-item">
+                            <div>
+                                <div class="observation-name">Heart Rate</div>
+                                <div class="observation-date">Today, 10:30 AM</div>
+                            </div>
+                            <div class="observation-value">72 bpm</div>
+                        </div>
+                        
+                        <div class="observation-item">
+                            <div>
+                                <div class="observation-name">Temperature</div>
+                                <div class="observation-date">Yesterday, 2:15 PM</div>
+                            </div>
+                            <div class="observation-value">98.6°F</div>
+                        </div>
+                        
+                        <div class="observation-item">
+                            <div>
+                                <div class="observation-name">Weight</div>
+                                <div class="observation-date">3 days ago</div>
+                            </div>
+                            <div class="observation-value">145 lbs</div>
+                        </div>
+                        
+                        <div class="observation-item">
+                            <div>
+                                <div class="observation-name">Glucose Level</div>
+                                <div class="observation-date">1 week ago</div>
+                            </div>
+                            <div class="observation-value">95 mg/dL</div>
+                        </div>
+                        
+                        <div class="observation-item">
+                            <div>
+                                <div class="observation-name">Cholesterol</div>
+                                <div class="observation-date">2 weeks ago</div>
+                            </div>
+                            <div class="observation-value">180 mg/dL <span class="alert-badge">HIGH</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Sample data for Aylin Barton's observations
+        const observationData = {
+            vitals: {
+                bloodPressureSystolic: [
+                    {date: '2024-01-01', value: 118},
+                    {date: '2024-01-08', value: 122},
+                    {date: '2024-01-15', value: 120},
+                    {date: '2024-01-22', value: 125},
+                    {date: '2024-01-29', value: 119},
+                    {date: '2024-02-05', value: 121},
+                    {date: '2024-02-12', value: 123}
+                ],
+                heartRate: [
+                    {date: '2024-01-01', value: 68},
+                    {date: '2024-01-08', value: 72},
+                    {date: '2024-01-15', value: 70},
+                    {date: '2024-01-22', value: 74},
+                    {date: '2024-01-29', value: 69},
+                    {date: '2024-02-05', value: 71},
+                    {date: '2024-02-12', value: 72}
+                ],
+                temperature: [
+                    {date: '2024-01-01', value: 98.4},
+                    {date: '2024-01-08', value: 98.6},
+                    {date: '2024-01-15', value: 98.2},
+                    {date: '2024-01-22', value: 98.8},
+                    {date: '2024-01-29', value: 98.5},
+                    {date: '2024-02-05', value: 98.3},
+                    {date: '2024-02-12', value: 98.6}
+                ]
+            },
+            labs: {
+                glucose: [
+                    {date: '2024-01-01', value: 92},
+                    {date: '2024-01-15', value: 95},
+                    {date: '2024-02-01', value: 88},
+                    {date: '2024-02-15', value: 93}
+                ],
+                cholesterol: [
+                    {date: '2024-01-01', value: 185},
+                    {date: '2024-02-01', value: 180},
+                    {date: '2024-03-01', value: 175}
+                ]
+            },
+            measurements: {
+                weight: [
+                    {date: '2024-01-01', value: 148},
+                    {date: '2024-01-15', value: 147},
+                    {date: '2024-02-01', value: 146},
+                    {date: '2024-02-15', value: 145}
+                ]
+            }
+        };
+
+        let chart;
+        let activeFilters = ['vitals', 'labs', 'assessments', 'measurements'];
+
+        // Initialize the chart
+        function initChart() {
+            const ctx = document.getElementById('trendsChart').getContext('2d');
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    family: 'Inter',
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: 'white',
+                            bodyColor: 'white',
+                            borderColor: '#0066cc',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: true,
+                            titleFont: {
+                                family: 'Inter',
+                                size: 14,
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                family: 'Inter',
+                                size: 12
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                displayFormats: {
+                                    day: 'MMM DD'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter',
+                                    size: 11
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'Inter',
+                                    size: 11
+                                }
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            radius: 4,
+                            hoverRadius: 6,
+                            borderWidth: 2
+                        },
+                        line: {
+                            borderWidth: 3,
+                            tension: 0.1
+                        }
+                    }
+                }
+            });
+
+            updateChart();
+        }
+
+        // Update chart with current filter settings
+        function updateChart() {
+            const datasets = [];
+
+            if (activeFilters.includes('vitals')) {
+                // Blood Pressure Systolic
+                datasets.push({
+                    label: 'Blood Pressure (Systolic)',
+                    data: observationData.vitals.bloodPressureSystolic.map(item => ({
+                        x: item.date,
+                        y: item.value
+                    })),
+                    borderColor: '#28a745',
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                    fill: false,
+                    yAxisID: 'y'
+                });
+
+                // Heart Rate
+                datasets.push({
+                    label: 'Heart Rate (bpm)',
+                    data: observationData.vitals.heartRate.map(item => ({
+                        x: item.date,
+                        y: item.value
+                    })),
+                    borderColor: '#dc3545',
+                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                    fill: false,
+                    yAxisID: 'y'
+                });
+
+                // Temperature
+                datasets.push({
+                    label: 'Temperature (°F)',
+                    data: observationData.vitals.temperature.map(item => ({
+                        x: item.date,
+                        y: item.value
+                    })),
+                    borderColor: '#ffc107',
+                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                    fill: false,
+                    yAxisID: 'y'
+                });
+            }
+
+            if (activeFilters.includes('labs')) {
+                // Glucose
+                datasets.push({
+                    label: 'Glucose (mg/dL)',
+                    data: observationData.labs.glucose.map(item => ({
+                        x: item.date,
+                        y: item.value
+                    })),
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    fill: false,
+                    yAxisID: 'y'
+                });
+
+                // Cholesterol
+                datasets.push({
+                    label: 'Cholesterol (mg/dL)',
+                    data: observationData.labs.cholesterol.map(item => ({
+                        x: item.date,
+                        y: item.value
+                    })),
+                    borderColor: '#6f42c1',
+                    backgroundColor: 'rgba(111, 66, 193, 0.1)',
+                    fill: false,
+                    yAxisID: 'y'
+                });
+            }
+
+            if (activeFilters.includes('measurements')) {
+                // Weight
+                datasets.push({
+                    label: 'Weight (lbs)',
+                    data: observationData.measurements.weight.map(item => ({
+                        x: item.date,
+                        y: item.value
+                    })),
+                    borderColor: '#20c997',
+                    backgroundColor: 'rgba(32, 201, 151, 0.1)',
+                    fill: false,
+                    yAxisID: 'y'
+                });
+            }
+
+            chart.data.datasets = datasets;
+            chart.update('active');
+        }
+
+        // Toggle filter
+        function toggleFilter(filterType) {
+            const checkbox = document.getElementById(`filter-${filterType}`);
+            const isChecked = activeFilters.includes(filterType);
+
+            if (isChecked) {
+                activeFilters = activeFilters.filter(f => f !== filterType);
+                checkbox.classList.remove('checked');
+                checkbox.innerHTML = '';
+            } else {
+                activeFilters.push(filterType);
+                checkbox.classList.add('checked');
+                checkbox.innerHTML = '<i class="fas fa-check"></i>';
+            }
+
+            updateChart();
+        }
+
+        // Time period filter
+        document.querySelectorAll('.time-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Here you would filter the data based on the selected time period
+                // For demo purposes, we'll just show a loading state
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    updateChart();
+                }, 1000);
+            });
+        });
+
+        // Export functions
+        function exportChart(format) {
+            if (format === 'pdf') {
+                // In a real app, you'd use a library like jsPDF
+                alert('PDF export functionality would be implemented here');
+            } else if (format ===

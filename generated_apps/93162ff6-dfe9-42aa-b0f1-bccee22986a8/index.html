@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vital Signs Dashboard - Elias Abbott</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header Section -->
+        <header class="dashboard-header">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="patient-info">
+                            <h1 class="patient-name">
+                                <i class="fas fa-user-circle me-2"></i>
+                                Elias Abbott
+                            </h1>
+                            <div class="patient-details">
+                                <span class="badge bg-primary me-2">ID: 851a7b59</span>
+                                <span class="badge bg-secondary me-2">Age: 52</span>
+                                <span class="badge bg-info">Male</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <div class="last-updated">
+                            <i class="fas fa-clock me-1"></i>
+                            Last Updated: <span id="lastUpdated">--</span>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm mt-2" id="refreshBtn">
+                            <i class="fas fa-sync-alt me-1"></i>
+                            Refresh Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Alert Section -->
+        <div class="container-fluid mt-4">
+            <div id="alertsContainer" class="alerts-section mb-4"></div>
+        </div>
+
+        <!-- Main Dashboard Content -->
+        <main class="container-fluid">
+            <!-- Vital Signs Cards -->
+            <section class="vital-signs-section mb-5">
+                <h2 class="section-title">
+                    <i class="fas fa-heartbeat me-2"></i>
+                    Current Vital Signs
+                </h2>
+                <div class="row g-4" id="vitalSignsCards">
+                    <!-- Cards will be dynamically generated -->
+                </div>
+            </section>
+
+            <!-- Trend Charts Section -->
+            <section class="trends-section mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Vital Signs Trends
+                    </h2>
+                    <div class="time-period-selector">
+                        <div class="btn-group" role="group">
+                            <input type="radio" class="btn-check" name="timePeriod" id="period24h" value="24h" checked>
+                            <label class="btn btn-outline-primary" for="period24h">24H</label>
+                            
+                            <input type="radio" class="btn-check" name="timePeriod" id="period7d" value="7d">
+                            <label class="btn btn-outline-primary" for="period7d">7D</label>
+                            
+                            <input type="radio" class="btn-check" name="timePeriod" id="period30d" value="30d">
+                            <label class="btn btn-outline-primary" for="period30d">30D</label>
+                            
+                            <input type="radio" class="btn-check" name="timePeriod" id="period6m" value="6m">
+                            <label class="btn btn-outline-primary" for="period6m">6M</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Blood Pressure & Heart Rate</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="bpHrChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Temperature & Respiratory Rate</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="tempRespChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row g-4 mt-2">
+                    <div class="col-lg-12">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Oxygen Saturation</h3>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="oxygenChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Measurement History Table -->
+            <section class="history-section">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="section-title">
+                        <i class="fas fa-history me-2"></i>
+                        Measurement History
+                    </h2>
+                    <div class="table-controls">
+                        <div class="btn-group me-3">
+                            <button class="btn btn-outline-secondary btn-sm" id="filterNormal">
+                                <i class="fas fa-filter me-1"></i>
+                                All Values
+                            </button>
+                            <button class="btn btn-outline-warning btn-sm" id="filterAbnormal">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                Abnormal Only
+                            </button>
+                        </div>
+                        <button class="btn btn-success btn-sm" id="exportBtn">
+                            <i class="fas fa-download me-1"></i>
+                            Export CSV
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="historyTable">
+                            <thead>
+                                <tr>
+                                    <th>Date & Time</th>
+                                    <th>Vital Sign</th>
+                                    <th>Value</th>
+                                    <th>Unit</th>
+                                    <th>Status</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <!-- Table rows will be dynamically generated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3">Loading vital signs data...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
