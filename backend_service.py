@@ -209,14 +209,8 @@ def create_miniapp():
             fhir_base_url = patient_session.fhir_base_url
             logger.info(f"[CREATE-MINIAPP] Using patient session: {patient_session.patient_name}")
         else:
-            logger.warning("[CREATE-MINIAPP] No patient session found, using demo data")
-            patient_data = {
-                'patient': {'id': 'demo', 'name': 'Demo Patient', 'gender': 'unknown', 'birthDate': 'Unknown'},
-                'observations': {'count': 0, 'summary': []},
-                'conditions': {'count': 0, 'summary': []},
-                'medications': {'count': 0, 'summary': []},
-                'allergies': {'count': 0, 'summary': []}
-            }
+            logger.error("[CREATE-MINIAPP] No patient session found - cannot create mini app without patient data")
+            return jsonify({'error': 'No patient session found. Please connect to FHIR server and load patient data first.'}), 400
 
         # Create task
         task_id = str(uuid.uuid4())
@@ -272,16 +266,10 @@ def execute_miniapp_task(task_id: str):
             add_task_log(task_id, "Task cancelled", 'warning')
             return
 
-        # Get patient data
+        # Get patient data - require real data, no demo/fake data
         patient_data = task.patient_data
         if not patient_data:
-            patient_data = {
-                'patient': {'id': 'demo', 'name': 'Demo Patient', 'gender': 'unknown', 'birthDate': 'Unknown'},
-                'observations': {'count': 0, 'summary': []},
-                'conditions': {'count': 0, 'summary': []},
-                'medications': {'count': 0, 'summary': []},
-                'allergies': {'count': 0, 'summary': []}
-            }
+            raise Exception("No patient data available for this task. Please ensure patient data was loaded when the task was created.")
 
         add_task_log(task_id, f"Patient data ready: {patient_data.get('patient', {}).get('name', 'Unknown')}", 'info')
 
@@ -465,9 +453,31 @@ def view_generated_app(task_id):
         if not task.html_content:
             return '<h1>No content generated</h1>', 404
 
-        # Return the generated HTML directly
+        # Inject patient data into the HTML before returning
+        html_content = task.html_content
+        patient_data = task.patient_data
+
+        if patient_data:
+            # Create the patient data script to inject
+            patient_data_script = f"<script>window.PATIENT_DATA = {json.dumps(patient_data)};</script>"
+
+            # Inject before the first <script> tag or before </head>
+            if '<script' in html_content:
+                # Find the first script tag and inject before it
+                html_content = html_content.replace('<script', f'{patient_data_script}\n<script', 1)
+            elif '</head>' in html_content:
+                html_content = html_content.replace('</head>', f'{patient_data_script}\n</head>')
+            else:
+                # Fallback: inject at the beginning of body or start of file
+                if '<body' in html_content:
+                    import re
+                    html_content = re.sub(r'(<body[^>]*>)', r'\1\n' + patient_data_script, html_content, count=1)
+                else:
+                    html_content = patient_data_script + '\n' + html_content
+
+        # Return the generated HTML with patient data injected
         from flask import Response
-        return Response(task.html_content, mimetype='text/html')
+        return Response(html_content, mimetype='text/html')
 
     except Exception as e:
         return f'<h1>Error: {str(e)}</h1>', 500

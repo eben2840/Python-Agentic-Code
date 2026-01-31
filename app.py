@@ -23,6 +23,14 @@ from flask import (
 from models import db, init_db, Task, TaskLog, Generation, TaskStatus, TaskComplexity, PatientSession
 from fhir_service import FHIRService, get_patient_data_for_llm
 from llm_service import ClaudeLLMService, check_llm_available
+# from voice_service import get_voice_service, check_voice_available
+import os
+from flask import Flask, request, jsonify, render_template
+from dotenv import load_dotenv
+import google.generativeai as genai
+
+load_dotenv()
+
 
 # Configure logging
 logging.basicConfig(
@@ -38,7 +46,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///careit_vibe.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
+model = genai.GenerativeModel("gemini-1.5-pro")
 # Output folder for generated mini apps
 OUTPUT_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'generated_apps')
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
@@ -49,6 +59,10 @@ init_db(app)
 # Register backend service blueprint
 from backend_service import backend_service
 app.register_blueprint(backend_service)
+
+# Register quick generate API blueprint
+from quick_generate_api import quick_generate
+app.register_blueprint(quick_generate)
 
 
 # =============================================================================
@@ -419,45 +433,97 @@ def mini_app_preview(task_id):
     """Preview a mini app"""
     print(f"[MINI-APP-PREVIEW] Loading preview for task {task_id}")
     task = Task.query.get(task_id)
-    
+
     if not task:
         print(f"[MINI-APP-PREVIEW] Task {task_id} not found")
         return render_template('mini_app_preview.html', error='Task not found')
-    
+
     if not task.html_content:
         print(f"[MINI-APP-PREVIEW] Task {task_id} has no HTML content")
         return render_template('mini_app_preview.html', task=task)
-    
+
     print(f"[MINI-APP-PREVIEW] Rendering preview for task {task_id}")
-    patient_data = get_patient_data_from_cookies()
+    # Get patient data from the task itself (stored in database)
+    patient_data = task.patient_data
     html_content = create_combined_html(
         task.html_content,
         task.css_content or '',
         task.js_content or '',
         patient_data
     )
-    
+
     return render_template('mini_app_preview.html', html_content=html_content)
+
+
+@app.route('/api/mini-apps', methods=['GET'])
+def get_mini_apps():
+    """
+    API endpoint to return completed mini-apps for a specific patient
+    """
+    patient_id = request.args.get('patient_id')
+    print(f"[API][MINI-APPS] Request received for patient_id: {patient_id}")
+
+    if not patient_id:
+        return jsonify({"error": "patient_id query parameter is required"}), 400
+
+    tasks = (
+        Task.query
+        .filter(
+            Task.status == TaskStatus.completed,
+            Task.html_content.isnot(None),
+            Task.patient_id == patient_id  
+        )
+        .all()
+    )
+
+    print(f"[API][MINI-APPS] Found {len(tasks)} completed mini-apps for patient {patient_id}")
+
+    mini_apps = []
+    for task in tasks:
+        print(f"[API][MINI-APPS] Processing task ID: {task.id}")
+
+        mini_app_data = {
+            "id": task.id,
+            "patient_id": task.patient_id, 
+            "url": url_for(
+                'mini_app_preview',
+                task_id=task.id,
+                _external=True
+            ),
+            "title": task.title,
+            "description": task.description,
+            "final_score": task.final_score
+        }
+
+        mini_apps.append(mini_app_data)
+
+    print("[API][MINI-APPS] Response payload prepared")
+    print(f"[API][MINI-APPS] Returning {len(mini_apps)} records")
+
+    return jsonify({ 
+        "count": len(mini_apps),
+        "results": mini_apps
+    })
 
 
 @app.route('/mini-apps/<task_id>/raw')
 def mini_app_raw(task_id):
     """Get raw HTML content for iframe embedding"""
     task = Task.query.get(task_id)
-    
+
     if not task or not task.html_content:
         return '<html><body><p>No content available</p></body></html>'
-    
-    # Get patient data from cookies
-    patient_data = get_patient_data_from_cookies()
-    
+
+    # Get patient data from the task itself (stored in database)
+    patient_data = task.patient_data
+
     html_content = create_combined_html(
         task.html_content,
         task.css_content or '',
         task.js_content or '',
         patient_data
     )
-    
+
     return html_content
 
 
@@ -580,6 +646,26 @@ def create_task_form():
     
     print("[CREATE-TASK] Redirecting to index", flush=True)
     return redirect(url_for('index'))
+
+
+# Receive audio chunks and transcribe
+@app.route("/api/speech-to-text", methods=["POST"])
+def speech_to_text():
+    if "audio" not in request.files:
+        return jsonify({"error": "audio missing"}), 400
+
+    audio_file = request.files["audio"]
+    audio_bytes = audio_file.read()
+
+    try:
+        response = model.generate_content([
+            {"mime_type": audio_file.mimetype, "data": audio_bytes},
+            "Transcribe this audio accurately."
+        ])
+        return jsonify({"text": response.text.strip()})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 
 @app.route('/generate-idea', methods=['POST'])
@@ -932,16 +1018,10 @@ def execute_task(task_id: str):
                         print(f"[EXECUTE-TASK] Could not fetch patient data: {e}")
                         logger.warning(f"Could not fetch patient data: {e}")
             
-            # Use default patient data if none available
+            # Require real patient data - no demo/fake data
             if not patient_data:
-                print(f"[EXECUTE-TASK] Using default patient data")
-                patient_data = {
-                    'patient': {'id': 'demo', 'name': 'Demo Patient', 'gender': 'unknown', 'birthDate': 'Unknown'},
-                    'observations': {'count': 0, 'summary': []},
-                    'conditions': {'count': 0, 'summary': []},
-                    'medications': {'count': 0, 'summary': []},
-                    'allergies': {'count': 0, 'summary': []}
-                }
+                print(f"[EXECUTE-TASK] ERROR: No patient data available")
+                raise Exception("No patient data available. Please ensure a patient session is active before creating tasks.")
             
             # Update status to executing
             print(f"[EXECUTE-TASK] Task {task_id} -> executing")

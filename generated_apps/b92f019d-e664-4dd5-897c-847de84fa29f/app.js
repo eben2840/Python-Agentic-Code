@@ -1,1 +1,0 @@
-// JavaScript is embedded in the HTML file above

@@ -29,7 +29,7 @@ class ClaudeLLMService:
         
         self.client = Anthropic(api_key=self.api_key)
         self.model = "claude-sonnet-4-20250514"  # Using Claude 3.5 Sonnet
-        self.max_tokens = 8192
+        self.max_tokens = 8192  # Standard token limit
 
     def generate_mini_app(
         self, 
@@ -53,124 +53,119 @@ class ClaudeLLMService:
         patient_name = patient_data.get('patient', {}).get('name', 'Patient')
         patient_id = patient_data.get('patient', {}).get('id', 'Unknown')
         
-        # Create UI-focused system prompt with better design guidance
-        system_prompt = f"""You are a HEALTHCARE UI/UX EXPERT specializing in creating beautiful, functional medical interfaces.
+        # Create simplified system prompt for beautiful but concise code
+        system_prompt = f"""You are a healthcare UI developer. Create a BEAUTIFUL, MODERN mini-app with SIMPLE code.
 
-PATIENT CONTEXT:
-- Name: {patient_name}
-- ID: {patient_id}
-- Available Data: {self._summarize_patient_data(patient_data)}
+PATIENT: {patient_name} (ID: {patient_id})
+DATA AVAILABLE: {self._summarize_patient_data(patient_data)}
 
-TASK: Create a complete, responsive healthcare mini-app based on the user's request.
+DESIGN STYLE (CLEAN, PROFESSIONAL, WHITE):
+- Pure WHITE (#ffffff) or very light gray (#f8f9fa) backgrounds ONLY
+- NO gradients, NO loud colors, NO flashy effects
+- White cards with subtle shadows (box-shadow: 0 2px 12px rgba(0,0,0,0.08))
+- Color accents ONLY for icons, badges, and small UI elements - NOT backgrounds
+- Accent colors: muted teal #14b8a6, soft blue #3b82f6, gentle green #22c55e
+- Subtle hover effects - clean and understated
+- Status badges: light pastel backgrounds with darker text
+- Clean borders,
+- Think: Apple Health, Notion, Stripe - minimal, sophisticated, professional
+- Use Font Awesome icons with small colored accents
 
-UI/UX DESIGN REQUIREMENTS:
-1. **Modern Healthcare Design**:
-   - Clean, professional medical-grade interface
-   - Card-based layout with subtle shadows
-   - Gradient headers for visual appeal
-   - White or light backgrounds for content areas
+REQUIREMENTS:
+- Use Bootstrap 5 for layout (cards, grids, utilities)
+- Keep JavaScript and nice  and beautiful.
+- Use window.PATIENT_DATA only (NO mock/fake data generators)
+- CSS can be detailed for beautiful styling
 
-2. **Color Palette** (use these colors):
-   - Primary: #4A90E2 (professional blue)
-   - Success: #50C878 (medical green)
-   - Danger: #E74C3C (alert red)
-   - Warning: #F39C12 (caution orange)
-   - Background: #F7F9FC (light gray-blue)
-   - Text: #2C3E50 (dark gray)
+OUTPUT - exactly 3 code blocks:
 
-3. **Typography**:
-   - Use Google Fonts: 'Inter' or 'Roboto'
-   - Headers: Bold, clear hierarchy (h1: 2rem, h2: 1.5rem, h3: 1.25rem)
-   - Body: 1rem, line-height: 1.6
-   - Labels: 0.875rem, uppercase, letter-spacing: 0.5px
-
-4. **Components**:
-   - Cards with border-radius: 12px, box-shadow: 0 2px 8px rgba(0,0,0,0.1)
-   - Buttons with rounded corners (8px), hover states with slight lift
-   - Data visualization with Chart.js (line/bar charts for trends)
-   - Icons from Font Awesome (medical icons: fa-heart, fa-pills, etc.)
-   - Status badges with colored backgrounds
-   - Responsive grid using Bootstrap 5
-
-5. **Interactions**:
-   - Smooth transitions (0.3s ease)
-   - Hover effects on cards (slight elevation)
-   - Loading states for data
-   - Touch-friendly targets (min 44x44px)
-
-6. **Layout**:
-   - Mobile-first responsive design
-   - Max content width: 1200px
-   - Consistent spacing (use rem units)
-   - Grid: 3 columns on desktop, 1 column on mobile
-
-CRITICAL OUTPUT FORMAT:
-You MUST provide THREE SEPARATE CODE BLOCKS - NO EXCEPTIONS!
-
-First, the HTML file (reference external CSS and JS):
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healthcare App - {patient_name}</title>
+    <title>Healthcare App</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Your beautiful HTML structure here -->
+    <!-- Beautiful HTML with Bootstrap classes -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
 ```
 
-Second, the CSS file (all custom styles):
 ```css
-/* Complete CSS styling for the healthcare app */
-/* Use the color palette and design requirements above */
+/* Clean, minimal CSS - small readable fonts */
+body {{ background: #ffffff; min-height: 100vh; font-size: 14px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }}
+h1 {{ font-size: 1.5rem; font-weight: 600; }}
+h2 {{ font-size: 1.25rem; font-weight: 600; }}
+h3 {{ font-size: 1rem; font-weight: 600; }}
+p, span, td, li {{ font-size: 0.875rem; }}
+.card {{ background: #ffffff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; }}
 ```
 
-Third, the JavaScript file (all functionality):
 ```javascript
-// Complete JavaScript code
-// Access patient data via: window.PATIENT_DATA
-// Initialize charts, handle interactions, format data
+// SHORT JavaScript - display REAL patient data
+document.addEventListener('DOMContentLoaded', function() {{
+    const data = window.PATIENT_DATA;
+    if (!data) {{ document.body.innerHTML = '<p class="text-center mt-5">No patient data</p>'; return; }}
+
+    // EXACT DATA STRUCTURE - use these paths:
+    // data.patient.name, data.patient.gender, data.patient.birthDate
+    // data.observations.summary (array) - each item: {{code, display, value, unit, date, status}}
+    // data.conditions.summary (array) - each item: {{condition, status, onset, severity}}
+    // data.medications.summary (array) - each item: {{medication, status, dosage, authoredOn}}
+    // data.allergies.summary (array) - each item: {{allergen, type, criticality, status}}
+    // data.vital_signs.summary (array) - each item: {{code, display, value, unit, date, status}}
+
+    // Example: Loop through observations
+    data.observations.summary.forEach(obs => {{
+        console.log(obs.display, obs.value, obs.unit); // e.g., "Body Height", 172.9, "cm"
+    }});
+}});
 ```
 
 CRITICAL RULES:
-- You MUST output exactly 3 code blocks: ```html, ```css, ```javascript
-- DO NOT embed CSS in <style> tags - put it in the CSS block
-- DO NOT embed JavaScript in <script> tags - put it in the JS block
-- HTML should ONLY reference styles.css and app.js (external files)
-- Each block must be complete and ready to use
-
-Create a stunning, professional healthcare interface that impresses users!"""
+- Make it CLEAN and PROFESSIONAL with white backgrounds, subtle shadows, minimal accents
+- NO gradients anywhere - pure white or very light gray backgrounds only
+- Keep JavaScript SHORT - just read and display data
+- ALWAYS use .summary arrays: data.observations.summary, data.conditions.summary, etc.
+- Summary items have: {{code, display, value, unit, date}} for observations
+- Summary items have: {{condition, status, onset}} for conditions
+- NO mock data - ONLY window.PATIENT_DATA
+- ALWAYS close all braces"""
 
         try:
             logger.info(f"[LLM] Calling Claude API for mini app generation...")
             logger.info(f"[LLM] Model: {self.model}, Max tokens: {self.max_tokens}")
-            
+
+            messages = [
+                {
+                    "role": "user",
+                    "content": f"Create a healthcare mini-app: {user_prompt}"
+                }
+            ]
+
             response = self.client.messages.create(
                 model=self.model,
                 max_tokens=self.max_tokens,
                 temperature=0.3,  # Lower temperature for more consistent UI generation
                 system=system_prompt,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": f"Create a healthcare mini-app: {user_prompt}"
-                    }
-                ]
+                messages=messages
             )
-            
+
             logger.info(f"[LLM] Response received from Claude API")
+            logger.info(f"[LLM] Stop reason: {response.stop_reason}")
 
             llm_response = response.content[0].text.strip()
+
+            # Warn if truncated but don't auto-continue (keeping code simple should prevent this)
+            if response.stop_reason == "max_tokens":
+                logger.warning(f"[LLM] Response was truncated - code may be incomplete")
 
             # Log the raw response for debugging
             logger.info(f"LLM response length: {len(llm_response)}")
@@ -185,63 +180,72 @@ Create a stunning, professional healthcare interface that impresses users!"""
                 logger.error("Failed to extract valid HTML from LLM response")
                 raise Exception("LLM did not generate properly formatted HTML content")
 
-            logger.info(f"✅ Parsed successfully - HTML: {len(html_content)} chars, CSS: {len(css_content)} chars, JS: {len(js_content)} chars")
+            logger.info(f"Parsed successfully - HTML: {len(html_content)} chars, CSS: {len(css_content)} chars, JS: {len(js_content)} chars")
+
+            # Check for incomplete JavaScript (common truncation indicator)
+            if js_content:
+                # Check for unbalanced braces
+                open_braces = js_content.count('{') - js_content.count('}')
+                open_parens = js_content.count('(') - js_content.count(')')
+                if open_braces > 0 or open_parens > 0:
+                    logger.warning(f"WARNING: JS may be incomplete - unbalanced braces: {open_braces}, parens: {open_parens}")
 
             if not js_content:
-                logger.warning("⚠️  WARNING: JS content is EMPTY after parsing!")
+                logger.warning("WARNING: JS content is EMPTY after parsing!")
 
             return html_content, css_content, js_content, llm_response
-            
+
         except Exception as e:
             logger.error(f"Error generating mini app: {e}")
             # No fallback - let it fail with real error
             raise e
     
     def _summarize_patient_data(self, patient_data: Dict[str, Any]) -> str:
-        """Summarize patient data for UI context"""
-        summary = []
+        """Summarize patient data with sample values for LLM context"""
+        lines = []
 
-        # Handle observations
+        # Show observations with sample
         if 'observations' in patient_data:
             obs = patient_data['observations']
-            if isinstance(obs, dict):
-                obs_count = obs.get('count', 0)
-            else:
-                obs_count = len(obs) if obs else 0
-            if obs_count > 0:
-                summary.append(f"{obs_count} observations")
+            if isinstance(obs, dict) and obs.get('summary'):
+                lines.append(f"observations.summary: {obs.get('count', 0)} items")
+                # Show first 3 samples
+                for item in obs['summary'][:3]:
+                    lines.append(f"  - {item.get('display', 'N/A')}: {item.get('value', 'N/A')} {item.get('unit', '')}")
 
-        # Handle conditions
+        # Show conditions with sample
         if 'conditions' in patient_data:
             cond = patient_data['conditions']
-            if isinstance(cond, dict):
-                cond_count = cond.get('count', 0)
-            else:
-                cond_count = len(cond) if cond else 0
-            if cond_count > 0:
-                summary.append(f"{cond_count} conditions")
+            if isinstance(cond, dict) and cond.get('summary'):
+                lines.append(f"conditions.summary: {cond.get('count', 0)} items")
+                for item in cond['summary'][:3]:
+                    lines.append(f"  - {item.get('condition', 'N/A')}")
 
-        # Handle medications
+        # Show medications with sample
         if 'medications' in patient_data:
             meds = patient_data['medications']
-            if isinstance(meds, dict):
-                med_count = meds.get('count', 0)
-            else:
-                med_count = len(meds) if meds else 0
-            if med_count > 0:
-                summary.append(f"{med_count} medications")
+            if isinstance(meds, dict) and meds.get('summary'):
+                lines.append(f"medications.summary: {meds.get('count', 0)} items")
+                for item in meds['summary'][:3]:
+                    lines.append(f"  - {item.get('medication', 'N/A')}")
 
-        # Handle allergies
+        # Show allergies with sample
         if 'allergies' in patient_data:
             allergies = patient_data['allergies']
-            if isinstance(allergies, dict):
-                allergy_count = allergies.get('count', 0)
-            else:
-                allergy_count = len(allergies) if allergies else 0
-            if allergy_count > 0:
-                summary.append(f"{allergy_count} allergies")
+            if isinstance(allergies, dict) and allergies.get('summary'):
+                lines.append(f"allergies.summary: {allergies.get('count', 0)} items")
+                for item in allergies['summary'][:3]:
+                    lines.append(f"  - {item.get('allergen', 'N/A')} ({item.get('criticality', 'N/A')})")
 
-        return ", ".join(summary) if summary else "Basic patient info"
+        # Show vital signs with sample
+        if 'vital_signs' in patient_data:
+            vitals = patient_data['vital_signs']
+            if isinstance(vitals, dict) and vitals.get('summary'):
+                lines.append(f"vital_signs.summary: {vitals.get('count', 0)} items")
+                for item in vitals['summary'][:3]:
+                    lines.append(f"  - {item.get('display', 'N/A')}: {item.get('value', 'N/A')} {item.get('unit', '')}")
+
+        return "\n".join(lines) if lines else "Basic patient info only"
 
     def _build_system_prompt(self, complexity: str) -> str:
         """Build the system prompt for Claude"""
@@ -396,17 +400,17 @@ Remember to output your code in the format specified (```html, ```css, ```javasc
         html_match = re.search(r'```html\s*(.*?)\s*```', response, re.DOTALL)
         if html_match:
             html_content = html_match.group(1).strip()
-            logger.info(f"[_parse_response] ✅ Extracted HTML: {len(html_content)} chars")
+            logger.info(f"[_parse_response] Extracted HTML: {len(html_content)} chars")
         else:
-            logger.warning("[_parse_response] ❌ No HTML code block found")
+            logger.warning("[_parse_response] No HTML code block found")
 
         # Extract CSS from code block
         css_match = re.search(r'```css\s*(.*?)\s*```', response, re.DOTALL)
         if css_match:
             css_content = css_match.group(1).strip()
-            logger.info(f"[_parse_response] ✅ Extracted CSS: {len(css_content)} chars")
+            logger.info(f"[_parse_response] Extracted CSS: {len(css_content)} chars")
         else:
-            logger.warning("[_parse_response] ⚠️  No CSS code block found")
+            logger.warning("[_parse_response] No CSS code block found")
 
         # Extract JavaScript from code block
         logger.info("[_parse_response] Attempting to extract JavaScript...")
@@ -420,9 +424,9 @@ Remember to output your code in the format specified (```html, ```css, ```javasc
             js_match = re.search(r'```javascript\s*(.*)$', response, re.DOTALL)
         if js_match:
             js_content = js_match.group(1).strip()
-            logger.info(f"[_parse_response] ✅ Extracted JS from code block: {len(js_content)} chars")
+            logger.info(f"[_parse_response] Extracted JS from code block: {len(js_content)} chars")
         else:
-            logger.warning("[_parse_response] ❌ No JavaScript code block found at all")
+            logger.warning("[_parse_response] No JavaScript code block found at all")
 
         # If CSS/JS are embedded in HTML, extract them
         if html_content and (not css_content or not js_content):

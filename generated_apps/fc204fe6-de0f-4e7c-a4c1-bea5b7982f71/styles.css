@@ -1,0 +1,129 @@
+/* Clean, minimal CSS - small readable fonts */
+body { 
+    background: #ffffff; 
+    min-height: 100vh; 
+    font-size: 14px; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+    color: #374151;
+}
+
+h1 { font-size: 1.5rem; font-weight: 600; color: #111827; }
+h2 { font-size: 1.25rem; font-weight: 600; color: #111827; }
+h3 { font-size: 1rem; font-weight: 600; color: #111827; }
+p, span, td, li { font-size: 0.875rem; }
+
+.card { 
+    background: #ffffff; 
+    border-radius: 12px; 
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08); 
+    border: 1px solid #e5e7eb; 
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1.25rem 1.5rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    background: #f0f9ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.icon-circle-sm {
+    width: 32px;
+    height: 32px;
+    background: #f0fdf4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+}
+
+.table th {
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    color: #6b7280;
+    padding: 1rem 0.75rem;
+}
+
+.table td {
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    border-top: 1px solid #f3f4f6;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.status-final {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-preliminary {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.observation-name {
+    font-weight: 500;
+    color: #111827;
+}
+
+.observation-value {
+    font-weight: 600;
+    color: #059669;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.summary-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.icon-height { background: #dbeafe; color: #1d4ed8; }
+.icon-weight { background: #fef3c7; color: #d97706; }
+.icon-bmi { background: #f3e8ff; color: #7c3aed; }

@@ -1,0 +1,175 @@
+body {
+    background: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    min-height: 100vh;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1.25rem;
+}
+
+.patient-avatar i {
+    font-size: 3rem;
+    color: #6b7280;
+}
+
+.bp-reading {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
+
+.bp-systolic {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #dc2626;
+    line-height: 1;
+}
+
+.bp-diastolic {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #7c3aed;
+    line-height: 1;
+}
+
+.bp-status {
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.5rem;
+}
+
+.condition-item {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s ease;
+}
+
+.condition-item:hover {
+    background-color: #f9fafb;
+}
+
+.condition-item:last-child {
+    border-bottom: none;
+}
+
+.condition-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.condition-active {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.condition-resolved {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.vital-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.vital-card:hover {
+    border-color: #14b8a6;
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.1);
+}
+
+.vital-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #14b8a6;
+    line-height: 1;
+}
+
+.vital-unit {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.vital-label {
+    font-size: 0.875rem;
+    color: #374151;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.allergy-item {
+    background: #ffffff;
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.allergy-high {
+    border-color: #dc2626;
+    background: #fef2f2;
+}
+
+.allergy-medium {
+    border-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.allergy-low {
+    border-color: #10b981;
+    background: #f0fdf4;
+}
+
+.severity-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.severity-high {
+    background-color: #dc2626;
+    color: white;
+}
+
+.severity-medium {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.severity-low {
+    background-color: #10b981;
+    color: white;
+}
+
+.no-data {
+    text-align: center;
+    color: #6b7280;
+    padding: 2rem;
+    font-style: italic;
+}
