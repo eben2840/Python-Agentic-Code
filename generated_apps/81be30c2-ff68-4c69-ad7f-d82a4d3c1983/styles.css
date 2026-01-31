@@ -1,0 +1,137 @@
+body { 
+    background: #f8f9fa; 
+    min-height: 100vh; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.card { 
+    background: #ffffff; 
+    border-radius: 12px; 
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08); 
+    border: 1px solid #e5e7eb; 
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.condition-item {
+    padding: 20px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.2s ease;
+}
+
+.condition-item:last-child {
+    border-bottom: none;
+}
+
+.condition-item:hover {
+    background: #fafbfc;
+}
+
+.severity-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.severity-high {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.severity-moderate {
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fed7aa;
+}
+
+.severity-mild {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.severity-low {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-weight: 500;
+}
+
+.status-active {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-resolved {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.status-inactive {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.condition-name {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.condition-meta {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.conditions-container {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.conditions-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.conditions-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.conditions-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.no-conditions {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.no-conditions i {
+    font-size: 3rem;
+    color: #d1d5db;
+    margin-bottom: 16px;
+}
