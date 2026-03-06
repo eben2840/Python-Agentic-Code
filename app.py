@@ -173,25 +173,25 @@ def save_generated_files(task_id: str, html: str, css: str, js: str) -> dict:
 
 
 def create_combined_html(html: str, css: str, js: str, patient_data: dict = None) -> str:
-    """Create a combined HTML file with embedded CSS and JS"""
-    # If CSS/JS are separate, embed them
-    if css and '<style>' not in html:
-        html = html.replace('</head>', f'<style>\n{css}\n</style>\n</head>')
-    
-    if js and '<script>' not in html.split('</body>')[0]:
-        # Add patient data injection before the JS
-        patient_data_script = ""
-        if patient_data:
-            patient_data_json = json.dumps(patient_data)
-            patient_data_script = f"<script>window.PATIENT_DATA = {patient_data_json};</script>\n"
-        
-        html = html.replace('</body>', f'{patient_data_script}<script>\n{js}\n</script>\n</body>')
-    elif patient_data:
-        # Just inject patient data if JS is already embedded
-        patient_data_json = json.dumps(patient_data)
-        patient_data_script = f"<script>window.PATIENT_DATA = {patient_data_json};</script>"
-        html = html.replace('<script>', f'{patient_data_script}\n<script>', 1)
-    
+    """Inline all CSS and JS so the app is fully self-contained — no external file requests."""
+    import re as _re
+    # Remove external file references the LLM may have added
+    html = _re.sub(r'<link[^>]+href=["\']styles\.css["\'][^>]*/?>',  '', html, flags=_re.IGNORECASE)
+    html = _re.sub(r'<script[^>]+src=["\']app\.js["\'][^>]*></script>', '', html, flags=_re.IGNORECASE)
+
+    # Inline CSS
+    if css:
+        html = html.replace('</head>', f'<style>\n{css}\n</style>\n</head>', 1)
+
+    # Inject patient data + inline JS before </body>
+    inject = ''
+    if patient_data:
+        inject += f'<script>window.PATIENT_DATA = {json.dumps(patient_data)};</script>\n'
+    if js:
+        inject += f'<script>\n{js}\n</script>\n'
+    if inject:
+        html = html.replace('</body>', f'{inject}</body>', 1)
+
     return html
 
 
@@ -1048,8 +1048,7 @@ def execute_task(task_id: str):
 
             html_content, css_content, js_content, llm_response = llm.generate_mini_app(
                 user_prompt,
-                patient_data,
-                task.complexity.value if task.complexity else 'standard'
+                patient_data
             )
             print(f"[EXECUTE-TASK] Mini app generated: html={len(html_content)} chars, css={len(css_content or '')} chars, js={len(js_content or '')} chars")
 

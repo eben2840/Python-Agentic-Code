@@ -294,8 +294,7 @@ def execute_miniapp_task(task_id: str):
 
         html_content, css_content, js_content, llm_response = llm.generate_mini_app(
             user_prompt,
-            patient_data,
-            task.complexity.value if task.complexity else 'standard'
+            patient_data
         )
 
         logger.info(f"[EXECUTE] Generated: html={len(html_content)} chars, css={len(css_content or '')} chars, js={len(js_content or '')} chars")

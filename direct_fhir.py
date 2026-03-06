@@ -1,311 +1,328 @@
 """
-Direct FHIR Client - Fetch patient data directly using session credentials
+Direct FHIR Client - Fetches patient data using the FHIR URL and access token.
+Resource types are discovered dynamically from the server — nothing is hardcoded.
 """
 import requests
 import logging
-from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 
 class DirectFHIRClient:
-    """Direct FHIR client using session credentials"""
 
-    def __init__(self, session_data: Dict):
+    def __init__(self, session_data: dict):
         self.base_url = session_data['fhir_base_url'].rstrip('/')
         self.patient_id = session_data['patient_id']
         self.headers = {
             'Authorization': f'Bearer {session_data["auth_token"]}',
             'Accept': 'application/fhir+json',
-            'Content-Type': 'application/fhir+json'
         }
 
-    def _fhir_request(self, endpoint: str, params: Dict = None) -> Optional[Dict]:
-        """Make FHIR request"""
+    # -------------------------------------------------------------------------
+    # HTTP
+    # -------------------------------------------------------------------------
+
+    def _get(self, endpoint: str, params: dict = None) -> dict:
+        """Make a GET request to the FHIR server. Returns {} on failure."""
         url = f"{self.base_url}/{endpoint}"
         try:
             response = requests.get(url, headers=self.headers, params=params, timeout=30)
             response.raise_for_status()
             return response.json()
         except Exception as e:
-            logger.error(f"FHIR request failed for {endpoint}: {e}")
-            return None
+            logger.error(f"FHIR request failed [{endpoint}]: {e}")
+            return {}
 
-    def get_patient_data(self) -> Dict:
-        """Get comprehensive patient data with summaries for LLM consumption"""
-        logger.info(f"Fetching patient data for: {self.patient_id}")
+    def _bundle_resources(self, data: dict) -> list:
+        """Pull the resource list out of a FHIR Bundle response."""
+        return [entry['resource'] for entry in data.get('entry', []) if 'resource' in entry]
 
-        # FHIR resource types to fetch
-        resources = {
-            'patient': f'Patient/{self.patient_id}',
-            'observations': f'Observation?patient={self.patient_id}&_count=100&_sort=-date',
-            'conditions': f'Condition?patient={self.patient_id}&_count=100',
-            'medications': f'MedicationRequest?patient={self.patient_id}&_count=100',
-            'encounters': f'Encounter?patient={self.patient_id}&_count=50&_sort=-date',
-            'procedures': f'Procedure?patient={self.patient_id}&_count=100',
-            'allergies': f'AllergyIntolerance?patient={self.patient_id}&_count=100',
-            'immunizations': f'Immunization?patient={self.patient_id}&_count=100',
-            'care_plans': f'CarePlan?patient={self.patient_id}&_count=100',
-            'diagnostic_reports': f'DiagnosticReport?patient={self.patient_id}&_count=100',
-            'vital_signs': f'Observation?patient={self.patient_id}&category=vital-signs&_count=100&_sort=-date'
+    # -------------------------------------------------------------------------
+    # Discovery
+    # -------------------------------------------------------------------------
+
+    def _supported_resource_types(self) -> list:
+        """
+        Ask the FHIR server what resource types it supports (via /metadata).
+        Returns a list of (resource_type, search_param) tuples.
+        Only includes resource types that can be searched by patient or subject.
+        """
+        metadata = self._get('metadata')
+        supported = []
+
+        for rest in metadata.get('rest', []):
+            for resource in rest.get('resource', []):
+                rtype = resource.get('type', '')
+                if not rtype or rtype == 'Patient':
+                    continue
+
+                search_params = [sp.get('name') for sp in resource.get('searchParam', [])]
+
+                if 'patient' in search_params:
+                    supported.append((rtype, 'patient'))
+                elif 'subject' in search_params:
+                    supported.append((rtype, 'subject'))
+
+        return supported
+
+    # -------------------------------------------------------------------------
+    # Fetching
+    # -------------------------------------------------------------------------
+
+    def _fetch(self, resource_type: str, search_param: str, extra_params: dict = None) -> list:
+        """Fetch all resources of a given type for the current patient."""
+        params = {search_param: self.patient_id, '_count': 100}
+        if extra_params:
+            params.update(extra_params)
+        data = self._get(resource_type, params=params)
+        return self._bundle_resources(data)
+
+    def _fetch_all_records(self, resource_type: str) -> list:
+        """
+        Fetch ALL records of a resource type from the server — no patient filter.
+        Follows pagination links until there are no more pages.
+        """
+        resources = []
+        url = f"{self.base_url}/{resource_type}"
+
+        while url:
+            response = requests.get(url, headers=self.headers, timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            resources.extend(self._bundle_resources(data))
+            url = next((l['url'] for l in data.get('link', []) if l.get('relation') == 'next'), None)
+            logger.info(f"  {resource_type}: fetched {len(resources)} so far...")
+
+        return resources
+
+    def _patient_ref(self, resource: dict) -> str:
+        """
+        Extract the patient ID from a resource's subject or patient reference.
+        FHIR references look like 'Patient/abc123' — we return just 'abc123'.
+        """
+        ref = (resource.get('subject') or resource.get('patient') or {}).get('reference', '')
+        return ref.split('/')[-1] if ref else ''
+
+    def _as_entry(self, resources: list) -> dict:
+        """Wrap a resource list into the standard {count, resources, summary} shape."""
+        return {
+            'count': len(resources),
+            'resources': resources,
+            'summary': [self._flatten(r) for r in resources],
         }
 
-        # Fetch all resources
-        patient_data = {}
-        for resource_type, endpoint in resources.items():
-            data = self._fhir_request(endpoint)
-            if data:
-                if resource_type == 'patient':
-                    patient_data[resource_type] = self._extract_patient_info(data)
-                else:
-                    # Extract entries from bundle
-                    entries = data.get('entry', [])
-                    raw_resources = [entry['resource'] for entry in entries]
+    # -------------------------------------------------------------------------
+    # Flattening
+    # -------------------------------------------------------------------------
 
-                    # Create summarized format for LLM consumption
-                    patient_data[resource_type] = {
-                        'count': len(raw_resources),
-                        'resources': raw_resources,
-                        'summary': self._summarize_resources(resource_type, raw_resources)
-                    }
-                    logger.info(f"Fetched {len(raw_resources)} {resource_type}")
-            else:
-                patient_data[resource_type] = {
-                    'count': 0,
-                    'resources': [],
-                    'summary': []
-                }
+    def _display(self, codeable_concept: dict) -> str:
+        """Get a human-readable name from a FHIR CodeableConcept."""
+        if not codeable_concept:
+            return ''
+        text = codeable_concept.get('text', '')
+        if text:
+            return text
+        coding = codeable_concept.get('coding', [])
+        if coding:
+            return coding[0].get('display', '')
+        return ''
 
-        return patient_data
+    def _flatten(self, resource: dict) -> dict:
+        """
+        Flatten any FHIR resource into a simple {name, status, date, value} dict.
+        Same format for all resource types — no special cases per type.
+        """
+        # Name — try the common FHIR name fields
+        name = (
+            self._display(resource.get('code'))
+            or self._display(resource.get('vaccineCode'))
+            or self._display(resource.get('medicationCodeableConcept'))
+            or (resource.get('medicationReference') or {}).get('display', '')
+            or self._display((resource.get('type') or [{}])[0])
+        )
 
-    def _extract_patient_info(self, patient_resource: Dict) -> Dict:
-        """Extract patient information"""
-        patient = {
-            'id': patient_resource.get('id'),
-            'name': 'Unknown Patient',
-            'gender': patient_resource.get('gender'),
-            'birthDate': patient_resource.get('birthDate'),
-            'active': patient_resource.get('active', True)
+        # Status — clinicalStatus (e.g. conditions) or plain status
+        clinical = resource.get('clinicalStatus') or {}
+        status = (clinical.get('coding') or [{}])[0].get('code') or resource.get('status', '')
+
+        # Date — first date field that has a value
+        date_fields = [
+            'effectiveDateTime', 'issued', 'onsetDateTime', 'authoredOn',
+            'occurrenceDateTime', 'performedDateTime', 'recordedDate',
+        ]
+        date = next((resource[f] for f in date_fields if resource.get(f)), '')
+        if not date:
+            date = (resource.get('period') or {}).get('start', '')
+        if not date:
+            date = (resource.get('performedPeriod') or {}).get('start', '')
+
+        # Value — quantity, coded value, string, dosage, or component readings
+        value = ''
+        vq = resource.get('valueQuantity') or {}
+        if vq.get('value') is not None:
+            value = f"{vq['value']} {vq.get('unit', '')}".strip()
+
+        if not value:
+            value = self._display(resource.get('valueCodeableConcept'))
+
+        if not value:
+            value = resource.get('valueString', '')
+
+        if not value:
+            dosage = resource.get('dosageInstruction') or []
+            value = dosage[0].get('text', '') if dosage else ''
+
+        if not value and resource.get('component'):
+            parts = []
+            for comp in resource['component']:
+                comp_name = self._display(comp.get('code') or {})
+                comp_vq = comp.get('valueQuantity') or {}
+                if comp_vq.get('value') is not None:
+                    parts.append(f"{comp_name}: {comp_vq['value']} {comp_vq.get('unit', '')}".strip())
+            value = '; '.join(parts)
+
+        return {'name': name, 'status': status, 'date': date, 'value': value}
+
+    # -------------------------------------------------------------------------
+    # Patient info
+    # -------------------------------------------------------------------------
+
+    def _patient_info(self, resource: dict) -> dict:
+        """Pull the key fields out of a Patient resource."""
+        name = ''
+        names = resource.get('name') or []
+        if names:
+            given = ' '.join(names[0].get('given') or [])
+            family = names[0].get('family', '')
+            name = f"{given} {family}".strip()
+
+        return {
+            'id':        resource.get('id'),
+            'name':      name,
+            'gender':    resource.get('gender'),
+            'birthDate': resource.get('birthDate'),
+            'telecom':   resource.get('telecom'),
+            'address':   resource.get('address'),
         }
 
-        # Extract name
-        if 'name' in patient_resource and patient_resource['name']:
-            name_obj = patient_resource['name'][0]
-            given = ' '.join(name_obj.get('given', []))
-            family = name_obj.get('family', '')
-            patient['name'] = f"{given} {family}".strip()
+    # -------------------------------------------------------------------------
+    # Public API
+    # -------------------------------------------------------------------------
 
-        # Extract contact info
-        if 'telecom' in patient_resource:
-            patient['telecom'] = patient_resource['telecom']
+    def _fetch_locations(self, encounters: list) -> list:
+        """
+        Follow each encounter's location references to get room and ward names.
+        Each encounter can have location[].location.reference → Location/room-xx
+        The room's partOf.reference → Location/ward-xx gives the ward.
+        Returns a flat list of {name, status, date, value} dicts.
+        """
+        locations = []
+        seen = set()
 
-        if 'address' in patient_resource:
-            patient['address'] = patient_resource['address']
+        for encounter in encounters:
+            for loc in encounter.get('location', []):
+                ref = loc.get('location', {}).get('reference', '')
+                if not ref or ref in seen:
+                    continue
+                seen.add(ref)
 
-        return patient
+                room = self._get(ref)
+                ward_name = ''
+                ward_ref = (room.get('partOf') or {}).get('reference', '')
+                if ward_ref:
+                    ward = self._get(ward_ref)
+                    ward_name = ward.get('name', '')
 
-    def _summarize_resources(self, resource_type: str, resources: List[Dict]) -> List[Dict]:
-        """Summarize resources based on type for LLM consumption"""
-        if resource_type in ['observations', 'vital_signs']:
-            return self._summarize_observations(resources)
-        elif resource_type == 'conditions':
-            return self._summarize_conditions(resources)
-        elif resource_type == 'medications':
-            return self._summarize_medications(resources)
-        elif resource_type == 'allergies':
-            return self._summarize_allergies(resources)
-        elif resource_type == 'encounters':
-            return self._summarize_encounters(resources)
-        elif resource_type == 'procedures':
-            return self._summarize_procedures(resources)
-        elif resource_type == 'immunizations':
-            return self._summarize_immunizations(resources)
-        else:
-            return []
-
-    def _summarize_observations(self, observations: List[Dict]) -> List[Dict]:
-        """Create a simplified summary of observations"""
-        summary = []
-        for obs in observations[:50]:  # Limit to recent 50
-            try:
-                # Get the LOINC code
-                code = None
-                code_text = None
-                coding = obs.get('code', {}).get('coding', [])
-                if coding:
-                    code = coding[0].get('code')
-                    code_text = coding[0].get('display')
-                if not code_text:
-                    code_text = obs.get('code', {}).get('text', 'Unknown')
-
-                value = None
-                unit = None
-                if 'valueQuantity' in obs:
-                    value = obs['valueQuantity'].get('value')
-                    unit = obs['valueQuantity'].get('unit', '')
-                elif 'valueCodeableConcept' in obs:
-                    value = obs['valueCodeableConcept'].get('text') or \
-                           obs['valueCodeableConcept'].get('coding', [{}])[0].get('display')
-                elif 'valueString' in obs:
-                    value = obs['valueString']
-                elif 'component' in obs:
-                    # Handle component observations (like blood pressure)
-                    components = []
-                    for comp in obs['component']:
-                        comp_display = comp.get('code', {}).get('coding', [{}])[0].get('display', '')
-                        comp_value = comp.get('valueQuantity', {}).get('value')
-                        comp_unit = comp.get('valueQuantity', {}).get('unit', '')
-                        if comp_value is not None:
-                            components.append(f"{comp_display}: {comp_value} {comp_unit}")
-                    value = '; '.join(components) if components else None
-
-                summary.append({
-                    'code': code or code_text,
-                    'display': code_text,
-                    'value': value,
-                    'unit': unit,
-                    'date': obs.get('effectiveDateTime') or obs.get('issued'),
-                    'status': obs.get('status')
+                locations.append({
+                    'name': room.get('name', ''),
+                    'status': room.get('status', ''),
+                    'date': '',
+                    'value': ward_name,
                 })
-            except Exception as e:
-                logger.warning(f"Error summarizing observation: {e}")
-                continue
-        return summary
 
-    def _summarize_conditions(self, conditions: List[Dict]) -> List[Dict]:
-        """Create a simplified summary of conditions"""
-        summary = []
-        for cond in conditions:
-            try:
-                code_text = cond.get('code', {}).get('text') or \
-                           cond.get('code', {}).get('coding', [{}])[0].get('display', 'Unknown')
+        return locations
 
-                clinical_status = None
-                if 'clinicalStatus' in cond:
-                    clinical_status = cond['clinicalStatus'].get('coding', [{}])[0].get('code')
+    def get_patient_data(self) -> dict:
+        """
+        Fetch all data for a single patient.
+        Discovers supported resource types from the FHIR server first,
+        then fetches each one using the patient ID and access token.
+        """
+        logger.info(f"Fetching data for patient {self.patient_id}")
 
-                summary.append({
-                    'condition': code_text,
-                    'status': clinical_status,
-                    'onset': cond.get('onsetDateTime'),
-                    'severity': cond.get('severity', {}).get('text') if cond.get('severity') else None
-                })
-            except Exception as e:
-                logger.warning(f"Error summarizing condition: {e}")
-                continue
-        return summary
+        patient_resource = self._get(f'Patient/{self.patient_id}')
+        result = {'patient': self._patient_info(patient_resource)}
 
-    def _summarize_medications(self, medications: List[Dict]) -> List[Dict]:
-        """Create a simplified summary of medications"""
-        summary = []
-        for med in medications:
-            try:
-                med_text = None
-                if 'medicationCodeableConcept' in med:
-                    med_text = med['medicationCodeableConcept'].get('text') or \
-                              med['medicationCodeableConcept'].get('coding', [{}])[0].get('display')
-                elif 'medicationReference' in med:
-                    med_text = med['medicationReference'].get('display', 'Unknown medication')
+        for rtype, param in self._supported_resource_types():
+            resources = self._fetch(rtype, param)
+            logger.info(f"  {rtype}: {len(resources)} records")
+            result[rtype.lower()] = self._as_entry(resources)
 
-                dosage = None
-                if 'dosageInstruction' in med and len(med['dosageInstruction']) > 0:
-                    dosage = med['dosageInstruction'][0].get('text')
+        # Vital signs are observations filtered by category
+        vital_signs = self._fetch('Observation', 'patient', extra_params={'category': 'vital-signs'})
+        result['vital_signs'] = self._as_entry(vital_signs)
 
-                summary.append({
-                    'medication': med_text,
-                    'status': med.get('status'),
-                    'dosage': dosage,
-                    'authoredOn': med.get('authoredOn')
-                })
-            except Exception as e:
-                logger.warning(f"Error summarizing medication: {e}")
-                continue
-        return summary
+        # Locations — follow encounter → room → ward chain
+        encounters = result.get('encounter', {}).get('resources', [])
+        location_records = self._fetch_locations(encounters)
+        result['locations'] = {
+            'count': len(location_records),
+            'resources': location_records,
+            'summary': location_records,
+        }
 
-    def _summarize_allergies(self, allergies: List[Dict]) -> List[Dict]:
-        """Create a simplified summary of allergies"""
-        summary = []
-        for allergy in allergies:
-            try:
-                code_text = allergy.get('code', {}).get('text') or \
-                           allergy.get('code', {}).get('coding', [{}])[0].get('display', 'Unknown')
+        return result
 
-                clinical_status = None
-                if 'clinicalStatus' in allergy:
-                    clinical_status = allergy['clinicalStatus'].get('coding', [{}])[0].get('code')
+    def get_all_patients_data(self) -> dict:
+        """
+        Fetch all patients and their clinical data efficiently.
+        Instead of N x M requests (per patient x per resource type),
+        we fetch all records of each type once, then group by patient ID.
+        Total requests = 1 (patients) + M (one per resource type).
+        """
+        logger.info("Fetching all patients")
 
-                summary.append({
-                    'allergen': code_text,
-                    'type': allergy.get('type'),
-                    'category': allergy.get('category', []),
-                    'criticality': allergy.get('criticality'),
-                    'status': clinical_status
-                })
-            except Exception as e:
-                logger.warning(f"Error summarizing allergy: {e}")
-                continue
-        return summary
+        bundle = self._get('Patient', params={'_count': 100})
+        patients = [self._patient_info(e['resource']) for e in bundle.get('entry', []) if 'resource' in e]
+        logger.info(f"Found {len(patients)} patients")
 
-    def _summarize_encounters(self, encounters: List[Dict]) -> List[Dict]:
-        """Create a simplified summary of encounters"""
-        summary = []
-        for enc in encounters[:20]:
-            try:
-                enc_type = 'Unknown'
-                if 'type' in enc and enc['type']:
-                    enc_type = enc['type'][0].get('text') or \
-                              enc['type'][0].get('coding', [{}])[0].get('display', 'Unknown')
+        # Index by ID for fast lookup when grouping records
+        patients_by_id = {p['id']: p for p in patients if p.get('id')}
+        for patient in patients:
+            patient['data'] = {}
 
-                summary.append({
-                    'type': enc_type,
-                    'status': enc.get('status'),
-                    'class': enc.get('class', {}).get('code') if enc.get('class') else None,
-                    'period_start': enc.get('period', {}).get('start') if enc.get('period') else None,
-                    'period_end': enc.get('period', {}).get('end') if enc.get('period') else None
-                })
-            except Exception as e:
-                logger.warning(f"Error summarizing encounter: {e}")
-                continue
-        return summary
+        # Fetch all records per resource type and group by patient
+        for rtype, _ in self._supported_resource_types():
+            all_records = self._fetch_all_records(rtype)
+            for record in all_records:
+                pid = self._patient_ref(record)
+                if pid in patients_by_id:
+                    patients_by_id[pid]['data'].setdefault(rtype.lower(), [])
+                    patients_by_id[pid]['data'][rtype.lower()].append(self._flatten(record))
 
-    def _summarize_procedures(self, procedures: List[Dict]) -> List[Dict]:
-        """Create a simplified summary of procedures"""
-        summary = []
-        for proc in procedures:
-            try:
-                proc_text = proc.get('code', {}).get('text') or \
-                           proc.get('code', {}).get('coding', [{}])[0].get('display', 'Unknown')
+        # Vital signs — same approach, observations filtered by category
+        all_vs = self._fetch_all_records('Observation?category=vital-signs')
+        for record in all_vs:
+            pid = self._patient_ref(record)
+            if pid in patients_by_id:
+                patients_by_id[pid]['data'].setdefault('vital_signs', [])
+                patients_by_id[pid]['data']['vital_signs'].append(self._flatten(record))
 
-                summary.append({
-                    'procedure': proc_text,
-                    'status': proc.get('status'),
-                    'performedDateTime': proc.get('performedDateTime') or proc.get('performedPeriod', {}).get('start')
-                })
-            except Exception as e:
-                logger.warning(f"Error summarizing procedure: {e}")
-                continue
-        return summary
+        logger.info(f"Done. {len(patients)} patients with clinical data attached.")
 
-    def _summarize_immunizations(self, immunizations: List[Dict]) -> List[Dict]:
-        """Create a simplified summary of immunizations"""
-        summary = []
-        for imm in immunizations:
-            try:
-                vaccine_text = imm.get('vaccineCode', {}).get('text') or \
-                              imm.get('vaccineCode', {}).get('coding', [{}])[0].get('display', 'Unknown')
-
-                summary.append({
-                    'vaccine': vaccine_text,
-                    'status': imm.get('status'),
-                    'occurrenceDateTime': imm.get('occurrenceDateTime')
-                })
-            except Exception as e:
-                logger.warning(f"Error summarizing immunization: {e}")
-                continue
-        return summary
+        return {
+            'patient': {'id': 'all', 'name': 'All Patients', 'count': len(patients)},
+            'patients': patients,
+        }
 
 
-def get_patient_data_direct(session_data: Dict) -> Dict:
-    """Get patient data directly using session credentials"""
-    client = DirectFHIRClient(session_data)
-    return client.get_patient_data()
+# -----------------------------------------------------------------------------
+# Module-level helpers called by other parts of the app
+# -----------------------------------------------------------------------------
+
+def get_patient_data_direct(session_data: dict) -> dict:
+    return DirectFHIRClient(session_data).get_patient_data()
+
+
+def get_all_patients_data_direct(session_data: dict) -> dict:
+    return DirectFHIRClient(session_data).get_all_patients_data()
