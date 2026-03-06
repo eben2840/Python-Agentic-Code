@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronic Conditions Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center mb-4">
+                    <i class="fas fa-heartbeat text-danger me-3" style="font-size: 1.5rem;"></i>
+                    <h1 class="mb-0">Chronic Conditions Dashboard</h1>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body py-4">
+                                <i class="fas fa-users text-primary mb-2" style="font-size: 2rem;"></i>
+                                <h3 class="mb-1" id="totalPatients">0</h3>
+                                <p class="text-muted mb-0">Total Patients</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body py-4">
+                                <i class="fas fa-exclamation-triangle text-warning mb-2" style="font-size: 2rem;"></i>
+                                <h3 class="mb-1" id="chronicCount">0</h3>
+                                <p class="text-muted mb-0">Chronic Conditions</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body py-4">
+                                <i class="fas fa-chart-line text-success mb-2" style="font-size: 2rem;"></i>
+                                <h3 class="mb-1" id="activeCount">0</h3>
+                                <p class="text-muted mb-0">Active Cases</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body py-4">
+                                <i class="fas fa-clock text-info mb-2" style="font-size: 2rem;"></i>
+                                <h3 class="mb-1" id="recentCount">0</h3>
+                                <p class="text-muted mb-0">Recent Onset</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-white border-bottom">
+                        <h2 class="mb-0">
+                            <i class="fas fa-list-alt text-primary me-2"></i>
+                            Patients with Chronic Conditions
+                        </h2>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="border-0 px-4 py-3">Patient</th>
+                                        <th class="border-0 px-4 py-3">Condition</th>
+                                        <th class="border-0 px-4 py-3">Status</th>
+                                        <th class="border-0 px-4 py-3">Severity</th>
+                                        <th class="border-0 px-4 py-3">Onset Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="conditionsTable">
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5 text-muted">
+                                            <i class="fas fa-spinner fa-spin me-2"></i>
+                                            Loading patient data...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

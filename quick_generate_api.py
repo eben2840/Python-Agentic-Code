@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from flask import Blueprint, request, jsonify, url_for, current_app
 from models import db, Task, TaskStatus, TaskComplexity, PatientSession, TaskLog
 from llm_service import ClaudeLLMService
-from direct_fhir import get_patient_data_direct
+from direct_fhir import get_patient_data_direct, get_all_patients_data_direct
 
 logger = logging.getLogger(__name__)
 
@@ -75,7 +75,7 @@ def run_generation(app, task_id: str, prompt: str, patient_data: dict, patient_n
             add_task_log(task_id, "Calling AI to generate code...")
 
             llm = ClaudeLLMService()
-            html, css, js, _ = llm.generate_mini_app(prompt, patient_data, 'standard')
+            html, css, js, _ = llm.generate_mini_app(prompt, patient_data)
 
             add_task_log(task_id, f"Code generated: HTML ({len(html)} chars), CSS ({len(css or '')} chars), JS ({len(js or '')} chars)")
 
@@ -135,8 +135,13 @@ def generate_miniapp():
             'patient_id': patient_id,
             'auth_token': access_token
         }
-        patient_data = get_patient_data_direct(session_data)
-        patient_name = patient_data.get('patient', {}).get('name', 'Unknown')
+        if patient_id == 'all':
+            patient_data = get_all_patients_data_direct(session_data)
+            count = patient_data.get('patient', {}).get('count', 0)
+            patient_name = f"All Patients ({count} total)"
+        else:
+            patient_data = get_patient_data_direct(session_data)
+            patient_name = patient_data.get('patient', {}).get('name') or f"Patient {patient_id}"
 
         # Save session
         session_id = str(uuid.uuid4())

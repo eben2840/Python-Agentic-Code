@@ -1,0 +1,125 @@
+body { 
+    background: #f8f9fa; 
+    min-height: 100vh; 
+    font-size: 14px; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+}
+
+h1 { font-size: 1.5rem; font-weight: 600; color: #1f2937; }
+h2 { font-size: 1.25rem; font-weight: 600; color: #374151; }
+h3 { font-size: 1rem; font-weight: 600; color: #4b5563; }
+p, span, td, li { font-size: 0.875rem; }
+
+.card { 
+    background: #ffffff; 
+    border-radius: 12px; 
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08); 
+    border: 1px solid #e5e7eb; 
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1rem 1.25rem;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 0.875rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.15);
+}
+
+.btn {
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+}
+
+.btn-danger {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-outline-primary {
+    color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+.priority-critical {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.priority-urgent {
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fed7aa;
+}
+
+.priority-standard {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.patient-row {
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s ease;
+}
+
+.patient-row:hover {
+    background-color: #f9fafb;
+}
+
+.vital-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.vital-normal { background-color: #22c55e; }
+.vital-warning { background-color: #f59e0b; }
+.vital-critical { background-color: #ef4444; }
+
+.table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e5e7eb;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 1rem 0.75rem;
+}
+
+.form-range::-webkit-slider-thumb {
+    background: #3b82f6;
+}
+
+.form-range::-moz-range-thumb {
+    background: #3b82f6;
+    border: none;
+}
