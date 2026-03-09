@@ -210,12 +210,6 @@ class DirectFHIRClient:
     # -------------------------------------------------------------------------
 
     def _fetch_locations(self, encounters: list) -> list:
-        """
-        Follow each encounter's location references to get room and ward names.
-        Each encounter can have location[].location.reference → Location/room-xx
-        The room's partOf.reference → Location/ward-xx gives the ward.
-        Returns a flat list of {name, status, date, value} dicts.
-        """
         locations = []
         seen = set()
 

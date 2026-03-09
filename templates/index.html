@@ -12,7 +12,7 @@
     <header class="app-header">
       <div class="header-brand">
         
-        <span class="brand-text" id="patient-name-display">{{ patient_name or 'CareIT Patient' }}</span>
+        <span class="brand-text" id="patient-name-display">{{ patient_name or 'Kanban Dashboard' }}</span>
       </div>
       <div class="header-actions" >
         <button class="btn btn-ghost btn-icon" id="theme-toggle" title="Toggle theme">
@@ -912,11 +912,11 @@
       // Update patient name display
       var patientNameDisplay = document.getElementById('patient-name-display');
       if (patientNameDisplay) {
-        var displayName = window.PATIENT_DATA.patient_name || 'CareIT Patient';
+        var displayName = window.PATIENT_DATA.patient_name || 'Kanban Dashboard';
         if (window.PATIENT_DATA.patient_data_summary && window.PATIENT_DATA.patient_data_summary.patient && window.PATIENT_DATA.patient_data_summary.patient.name) {
           displayName = window.PATIENT_DATA.patient_data_summary.patient.name;
         }
-        if (displayName && displayName !== 'CareIT Patient') {
+        if (displayName && displayName !== 'Kanban Dashboard') {
           patientNameDisplay.textContent = displayName;
         }
       }
@@ -937,7 +937,7 @@
       if (error === 'auth_required') {
         window.app.showToast('Authentication required. Please authenticate through the main app.', 'error');
       } else if (error === 'task_not_found') {
-        window.app.showToast('Task not found: ' + (taskId || 'CareIT Patient'), 'error');
+        window.app.showToast('Task not found: ' + (taskId || 'Kanban Dashboard'), 'error');
       } else if (error === 'no_html_content') {
         window.app.showToast('This mini app has no HTML content yet.', 'warning');
       }

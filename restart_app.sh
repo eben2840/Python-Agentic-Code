@@ -1,4 +1,4 @@
-#!/bin/bash
+# !/bin/bash
 
 echo "Stopping Flask app..."
 pkill -f "python.*app.py"
@@ -7,7 +7,7 @@ echo "Waiting for process to stop..."
 sleep 2
 
 echo "Starting Flask app..."
-python3 app.py > app.log 2>&1 &
+python3 app.py
 
 sleep 2
 
