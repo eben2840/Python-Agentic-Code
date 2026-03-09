@@ -141,15 +141,23 @@ FEEDBACK: [your feedback]"""}]
 
         return min(10.0, max(0.0, score)), feedback
 
-    def continue_mini_app(self, existing_html: str, existing_css: str, existing_js: str, changes: str) -> tuple:
+    def continue_mini_app(self, existing_html: str, existing_css: str, existing_js: str, changes: str, patient_data: dict = None) -> tuple:
         """
         Apply changes to an existing mini app.
         Returns (html, css, js, raw_llm_response).
         """
+        data_context = self._patient_context(patient_data) if patient_data else "No patient data provided"
+
         response = self.client.messages.create(
             model=self.model,
             max_tokens=self.max_tokens,
-            system="You are a healthcare UI developer. Apply ONLY the requested changes to the existing app. Return all 3 files even if only one changed. Use ```html ```css ```javascript blocks.",
+            system=f"""You are a healthcare UI developer. Apply ONLY the requested changes to the existing app.
+
+REAL PATIENT DATA (use this when the change requires referencing patient values):
+{data_context}
+
+CRITICAL: window.PATIENT_DATA is injected at runtime by the backend — do NOT modify, replace, or add fallback values for it.
+Return all 3 files even if only one changed. Use ```html ```css ```javascript blocks.""",
             messages=[{"role": "user", "content": f"""Existing app:
 
 ```html
