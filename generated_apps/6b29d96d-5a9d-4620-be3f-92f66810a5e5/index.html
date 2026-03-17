@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronic Disease Patients</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="header-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-heartbeat text-danger me-3"></i>
+                        <div>
+                            <h4 class="mb-1">Chronic Disease Patients (Age 45+)</h4>
+                            <p class="text-muted mb-0">Patients with long-term conditions requiring ongoing care</p>
+                        </div>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalPatients">0</span>
+                            <span class="stat-label">Total Patients</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="avgAge">0</span>
+                            <span class="stat-label">Avg Age</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number" id="conditionCount">0</span>
+                            <span class="stat-label">Conditions</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" id="patientsContainer">
+            <!-- Patient cards will be inserted here -->
+        </div>
+
+        <div id="noDataMessage" class="text-center py-5" style="display: none;">
+            <i class="fas fa-search text-muted mb-3" style="font-size: 3rem;"></i>
+            <h5 class="text-muted">No chronic disease patients found</h5>
+            <p class="text-muted">No patients over 45 with chronic conditions in the current dataset.</p>
+        </div>
+    </div>
+
+    <!-- Patient Detail Modal -->
+    <div class="modal fade" id="patientDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="patientDetailTitle">Patient Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="patientDetailBody">
+                    <!-- Detail content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

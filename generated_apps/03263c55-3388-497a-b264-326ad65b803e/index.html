@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center mb-4">
+                    <i class="fas fa-user-md text-primary me-3" style="font-size: 1.5rem;"></i>
+                    <h1 class="mb-0">Patient Overview</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Patient Info Card -->
+            <div class="col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-user text-primary me-2"></i>
+                            <h3 class="mb-0">Patient Information</h3>
+                        </div>
+                        <div id="patient-info">
+                            <p class="text-muted">Loading patient data...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vital Signs Card -->
+            <div class="col-lg-8">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-heartbeat text-danger me-2"></i>
+                            <h3 class="mb-0">Vital Signs</h3>
+                        </div>
+                        <div id="vital-signs" class="row g-3">
+                            <p class="text-muted">Loading vital signs...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Observations Card -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-chart-line text-success me-2"></i>
+                            <h3 class="mb-0">Recent Observations</h3>
+                        </div>
+                        <div id="observations">
+                            <p class="text-muted">Loading observations...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conditions Card -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-stethoscope text-warning me-2"></i>
+                            <h3 class="mb-0">Active Conditions</h3>
+                        </div>
+                        <div id="conditions">
+                            <p class="text-muted">Loading conditions...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medications Card -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-pills text-info me-2"></i>
+                            <h3 class="mb-0">Current Medications</h3>
+                        </div>
+                        <div id="medications">
+                            <p class="text-muted">Loading medications...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Allergies Card -->
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                            <h3 class="mb-0">Allergies</h3>
+                        </div>
+                        <div id="allergies">
+                            <p class="text-muted">Loading allergies...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

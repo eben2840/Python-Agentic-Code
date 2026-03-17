@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Population Health Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">
+                        <i class="fas fa-chart-line text-primary me-2"></i>
+                        Population Health Dashboard
+                    </h1>
+                    <p class="text-muted mb-0">Comprehensive view of patient population health trends and metrics</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Metrics Row -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-users text-primary"></i>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-value" id="totalPatients">0</div>
+                        <div class="metric-label">Total Patients</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-stethoscope text-danger"></i>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-value" id="totalConditions">0</div>
+                        <div class="metric-label">Active Conditions</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-pills text-success"></i>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-value" id="totalMedications">0</div>
+                        <div class="metric-label">Medications</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-icon">
+                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-value" id="highRiskPatients">0</div>
+                        <div class="metric-label">High Risk Patients</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5 class="chart-title">
+                            <i class="fas fa-chart-bar text-primary me-2"></i>
+                            Condition Prevalence
+                        </h5>
+                        <div class="chart-filters">
+                            <select class="form-select form-select-sm" id="conditionFilter">
+                                <option value="all">All Conditions</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="conditionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5 class="chart-title">
+                            <i class="fas fa-chart-pie text-success me-2"></i>
+                            Demographics
+                        </h5>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="demographicsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Risk Stratification and Timeline Row -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="data-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-layer-group text-warning me-2"></i>
+                            Risk Stratification
+                        </h5>
+                    </div>
+                    <div class="risk-grid" id="riskGrid">
+                        <!-- Risk levels will be populated here -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5 class="chart-title">
+                            <i class="fas fa-calendar-alt text-info me-2"></i>
+                            Age Distribution
+                        </h5>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="ageChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="data-card">
+                    <div class="card-header">
+                        <h5 class="card-title">
+                            <i class="fas fa-table text-primary me-2"></i>
+                            Patient Population Overview
+                        </h5>
+                        <div class="table-filters">
+                            <input type="text" class="form-control form-control-sm" id="searchPatients" placeholder="Search patients...">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="patientsTable">
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Age</th>
+                                    <th>Gender</th>
+                                    <th>Conditions</th>
+                                    <th>Medications</th>
+                                    <th>Risk Level</th>
+                                    <th>Latest Observation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientsTableBody">
+                                <!-- Patient rows will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

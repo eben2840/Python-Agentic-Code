@@ -1,0 +1,229 @@
+body {
+    background-color: #f8f9fa;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.card-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.bg-danger-light {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.bg-warning-light {
+    background-color: rgba(245, 158, 11, 0.1);
+}
+
+.bg-info-light {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.bg-success-light {
+    background-color: rgba(34, 197, 94, 0.1);
+}
+
+.metric-card {
+    transition: transform 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+}
+
+.pain-scale-container {
+    padding: 1rem 0;
+}
+
+.pain-scale {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.pain-level {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    flex: 1;
+    margin: 0 0.5rem;
+}
+
+.pain-level[data-level="0"] {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+}
+
+.pain-level[data-level="1-3"] {
+    background: linear-gradient(135deg, #eab308, #ca8a04);
+    color: white;
+}
+
+.pain-level[data-level="4-6"] {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: white;
+}
+
+.pain-level[data-level="7-10"] {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.pain-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.pain-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.assessment-item {
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease;
+}
+
+.assessment-item:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.pain-badge {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.pain-none {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+}
+
+.pain-mild {
+    background-color: rgba(234, 179, 8, 0.1);
+    color: #ca8a04;
+}
+
+.pain-moderate {
+    background-color: rgba(249, 115, 22, 0.1);
+    color: #ea580c;
+}
+
+.pain-severe {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+.condition-badge {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.medication-item {
+    background-color: rgba(34, 197, 94, 0.05);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.text-primary {
+    color: #3b82f6 !important;
+}
+
+.text-danger {
+    color: #ef4444 !important;
+}
+
+.text-warning {
+    color: #f59e0b !important;
+}
+
+.text-info {
+    color: #3b82f6 !important;
+}
+
+.text-success {
+    color: #22c55e !important;
+}
+
+h4 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+h5 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+h6 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .pain-scale {
+        flex-direction: column;
+    }
+    
+    .pain-level {
+        margin: 0.25rem 0;
+        width: 100%;
+    }
+    
+    .container-fluid {
+        padding: 1rem;
+    }
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Medication Checklist - Jane Doe</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-pills text-primary me-3" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <h4 class="mb-1">Daily Medication Checklist</h4>
+                                <p class="text-muted mb-0" id="patient-info">Loading patient information...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Date -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-calendar-day text-teal me-3"></i>
+                                <div>
+                                    <h5 class="mb-0" id="today-date">Today's Medications</h5>
+                                    <small class="text-muted" id="current-date"></small>
+                                </div>
+                            </div>
+                            <div class="progress-circle">
+                                <span id="completion-percentage">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medication Checklist -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list-check text-success me-2"></i>
+                            Medication Schedule
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="medication-list">
+                            <!-- Medications will be loaded here -->
+                        </div>
+                        <div id="no-medications" class="text-center py-5 d-none">
+                            <i class="fas fa-prescription-bottle text-muted mb-3" style="font-size: 3rem; opacity: 0.3;"></i>
+                            <p class="text-muted">No medications available</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Card -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <i class="fas fa-check-circle text-success mb-2"></i>
+                                    <h6 class="mb-0" id="completed-count">0</h6>
+                                    <small class="text-muted">Completed</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <i class="fas fa-clock text-warning mb-2"></i>
+                                    <h6 class="mb-0" id="pending-count">0</h6>
+                                    <small class="text-muted">Pending</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="stat-item">
+                                    <i class="fas fa-pills text-primary mb-2"></i>
+                                    <h6 class="mb-0" id="total-count">0</h6>
+                                    <small class="text-muted">Total</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

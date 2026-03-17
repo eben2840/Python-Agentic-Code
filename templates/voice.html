@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Live Speech to Text</title>
+</head>
+<body>
+  <h2>Talk and see your text live:</h2>
+  <button id="startBtn">Start Listening</button>
+  <button id="stopBtn" disabled>Stop</button>
+  <p><strong>Transcription:</strong></p>
+  <div id="transcription"></div>
+
+  <script>
+    let mediaRecorder;
+    let audioChunks = [];
+
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const transcriptionDiv = document.getElementById("transcription");
+
+    startBtn.addEventListener("click", async () => {
+      audioChunks = [];
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = e => {
+          if (e.data.size > 0) {
+            audioChunks.push(e.data);
+            // send small chunks to server for near-live transcription
+            if (audioChunks.length >= 5) sendAudioChunk();
+          }
+        };
+
+        mediaRecorder.onstop = async () => {
+          await sendAudioChunk(); // send any remaining audio
+        };
+
+        mediaRecorder.start(250); // chunk every 250ms
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+
+      } catch (err) {
+        alert("Microphone access denied or not available: " + err.message);
+      }
+    });
+
+    stopBtn.addEventListener("click", () => {
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+      }
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+    });
+
+    async function sendAudioChunk() {
+      if (audioChunks.length === 0) return;
+      const blob = new Blob(audioChunks, { type: "audio/mp4" }); // works on iPhone
+      audioChunks = [];
+
+      const formData = new FormData();
+      formData.append("audio", blob, "voice.m4a");
+
+      try {
+        const response = await fetch("/api/speech-to-text", {
+          method: "POST",
+          body: formData
+        });
+        const data = await response.json();
+        transcriptionDiv.textContent = data.text || transcriptionDiv.textContent;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>

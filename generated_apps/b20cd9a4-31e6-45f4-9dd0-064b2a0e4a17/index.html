@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetic Care Plan Template</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="header-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-heartbeat text-primary me-3"></i>
+                        <h1 class="mb-0">Diabetic Care Plan Template</h1>
+                    </div>
+                    <div id="patient-selector" class="mb-3">
+                        <select class="form-select" id="patientSelect">
+                            <option value="">Select a diabetic patient...</option>
+                        </select>
+                    </div>
+                    <div id="patient-info" class="patient-info-card" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="info-item">
+                                    <i class="fas fa-user text-muted me-2"></i>
+                                    <span class="label">Patient:</span>
+                                    <span id="patient-name" class="value">-</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-item">
+                                    <i class="fas fa-calendar text-muted me-2"></i>
+                                    <span class="label">DOB:</span>
+                                    <span id="patient-dob" class="value">-</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="info-item">
+                                    <i class="fas fa-venus-mars text-muted me-2"></i>
+                                    <span class="label">Gender:</span>
+                                    <span id="patient-gender" class="value">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="care-plan-content" style="display: none;">
+            <div class="row">
+                <!-- Current Status -->
+                <div class="col-lg-6 mb-4">
+                    <div class="care-card">
+                        <div class="card-header">
+                            <i class="fas fa-stethoscope text-danger me-2"></i>
+                            <h5 class="mb-0">Current Diabetic Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="current-conditions" class="mb-3">
+                                <h6 class="section-title">Active Conditions</h6>
+                                <div id="conditions-list">
+                                    <div class="no-data">No diabetic conditions found</div>
+                                </div>
+                            </div>
+                            <div id="current-vitals">
+                                <h6 class="section-title">Latest Glucose Readings</h6>
+                                <div id="vitals-list">
+                                    <div class="no-data">No glucose readings available</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Medications -->
+                <div class="col-lg-6 mb-4">
+                    <div class="care-card">
+                        <div class="card-header">
+                            <i class="fas fa-pills text-success me-2"></i>
+                            <h5 class="mb-0">Current Medications</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="medications-list">
+                                <div class="no-data">No diabetic medications found</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Care Plan Goals -->
+                <div class="col-lg-4 mb-4">
+                    <div class="care-card">
+                        <div class="card-header">
+                            <i class="fas fa-bullseye text-primary me-2"></i>
+                            <h5 class="mb-0">Care Goals</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="goal-item">
+                                <div class="goal-header">
+                                    <i class="fas fa-tint text-danger me-2"></i>
+                                    <span class="goal-title">Blood Glucose Control</span>
+                                </div>
+                                <div class="goal-target">Target: 80-130 mg/dL (fasting)</div>
+                                <div class="goal-target">Target: <180 mg/dL (post-meal)</div>
+                            </div>
+                            <div class="goal-item">
+                                <div class="goal-header">
+                                    <i class="fas fa-chart-line text-info me-2"></i>
+                                    <span class="goal-title">HbA1c Level</span>
+                                </div>
+                                <div class="goal-target">Target: <7.0%</div>
+                            </div>
+                            <div class="goal-item">
+                                <div class="goal-header">
+                                    <i class="fas fa-weight text-warning me-2"></i>
+                                    <span class="goal-title">Weight Management</span>
+                                </div>
+                                <div class="goal-target">Maintain healthy BMI</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Monitoring Schedule -->
+                <div class="col-lg-4 mb-4">
+                    <div class="care-card">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-check text-teal me-2"></i>
+                            <h5 class="mb-0">Monitoring Schedule</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="monitor-item">
+                                <div class="monitor-header">
+                                    <i class="fas fa-clock text-primary me-2"></i>
+                                    <span class="monitor-title">Blood Glucose</span>
+                                </div>
+                                <div class="monitor-frequency">4x daily (before meals & bedtime)</div>
+                            </div>
+                            <div class="monitor-item">
+                                <div class="monitor-header">
+                                    <i class="fas fa-vial text-success me-2"></i>
+                                    <span class="monitor-title">HbA1c</span>
+                                </div>
+                                <div class="monitor-frequency">Every 3 months</div>
+                            </div>
+                            <div class="monitor-item">
+                                <div class="monitor-header">
+                                    <i class="fas fa-eye text-info me-2"></i>
+                                    <span class="monitor-title">Eye Exam</span>
+                                </div>
+                                <div class="monitor-frequency">Annually</div>
+                            </div>
+                            <div class="monitor-item">
+                                <div class="monitor-header">
+                                    <i class="fas fa-heartbeat text-danger me-2"></i>
+                                    <span class="monitor-title">Blood Pressure</span>
+                                </div>
+                                <div class="monitor-frequency">Every visit</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lifestyle Recommendations -->
+                <div class="col-lg-4 mb-4">
+                    <div class="care-card">
+                        <div class="card-header">
+                            <i class="fas fa-leaf text-success me-2"></i>
+                            <h5 class="mb-0">Lifestyle Plan</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="lifestyle-item">
+                                <div class="lifestyle-header">
+                                    <i class="fas fa-utensils text-warning me-2"></i>
+                                    <span class="lifestyle-title">Diet</span>
+                                </div>
+                                <ul class="lifestyle-list">
+                                    <li>Carbohydrate counting</li>
+                                    <li>Regular meal timing</li>
+                                    <li>Portion control</li>
+                                    <li>Limit refined sugars</li>
+                                </ul>
+                            </div>
+                            <div class="lifestyle-item">
+                                <div class="lifestyle-header">
+                                    <i class="fas fa-running text-primary me-2"></i>
+                                    <span class="lifestyle-title">Exercise</span>
+                                </div>
+                                <ul class="lifestyle-list">
+                                    <li>150 min/week moderate activity</li>
+                                    <li>Resistance training 2x/week</li>
+                                    <li>Check glucose before/after</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Emergency Actions -->
+                <div class="col-lg-6 mb-4">
+                    <div class="care-card emergency-card">
+                        <div class="card-header">
+                            <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                            <h5 class="mb-0">Emergency Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="emergency-item">
+                                <div class="emergency-header">
+                                    <i class="fas fa-arrow-down text-danger me-2"></i>
+                                    <span class="emergency-title">Hypoglycemia (<70 mg/dL)</span>
+                                </div>
+                                <ul class="emergency-actions">
+                                    <li>15g fast-acting carbs</li>
+                                    <li>Recheck in 15 minutes</li>
+                                    <li>If severe: glucagon injection</li>
+                                    <li>Call 911 if unconscious</li>
+                                </ul>
+                            </div>
+                            <div class="emergency-item">
+                                <div class="emergency-header">
+                                    <i class="fas fa-arrow-up text-warning me-2"></i>
+                                    <span class="emergency-title">Hyperglycemia (>300 mg/dL)</span>
+                                </div>
+                                <ul class="emergency-actions">
+                                    <li>Check ketones</li>
+                                    <li>Increase fluids</li>
+                                    <li>Contact healthcare provider</li>
+                                    <li>Seek immediate care if ketones high</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Follow-up Schedule -->
+                <div class="col-lg-6 mb-4">
+                    <div class="care-card">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-alt text-info me-2"></i>
+                            <h5 class="mb-0">Follow-up Schedule</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="followup-item">
+                                <div class="followup-header">
+                                    <i class="fas fa-user-md text-primary me-2"></i>
+                                    <span class="followup-title">Primary Care</span>
+                                </div>
+                                <div class="followup-frequency">Every 3-6 months</div>
+                            </div>
+                            <div class="followup-item">
+                                <div class="followup-header">
+                                    <i class="fas fa-microscope text-success me-2"></i>
+                                    <span class="followup-title">Endocrinologist</span>
+                                </div>
+                                <div class="followup-frequency">Every 3-4 months</div>
+                            </div>
+                            <div class="followup-item">
+                                <div class="followup-header">
+                                    <i class="fas fa-graduation-cap text-info me-2"></i>
+                                    <span class="followup-title">Diabetes Education</span>
+                                </div>
+                                <div class="followup-frequency">As needed</div>
+                            </div>
+                            <div class="followup-item">
+                                <div class="followup-header">
+                                    <i class="fas fa-apple-alt text-warning me-2"></i>
+                                    <span class="followup-title">Nutritionist</span>
+                                </div>
+                                <div class="followup-frequency">Every 6 months</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="no-diabetic-patients" style="display: none;">
+            <div class="care-card text-center">
+                <div class="card-body py-5">
+                    <i class="fas fa-info-circle text-muted mb-3" style="font-size: 3rem;"></i>
+                    <h5 class="text-muted">No Diabetic Patients Found</h5>
+                    <p class="text-muted">No patients with diabetes-related conditions were found in the current dataset.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

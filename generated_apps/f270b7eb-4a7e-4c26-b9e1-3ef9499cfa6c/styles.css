@@ -1,0 +1,400 @@
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    color: #374151;
+}
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.patient-header {
+    border-left: 4px solid #14b8a6;
+}
+
+.patient-avatar i {
+    font-size: 3rem;
+    color: #9ca3af;
+}
+
+.patient-id {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.patient-details {
+    font-size: 13px;
+}
+
+/* 3D Diagnosis Visualization Styles */
+.diagnosis-3d-card {
+    border-left: 4px solid #dc2626;
+    background: linear-gradient(135deg, #ffffff 0%, #fef7f7 100%);
+}
+
+.diagnosis-3d-viewer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.medical-cube-container {
+    perspective: 1000px;
+    width: 300px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.medical-cube {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    transform-style: preserve-3d;
+    transform: rotateX(-15deg) rotateY(-15deg);
+    transition: transform 0.6s ease;
+    animation: floatCube 6s ease-in-out infinite;
+}
+
+@keyframes floatCube {
+    0%, 100% { transform: rotateX(-15deg) rotateY(-15deg) translateY(0px); }
+    50% { transform: rotateX(-15deg) rotateY(-15deg) translateY(-10px); }
+}
+
+.cube-face {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+.cube-face.front {
+    background: rgba(239, 68, 68, 0.1);
+    transform: translateZ(100px);
+    border-color: #ef4444;
+}
+
+.cube-face.back {
+    background: rgba(168, 85, 247, 0.1);
+    transform: rotateY(180deg) translateZ(100px);
+    border-color: #a855f7;
+}
+
+.cube-face.left {
+    background: rgba(34, 197, 94, 0.1);
+    transform: rotateY(-90deg) translateZ(100px);
+    border-color: #22c55e;
+}
+
+.cube-face.right {
+    background: rgba(251, 146, 60, 0.1);
+    transform: rotateY(90deg) translateZ(100px);
+    border-color: #fb923c;
+}
+
+.cube-face.top {
+    background: rgba(59, 130, 246, 0.1);
+    transform: rotateX(90deg) translateZ(100px);
+    border-color: #3b82f6;
+}
+
+.cube-face.bottom {
+    background: rgba(236, 72, 153, 0.1);
+    transform: rotateX(-90deg) translateZ(100px);
+    border-color: #ec4899;
+}
+
+.face-content {
+    padding: 1rem;
+}
+
+.face-content i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: #374151;
+}
+
+.face-content h6 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #111827;
+}
+
+.condition-severity {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.condition-severity.high {
+    background-color: #fecaca;
+    color: #dc2626;
+}
+
+.condition-severity.medium {
+    background-color: #fed7aa;
+    color: #ea580c;
+}
+
+.condition-severity.low {
+    background-color: #bbf7d0;
+    color: #059669;
+}
+
+.condition-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 9px;
+}
+
+.condition-list li {
+    padding: 0.125rem 0;
+    color: #6b7280;
+}
+
+.cube-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.diagnosis-summary {
+    background: rgba(248, 250, 252, 0.8);
+    border-radius: 8px;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 600px;
+}
+
+.severity-indicator {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+}
+
+.severity-indicator:hover {
+    transform: translateY(-2px);
+}
+
+.severity-count {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.severity-label {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+}
+
+.high-severity .severity-count {
+    color: #dc2626;
+}
+
+.high-severity {
+    border-left: 4px solid #dc2626;
+}
+
+.medium-severity .severity-count {
+    color: #ea580c;
+}
+
+.medium-severity {
+    border-left: 4px solid #ea580c;
+}
+
+.low-severity .severity-count {
+    color: #059669;
+}
+
+.low-severity {
+    border-left: 4px solid #059669;
+}
+
+.clinical-card .card-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #f3f4f6;
+    padding: 1rem 1.25rem;
+}
+
+.clinical-card .card-header h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.clinical-card .card-body {
+    padding: 1.25rem;
+}
+
+.clinical-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.clinical-item:last-child {
+    border-bottom: none;
+}
+
+.clinical-item-name {
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.clinical-item-value {
+    color: #6b7280;
+    font-size: 13px;
+    margin-bottom: 0.25rem;
+}
+
+.clinical-item-date {
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.status-badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+}
+
+.status-active {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-final {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-in-progress {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.no-data {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 2rem 0;
+}
+
+.loading-state {
+    text-align: center;
+    color: #9ca3af;
+    padding: 2rem 0;
+}
+
+.text-primary {
+    color: #3b82f6 !important;
+}
+
+.text-success {
+    color: #22c55e !important;
+}
+
+.text-info {
+    color: #14b8a6 !important;
+}
+
+.text-danger {
+    color: #dc2626 !important;
+}
+
+.observation-value {
+    font-weight: 600;
+    color: #059669;
+}
+
+.medication-dosage {
+    font-style: italic;
+    color: #7c3aed;
+}
+
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 1rem;
+    }
+    
+    .patient-avatar i {
+        font-size: 2.5rem;
+    }
+    
+    .clinical-card .card-body {
+        padding: 1rem;
+    }
+    
+    .medical-cube-container {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .medical-cube {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .cube-face {
+        width: 150px;
+        height: 150px;
+        font-size: 10px;
+    }
+    
+    .cube-face.front,
+    .cube-face.back {
+        transform: translateZ(75px);
+    }
+    
+    .cube-face.back {
+        transform: rotateY(180deg) translateZ(75px);
+    }
+    
+    .cube-face.left {
+        transform: rotateY(-90deg) translateZ(75px);
+    }
+    
+    .cube-face.right {
+        transform: rotateY(90deg) translateZ(75px);
+    }
+    
+    .cube-face.top {
+        transform: rotateX(90deg) translateZ(75px);
+    }
+    
+    .cube-face.bottom {
+        transform: rotateX(-90deg) translateZ(75px);
+    }
+}

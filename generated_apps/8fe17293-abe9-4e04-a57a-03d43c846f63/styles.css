@@ -1,0 +1,218 @@
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    color: #374151;
+}
+
+.text-teal { color: #14b8a6 !important; }
+.text-blue { color: #3b82f6 !important; }
+.text-green { color: #22c55e !important; }
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.position-card {
+    border-left: 4px solid #14b8a6;
+    margin-bottom: 1rem;
+}
+
+.position-card.overdue {
+    border-left-color: #ef4444;
+}
+
+.position-card.upcoming {
+    border-left-color: #f59e0b;
+}
+
+.position-card.current {
+    border-left-color: #22c55e;
+    background-color: #f0fdf4;
+}
+
+.position-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: white;
+}
+
+.position-icon.supine { background-color: #3b82f6; }
+.position-icon.prone { background-color: #8b5cf6; }
+.position-icon.left-lateral { background-color: #14b8a6; }
+.position-icon.right-lateral { background-color: #06b6d4; }
+.position-icon.semi-fowler { background-color: #f59e0b; }
+.position-icon.fowler { background-color: #ef4444; }
+.position-icon.trendelenburg { background-color: #84cc16; }
+
+.risk-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.risk-high {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.risk-medium {
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fed7aa;
+}
+
+.risk-low {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.time-indicator {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.time-overdue {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+.time-upcoming {
+    background-color: #fffbeb;
+    color: #d97706;
+}
+
+.time-current {
+    background-color: #f0fdf4;
+    color: #16a34a;
+}
+
+.patient-summary-card {
+    transition: transform 0.2s ease;
+}
+
+.patient-summary-card:hover {
+    transform: translateY(-2px);
+}
+
+.aids-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.aid-tag {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e5e7eb;
+    padding: 1rem 1.5rem;
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+.btn-outline-primary {
+    color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-outline-primary:hover {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.form-control, .form-select {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    transition: border-color 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.alert {
+    border: none;
+    border-radius: 8px;
+}
+
+.alert-info {
+    background-color: #eff6ff;
+    color: #1e40af;
+}
+
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 1rem;
+    }
+    
+    .position-card .row {
+        flex-direction: column;
+    }
+    
+    .position-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+}

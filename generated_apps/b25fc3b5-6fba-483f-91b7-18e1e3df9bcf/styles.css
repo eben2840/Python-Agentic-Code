@@ -1,0 +1,149 @@
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1rem 1.25rem;
+}
+
+.card-header h6 {
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+}
+
+.patient-header {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.patient-avatar {
+    font-size: 3rem;
+    color: #14b8a6;
+}
+
+.patient-details {
+    font-size: 13px;
+}
+
+.badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+.observation-item {
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background: #fafafa;
+}
+
+.observation-item:last-child {
+    margin-bottom: 0;
+}
+
+.item-title {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 16px;
+}
+
+.item-subtitle {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+}
+
+.item-meta {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.item-detail {
+    font-size: 13px;
+    color: #4b5563;
+    margin-bottom: 0.25rem;
+}
+
+.status-badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 0.25em 0.5em;
+    border-radius: 6px;
+}
+
+.status-active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-in-progress {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-final {
+    background-color: #f3e8ff;
+    color: #7c3aed;
+}
+
+.no-data {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 2rem 0;
+}
+
+.value-highlight {
+    font-weight: 600;
+    color: #374151;
+    font-size: 18px;
+}
+
+.observation-details {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+h4 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+h6 {
+    font-size: 1rem;
+}
+
+.text-primary {
+    color: #3b82f6 !important;
+}
+
+.text-success {
+    color: #22c55e !important;
+}
+
+.text-info {
+    color: #14b8a6 !important;
+}

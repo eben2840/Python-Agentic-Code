@@ -1,0 +1,283 @@
+/* Base Styles */
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Header */
+.header-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.header-card h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.patient-info h5 {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+/* Status Cards */
+.status-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    height: 100%;
+}
+
+.status-card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+}
+
+.status-card .card-header {
+    background: transparent;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 1.25rem;
+}
+
+.status-card .card-body {
+    padding: 1.25rem;
+}
+
+/* Status Icons */
+.status-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: #ffffff;
+}
+
+.status-icon.vitals {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.status-icon.lab {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.status-icon.medication {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.status-icon.conditions {
+    background: linear-gradient(135deg, #14b8a6, #0d9488);
+}
+
+.status-icon.documentation {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+/* Status Lights */
+.status-indicator {
+    display: flex;
+    align-items: center;
+}
+
+.status-light {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.8);
+}
+
+.status-light.green {
+    background: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2), 0 0 8px rgba(34, 197, 94, 0.3);
+}
+
+.status-light.yellow {
+    background: #f59e0b;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2), 0 0 8px rgba(245, 158, 11, 0.3);
+}
+
+.status-light.red {
+    background: #ef4444;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2), 0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+.status-light.unknown {
+    background: #9ca3af;
+    box-shadow: 0 0 0 2px rgba(156, 163, 175, 0.2);
+}
+
+/* Summary Content */
+.vital-item, .lab-item, .medication-item, .condition-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.vital-item:last-child,
+.lab-item:last-child,
+.medication-item:last-child,
+.condition-item:last-child {
+    border-bottom: none;
+}
+
+.vital-value, .lab-value {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.vital-unit, .lab-unit {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-badge.normal {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.warning {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.critical {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-badge.active {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* Overall Status Card */
+.overall-status-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.overall-status-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #ffffff;
+    background: linear-gradient(135deg, #14b8a6, #0d9488);
+}
+
+.overall-status-icon.warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.overall-status-icon.critical {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* Status Summary */
+.status-summary {
+    display: flex;
+    align-items: center;
+}
+
+.status-count {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 1rem;
+    }
+    
+    .header-card {
+        padding: 1rem;
+    }
+    
+    .header-card .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 1rem;
+    }
+    
+    .patient-info {
+        text-align: left !important;
+    }
+    
+    .overall-status-card .d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 1rem;
+    }
+    
+    .status-summary {
+        align-self: stretch;
+        justify-content: space-between;
+    }
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #e5e7eb;
+    border-top-color: #14b8a6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Hover Effects */
+.status-card:hover .status-icon {
+    transform: scale(1.05);
+}
+
+.status-card:hover .status-light {
+    transform: scale(1.1);
+}

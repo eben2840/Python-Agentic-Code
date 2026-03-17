@@ -1,0 +1,285 @@
+body {
+    background-color: #f8f9fa;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.header-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.header-card h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.stat-icon.bg-primary { background-color: #3b82f6; }
+.stat-icon.bg-danger { background-color: #ef4444; }
+.stat-icon.bg-warning { background-color: #f59e0b; }
+.stat-icon.bg-success { background-color: #22c55e; }
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+}
+
+.assessment-card, .documentation-card, .recent-assessments-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.card-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
+    border-radius: 12px 12px 0 0;
+}
+
+.card-header h5, .card-header h6 {
+    margin: 0;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.header-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.patient-item {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f3f4f6;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.patient-item:hover {
+    background-color: #f8f9fa;
+}
+
+.patient-item:last-child {
+    border-bottom: none;
+}
+
+.patient-item.selected {
+    background-color: #eff6ff;
+    border-left: 4px solid #3b82f6;
+}
+
+.patient-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.patient-name {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 0.25rem;
+}
+
+.patient-demographics {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.priority-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.priority-critical {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.priority-urgent {
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fed7aa;
+}
+
+.priority-routine {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.patient-conditions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.condition-tag {
+    background-color: #f3f4f6;
+    color: #374151;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    border: 1px solid #e5e7eb;
+}
+
+.patient-vitals {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.vital-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.vital-signs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-outline-success:hover {
+    transform: translateY(-1px);
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-1px);
+}
+
+.recent-assessment-item {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    background: #fafafa;
+}
+
+.recent-assessment-item:last-child {
+    margin-bottom: 0;
+}
+
+.assessment-patient {
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.875rem;
+}
+
+.assessment-time {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.assessment-summary {
+    font-size: 0.875rem;
+    color: #374151;
+    margin-top: 0.25rem;
+}
+
+@media (max-width: 768px) {
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+    
+    .vital-signs-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .patient-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .patient-vitals {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

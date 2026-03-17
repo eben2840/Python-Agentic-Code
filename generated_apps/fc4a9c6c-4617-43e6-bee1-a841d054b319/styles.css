@@ -1,0 +1,114 @@
+body { 
+    background: #f8f9fa; 
+    min-height: 100vh; 
+    font-size: 14px; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+}
+
+h1 { font-size: 1.5rem; font-weight: 600; }
+h2 { font-size: 1.25rem; font-weight: 600; }
+h3 { font-size: 1rem; font-weight: 600; }
+p, span, td, li { font-size: 0.875rem; }
+
+.card { 
+    background: #ffffff; 
+    border-radius: 12px; 
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08); 
+    border: 1px solid #e5e7eb; 
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #f1f3f4;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.list-group-item.active {
+    background-color: #e3f2fd;
+    border-color: #2196f3;
+    color: #1976d2;
+}
+
+.chat-container {
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+    background: #fafafa;
+}
+
+.chat-message {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    max-width: 80%;
+}
+
+.chat-message.user {
+    background: #e3f2fd;
+    margin-left: auto;
+    text-align: right;
+}
+
+.chat-message.system {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    margin-right: auto;
+}
+
+.chat-message.data {
+    background: #f0f9ff;
+    border-left: 4px solid #14b8a6;
+    margin-right: auto;
+}
+
+.patient-item {
+    padding: 0.75rem 1rem;
+}
+
+.patient-name {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.patient-info {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #14b8a6;
+    box-shadow: 0 0 0 0.2rem rgba(20, 184, 166, 0.25);
+}
+
+.btn-primary {
+    background-color: #14b8a6;
+    border-color: #14b8a6;
+}
+
+.btn-primary:hover {
+    background-color: #0f766e;
+    border-color: #0f766e;
+}
+
+.text-primary {
+    color: #14b8a6 !important;
+}
+
+.text-success {
+    color: #22c55e !important;
+}

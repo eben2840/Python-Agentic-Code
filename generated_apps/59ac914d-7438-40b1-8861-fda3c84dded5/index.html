@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Fluid Balance Monitor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-tint text-primary me-3" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <h4 class="mb-1">Fluid Balance Monitor</h4>
+                                <p class="text-muted mb-0" id="patient-info">Loading patient information...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-plus-circle text-success mb-2"></i>
+                        <h5 class="card-title">Total Intake</h5>
+                        <h3 class="text-success mb-0" id="total-intake">No data available</h3>
+                        <small class="text-muted">24-hour period</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-minus-circle text-warning mb-2"></i>
+                        <h5 class="card-title">Total Output</h5>
+                        <h3 class="text-warning mb-0" id="total-output">No data available</h3>
+                        <small class="text-muted">24-hour period</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-balance-scale text-primary mb-2"></i>
+                        <h5 class="card-title">Net Balance</h5>
+                        <h3 class="mb-0" id="net-balance">No data available</h3>
+                        <small class="text-muted">Intake - Output</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card summary-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-line text-info mb-2"></i>
+                        <h5 class="card-title">Balance Status</h5>
+                        <span class="badge" id="balance-status">No data available</span>
+                        <small class="text-muted d-block mt-1">Current trend</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-area text-primary me-2"></i>
+                            24-Hour Fluid Balance Trend
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="fluidChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                            Clinical Alerts
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="clinical-alerts">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                No active alerts
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Tables -->
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-plus text-success me-2"></i>
+                            Fluid Intake Records
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="intake-table">
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No intake data available</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-minus text-warning me-2"></i>
+                            Fluid Output Records
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="output-table">
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No output data available</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Conditions -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-stethoscope text-danger me-2"></i>
+                            Related Clinical Conditions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="related-conditions">
+                            <p class="text-muted">No related conditions data available</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

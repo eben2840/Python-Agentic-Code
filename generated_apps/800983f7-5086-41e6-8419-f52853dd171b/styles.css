@@ -1,0 +1,111 @@
+body { 
+    background: #f8f9fa; 
+    min-height: 100vh; 
+    font-size: 14px; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+}
+
+h1 { font-size: 1.5rem; font-weight: 600; color: #1f2937; }
+h2 { font-size: 1.25rem; font-weight: 600; color: #374151; }
+h3 { font-size: 1rem; font-weight: 600; color: #4b5563; }
+p, span, td, li { font-size: 0.875rem; }
+
+.card { 
+    background: #ffffff; 
+    border-radius: 12px; 
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08); 
+    border: 1px solid #e5e7eb; 
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1.25rem;
+}
+
+.text-teal { color: #14b8a6 !important; }
+.text-primary { color: #3b82f6 !important; }
+.text-success { color: #22c55e !important; }
+.text-warning { color: #f59e0b !important; }
+.text-danger { color: #ef4444 !important; }
+.text-info { color: #06b6d4 !important; }
+
+.form-control, .form-select {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-label {
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-outline-secondary {
+    color: #6b7280;
+    border-color: #d1d5db;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+    color: #374151;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+.vital-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.vital-item:last-child {
+    border-bottom: none;
+}
+
+.vital-value {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.condition-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: #fef3c7;
+    color: #92400e;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin: 0.25rem;
+}

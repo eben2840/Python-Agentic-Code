@@ -1,0 +1,204 @@
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #374151;
+}
+
+.header-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 0;
+}
+
+.header-card h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.patient-info-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.info-item .label {
+    font-weight: 500;
+    margin-right: 8px;
+    color: #6b7280;
+}
+
+.info-item .value {
+    font-weight: 600;
+    color: #111827;
+}
+
+.care-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    height: 100%;
+}
+
+.care-card .card-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 16px 20px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    align-items: center;
+}
+
+.care-card .card-header h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.care-card .card-body {
+    padding: 20px;
+}
+
+.section-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.condition-item, .vital-item, .medication-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    border-left: 4px solid #e5e7eb;
+}
+
+.condition-item {
+    border-left-color: #ef4444;
+}
+
+.vital-item {
+    border-left-color: #3b82f6;
+}
+
+.medication-item {
+    border-left-color: #22c55e;
+}
+
+.item-name {
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 4px;
+}
+
+.item-details {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.goal-item, .monitor-item, .lifestyle-item, .emergency-item, .followup-item {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.goal-item:last-child, .monitor-item:last-child, .lifestyle-item:last-child, 
+.emergency-item:last-child, .followup-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.goal-header, .monitor-header, .lifestyle-header, .emergency-header, .followup-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.goal-title, .monitor-title, .lifestyle-title, .emergency-title, .followup-title {
+    font-weight: 600;
+    color: #111827;
+}
+
+.goal-target, .monitor-frequency, .followup-frequency {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-left: 24px;
+}
+
+.lifestyle-list, .emergency-actions {
+    margin: 8px 0 0 24px;
+    padding: 0;
+}
+
+.lifestyle-list li, .emergency-actions li {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.emergency-card {
+    border-left: 4px solid #ef4444;
+}
+
+.no-data {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 20px;
+}
+
+.text-primary { color: #3b82f6 !important; }
+.text-success { color: #22c55e !important; }
+.text-danger { color: #ef4444 !important; }
+.text-warning { color: #f59e0b !important; }
+.text-info { color: #06b6d4 !important; }
+.text-teal { color: #14b8a6 !important; }
+.text-muted { color: #6b7280 !important; }
+
+.form-select {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+.form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 16px;
+    }
+    
+    .header-card {
+        padding: 16px;
+    }
+    
+    .care-card .card-body {
+        padding: 16px;
+    }
+    
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

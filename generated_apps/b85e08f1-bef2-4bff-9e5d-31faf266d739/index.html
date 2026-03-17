@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Encounters Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-circle me-3">
+                                <i class="fas fa-user-md text-primary"></i>
+                            </div>
+                            <div>
+                                <h1 class="mb-1" id="patientName">Loading...</h1>
+                                <p class="text-muted mb-0" id="patientInfo">Patient ID: Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Encounters Overview -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <div class="stat-icon mb-2">
+                            <i class="fas fa-calendar-check text-success"></i>
+                        </div>
+                        <h3 class="mb-1" id="totalEncounters">0</h3>
+                        <p class="text-muted mb-0">Total Encounters</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <div class="stat-icon mb-2">
+                            <i class="fas fa-hospital text-info"></i>
+                        </div>
+                        <h3 class="mb-1" id="inpatientCount">0</h3>
+                        <p class="text-muted mb-0">Inpatient</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <div class="stat-icon mb-2">
+                            <i class="fas fa-user-doctor text-warning"></i>
+                        </div>
+                        <h3 class="mb-1" id="outpatientCount">0</h3>
+                        <p class="text-muted mb-0">Outpatient</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="card-body text-center">
+                        <div class="stat-icon mb-2">
+                            <i class="fas fa-ambulance text-danger"></i>
+                        </div>
+                        <h3 class="mb-1" id="emergencyCount">0</h3>
+                        <p class="text-muted mb-0">Emergency</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Encounters Timeline -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="mb-0">
+                            <i class="fas fa-timeline me-2 text-primary"></i>
+                            Encounters Timeline
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div id="encountersTimeline">
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="text-muted mt-2">Loading encounters...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

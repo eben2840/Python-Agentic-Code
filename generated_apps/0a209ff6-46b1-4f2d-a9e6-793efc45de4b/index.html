@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Rooms & Patients</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h1 class="text-dark mb-1">
+                            <i class="fas fa-hospital text-primary me-2"></i>
+                            Hospital Overview
+                        </h1>
+                        <p class="text-muted mb-0">Rooms and patient availability</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-light text-dark border">
+                            <i class="fas fa-bed text-success me-1"></i>
+                            <span id="availableRooms">0</span> Available
+                        </span>
+                        <span class="badge bg-light text-dark border">
+                            <i class="fas fa-user-injured text-warning me-1"></i>
+                            <span id="occupiedRooms">0</span> Occupied
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-circle bg-light-success me-3">
+                                <i class="fas fa-bed text-success"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0" id="totalRooms">0</h3>
+                                <small class="text-muted">Total Rooms</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-circle bg-light-primary me-3">
+                                <i class="fas fa-users text-primary"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0" id="totalPatients">0</h3>
+                                <small class="text-muted">Total Patients</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-circle bg-light-warning me-3">
+                                <i class="fas fa-percentage text-warning"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0" id="occupancyRate">0%</h3>
+                                <small class="text-muted">Occupancy Rate</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-white border-bottom">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h2 class="mb-0">
+                                <i class="fas fa-door-open text-primary me-2"></i>
+                                Room Directory
+                            </h2>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-primary" onclick="filterRooms('all')">
+                                    <i class="fas fa-list me-1"></i>All
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" onclick="filterRooms('available')">
+                                    <i class="fas fa-check me-1"></i>Available
+                                </button>
+                                <button class="btn btn-sm btn-outline-warning" onclick="filterRooms('occupied')">
+                                    <i class="fas fa-user me-1"></i>Occupied
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="border-0 ps-4">Room</th>
+                                        <th class="border-0">Type</th>
+                                        <th class="border-0">Status</th>
+                                        <th class="border-0">Patient</th>
+                                        <th class="border-0">Admission Date</th>
+                                        <th class="border-0">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="roomsTableBody">
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">
+                                            <i class="fas fa-spinner fa-spin me-2"></i>
+                                            Loading room data...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

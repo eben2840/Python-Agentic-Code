@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Care Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-circle me-3">
+                                <i class="fas fa-hospital text-danger"></i>
+                            </div>
+                            <div>
+                                <h1 class="mb-1">Emergency Care Dashboard</h1>
+                                <p class="text-muted mb-0">Patient: <span id="patientName">Jane Doe</span> | ID: <span id="patientId">pat-0a70a8f4</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Room Status -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-procedures text-danger me-2"></i>
+                            <h2>Emergency Room Status</h2>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="status-item">
+                                    <div class="status-number text-danger">12</div>
+                                    <div class="status-label">Critical</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="status-item">
+                                    <div class="status-number text-warning">8</div>
+                                    <div class="status-label">Urgent</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="status-item">
+                                    <div class="status-number text-success">15</div>
+                                    <div class="status-label">Stable</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="status-item">
+                                    <div class="status-number text-info">3</div>
+                                    <div class="status-label">Available Beds</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-user-md text-primary me-2"></i>
+                            <h2>Patient Conditions</h2>
+                        </div>
+                        <div id="patientConditions">
+                            <!-- Patient conditions will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Information Form -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                            <h2>Emergency Information</h2>
+                        </div>
+                        <form id="emergencyForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Emergency Type</label>
+                                    <select class="form-select" id="emergencyType" required>
+                                        <option value="">Select emergency type</option>
+                                        <option value="cardiac">Cardiac Event</option>
+                                        <option value="respiratory">Respiratory Distress</option>
+                                        <option value="trauma">Trauma/Injury</option>
+                                        <option value="neurological">Neurological</option>
+                                        <option value="allergic">Allergic Reaction</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Priority Level</label>
+                                    <select class="form-select" id="priorityLevel" required>
+                                        <option value="">Select priority</option>
+                                        <option value="critical">Critical (Red)</option>
+                                        <option value="urgent">Urgent (Yellow)</option>
+                                        <option value="stable">Stable (Green)</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Emergency Details</label>
+                                    <textarea class="form-control" id="emergencyDetails" rows="3" placeholder="Describe the emergency situation..."></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Vital Signs</label>
+                                    <input type="text" class="form-control" id="vitalSigns" placeholder="BP, HR, Temp, O2 Sat">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Attending Physician</label>
+                                    <input type="text" class="form-control" id="attendingPhysician" placeholder="Dr. Name">
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fas fa-save me-2"></i>Save Emergency Information
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- White Board Signs -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-clipboard text-info me-2"></i>
+                                <h2>White Board Signs</h2>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createSignModal">
+                                <i class="fas fa-plus me-1"></i>Create Sign
+                            </button>
+                        </div>
+                        <div id="whiteBoardSigns">
+                            <!-- Signs will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-camera text-success me-2"></i>
+                            <h2>Capture Signs</h2>
+                        </div>
+                        <div class="text-center">
+                            <div class="camera-preview mb-3">
+                                <i class="fas fa-camera fa-3x text-muted"></i>
+                                <p class="text-muted mt-2">Camera Preview</p>
+                            </div>
+                            <button class="btn btn-success w-100 mb-2" id="captureBtn">
+                                <i class="fas fa-camera me-2"></i>Capture Sign
+                            </button>
+                            <button class="btn btn-outline-secondary w-100" id="uploadBtn">
+                                <i class="fas fa-upload me-2"></i>Upload Image
+                            </button>
+                            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Sign Modal -->
+    <div class="modal fade" id="createSignModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create White Board Sign</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="signForm">
+                        <div class="mb-3">
+                            <label class="form-label">Sign Title</label>
+                            <input type="text" class="form-control" id="signTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Room/Location</label>
+                            <input type="text" class="form-control" id="signLocation">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Message</label>
+                            <textarea class="form-control" id="signMessage" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Sign Type</label>
+                            <select class="form-select" id="signType">
+                                <option value="info">Information</option>
+                                <option value="warning">Warning</option>
+                                <option value="emergency">Emergency</option>
+                                <option value="instruction">Instruction</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveSignBtn">Create Sign</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

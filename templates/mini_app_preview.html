@@ -1,0 +1,119 @@
+{% if error %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error - Mini App Preview</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div style="text-align: center; padding: 2rem; background: #fff; border-radius: 12px; border: 1px solid #ef4444; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <h2 style="color: #ef4444; margin-bottom: 0.5rem;">Error Loading Mini App</h2>
+    <p style="color: #666; margin: 0.5rem 0;">{{ error }}</p>
+    <a href="/" style="display: inline-block; padding: 0.5rem 1rem; margin-top: 1rem; border-radius: 6px; background: #6366f1; color: white; text-decoration: none; cursor: pointer;">Back to Dashboard</a>
+  </div>
+</body>
+</html>
+{% elif html_content %}
+{{ html_content|safe }}
+{% elif task %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ task.title }} - Mini App Preview</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100vw !important;
+      height: 100vh !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #fff;
+    }
+    .container {
+      text-align: center;
+      background: rgba(255,255,255,0.15);
+      padding: 3rem 4rem;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      max-width: 600px;
+    }
+    h1 { margin-bottom: 1rem; font-size: 2rem; }
+    p { color: rgba(255,255,255,0.9); margin: 0.75rem 0; line-height: 1.6; }
+    .status {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: rgba(255,255,255,0.25);
+      border-radius: 20px;
+      font-size: 0.875rem;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+    .file-info {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.8);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>{{ task.title }}</h1>
+    <p>{{ task.description or 'No description available' }}</p>
+    <div class="status">Status: {{ task.status.value if task.status else 'Unknown' }}</div>
+    <div class="file-info">
+      <p>This mini app has no HTML content to display yet.</p>
+      <p style="margin-top: 1rem; font-size: 0.875rem;">The task may still be generating files.</p>
+    </div>
+    <a href="/" style="display: inline-block; margin-top: 2rem; padding: 0.75rem 1.5rem; border-radius: 8px; background: rgba(255,255,255,0.2); color: #fff; text-decoration: none; cursor: pointer; transition: background 0.2s;">Back to Dashboard</a>
+  </div>
+</body>
+</html>
+{% else %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini App Preview</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100vw !important;
+      height: 100vh !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div style="text-align: center; padding: 2rem; background: #fff; border-radius: 12px; border: 1px solid #e5e7eb; box-shadow: 0 4px 12px rgba(0,0,0,0.1); color: #1a1a1a;">
+    <h2 style="color: #1a1a1a; margin-bottom: 0.5rem;">No Content Available</h2>
+    <p style="color: #6b7280; margin: 0.5rem 0;">This mini app has no HTML content to display.</p>
+    <a href="/" style="display: inline-block; padding: 0.5rem 1rem; margin-top: 1rem; border-radius: 6px; background: #6366f1; color: white; text-decoration: none; cursor: pointer;">Back to Dashboard</a>
+  </div>
+</body>
+</html>
+{% endif %}

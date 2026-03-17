@@ -1,0 +1,218 @@
+body {
+    background-color: #f8f9fa;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.card-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+h4, h5 {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.text-muted {
+    color: #6b7280 !important;
+}
+
+/* Pain Scale Styles */
+.pain-scale-container {
+    padding: 1rem 0;
+}
+
+.pain-scale {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2rem 0;
+    position: relative;
+}
+
+.pain-level {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid #e5e7eb;
+    background: #ffffff;
+    color: #6b7280;
+}
+
+.pain-level:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.pain-level.mild {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #15803d;
+}
+
+.pain-level.moderate {
+    background: #fef3c7;
+    border-color: #f59e0b;
+    color: #d97706;
+}
+
+.pain-level.severe {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #dc2626;
+}
+
+.pain-level.current {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    border-color: #3b82f6;
+}
+
+/* Pain History Timeline */
+.pain-entry {
+    border-left: 3px solid #e5e7eb;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.pain-entry::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 0.5rem;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #6b7280;
+}
+
+.pain-entry.mild::before {
+    background: #22c55e;
+}
+
+.pain-entry.moderate::before {
+    background: #f59e0b;
+}
+
+.pain-entry.severe::before {
+    background: #ef4444;
+}
+
+.pain-entry.mild {
+    border-left-color: #22c55e;
+}
+
+.pain-entry.moderate {
+    border-left-color: #f59e0b;
+}
+
+.pain-entry.severe {
+    border-left-color: #ef4444;
+}
+
+.pain-score {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.pain-score.mild {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.pain-score.moderate {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.pain-score.severe {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Medication Status */
+.medication-item {
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    border-left: 4px solid #22c55e;
+}
+
+.medication-item h6 {
+    margin-bottom: 0.25rem;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.medication-item small {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-badge.stable {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status-badge.improving {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-badge.worsening {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pain-scale {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .pain-level {
+        width: 35px;
+        height: 35px;
+        font-size: 12px;
+    }
+}

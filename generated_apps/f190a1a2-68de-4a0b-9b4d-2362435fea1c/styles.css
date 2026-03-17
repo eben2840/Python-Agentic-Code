@@ -1,0 +1,219 @@
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    color: #374151;
+}
+
+.header-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.icon-wrapper {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+}
+
+h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.stat-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    height: 100%;
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.bg-danger-light {
+    background-color: #fef2f2;
+}
+
+.bg-warning-light {
+    background-color: #fffbeb;
+}
+
+.bg-info-light {
+    background-color: #f0f9ff;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.patients-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+
+.card-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 20px 24px;
+}
+
+.patient-item {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background-color 0.2s ease;
+}
+
+.patient-item:hover {
+    background-color: #f9fafb;
+}
+
+.patient-item:last-child {
+    border-bottom: none;
+}
+
+.patient-name {
+    font-weight: 600;
+    color: #111827;
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.patient-details {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.bp-reading {
+    display: inline-flex;
+    align-items: center;
+    background: #fef2f2;
+    color: #dc2626;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.bp-reading i {
+    margin-right: 6px;
+    font-size: 12px;
+}
+
+.patient-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.meta-item i {
+    margin-right: 6px;
+    width: 14px;
+    color: #9ca3af;
+}
+
+.gender-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.gender-male {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+.gender-female {
+    background-color: #fce7f3;
+    color: #be185d;
+}
+
+.no-data-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.text-muted {
+    color: #6b7280 !important;
+}
+
+.text-primary {
+    color: #3b82f6 !important;
+}
+
+.text-danger {
+    color: #ef4444 !important;
+}
+
+.text-warning {
+    color: #f59e0b !important;
+}
+
+.text-info {
+    color: #06b6d4 !important;
+}
+
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 16px;
+    }
+    
+    .header-card {
+        padding: 20px;
+    }
+    
+    .stat-card {
+        margin-bottom: 16px;
+    }
+    
+    .patient-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}

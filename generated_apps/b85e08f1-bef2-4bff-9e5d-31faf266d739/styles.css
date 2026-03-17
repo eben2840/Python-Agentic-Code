@@ -1,0 +1,109 @@
+body { 
+    background: #f8f9fa; 
+    min-height: 100vh; 
+    font-size: 14px; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+}
+
+h1 { font-size: 1.5rem; font-weight: 600; }
+h2 { font-size: 1.25rem; font-weight: 600; }
+h3 { font-size: 1rem; font-weight: 600; }
+p, span, td, li { font-size: 0.875rem; }
+
+.card { 
+    background: #ffffff; 
+    border-radius: 12px; 
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08); 
+    border: 1px solid #e5e7eb; 
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-card .stat-icon {
+    font-size: 1.5rem;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #14b8a6;
+}
+
+.timeline-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 1.2rem;
+    width: 2px;
+    height: calc(100% + 0.5rem);
+    background: #e5e7eb;
+}
+
+.encounter-card {
+    border-left: 4px solid #14b8a6;
+    margin-bottom: 1rem;
+}
+
+.encounter-card.inpatient { border-left-color: #3b82f6; }
+.encounter-card.outpatient { border-left-color: #f59e0b; }
+.encounter-card.emergency { border-left-color: #ef4444; }
+
+.status-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.status-finished {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-in-progress {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.encounter-type {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.encounter-meta {
+    font-size: 0.8rem;
+    color: #64748b;
+}

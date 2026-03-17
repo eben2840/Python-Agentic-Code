@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sturzrisiko-Übersicht</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="header-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-exclamation-triangle text-warning me-3 fs-4"></i>
+                        <div>
+                            <h1 class="mb-1">Sturzrisiko-Übersicht</h1>
+                            <p class="text-muted mb-0">Überwachung von Sturzrisiken und aktuellen Sturzereignissen</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card bg-danger-subtle">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-exclamation-circle text-danger me-2"></i>
+                                    <div>
+                                        <div class="stat-number text-danger" id="highRiskCount">0</div>
+                                        <div class="stat-label">Hohes Risiko</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card bg-warning-subtle">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                    <div>
+                                        <div class="stat-number text-warning" id="mediumRiskCount">0</div>
+                                        <div class="stat-label">Mittleres Risiko</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card bg-success-subtle">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <div>
+                                        <div class="stat-number text-success" id="lowRiskCount">0</div>
+                                        <div class="stat-label">Niedriges Risiko</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card bg-info-subtle">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user-injured text-info me-2"></i>
+                                    <div>
+                                        <div class="stat-number text-info" id="currentFallCount">0</div>
+                                        <div class="stat-label">Aktuelle Stürze</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="main-card">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="mb-0">
+                            <i class="fas fa-users text-primary me-2"></i>
+                            Patientenübersicht
+                        </h2>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-secondary btn-sm" id="filterAll">
+                                <i class="fas fa-list me-1"></i>Alle
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm" id="filterHighRisk">
+                                <i class="fas fa-exclamation-circle me-1"></i>Hohes Risiko
+                            </button>
+                            <button class="btn btn-outline-info btn-sm" id="filterCurrentFalls">
+                                <i class="fas fa-user-injured me-1"></i>Aktuelle Stürze
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Alter</th>
+                                    <th>Geschlecht</th>
+                                    <th>Sturzrisiko</th>
+                                    <th>Aktueller Sturz</th>
+                                    <th>Letzte Bewertung</th>
+                                    <th>Aktionen</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patientsTable">
+                                <!-- Patients will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="noDataMessage" class="text-center py-5" style="display: none;">
+                        <i class="fas fa-info-circle text-muted fs-1 mb-3"></i>
+                        <h5 class="text-muted">Keine Daten verfügbar</h5>
+                        <p class="text-muted">Es wurden keine Patientendaten gefunden.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

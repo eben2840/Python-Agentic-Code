@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Clinical Overview</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Patient Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card patient-header">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="patient-avatar me-3">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div>
+                                <h4 class="mb-1" id="patientName">Eve Green</h4>
+                                <div class="patient-details">
+                                    <span class="badge patient-id me-2" id="patientId">P-2024-001</span>
+                                    <span class="text-muted me-3" id="patientGender">Female</span>
+                                    <span class="text-muted" id="patientDob">DOB: Jan 15, 1975</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3D Diagnosis Visualization -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card diagnosis-3d-card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-cube text-danger me-2"></i>
+                            <h5 class="mb-0">3D Medical Condition Analysis</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="diagnosis3DContainer">
+                            <div class="diagnosis-3d-viewer">
+                                <div class="medical-cube-container">
+                                    <div class="medical-cube" id="medicalCube">
+                                        <div class="cube-face front">
+                                            <div class="face-content">
+                                                <i class="fas fa-heartbeat"></i>
+                                                <h6>Cardiovascular</h6>
+                                                <div class="condition-severity high">High Risk</div>
+                                                <ul class="condition-list">
+                                                    <li>Hypertension Stage 2</li>
+                                                    <li>Atrial Fibrillation</li>
+                                                    <li>Elevated Cholesterol</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="cube-face back">
+                                            <div class="face-content">
+                                                <i class="fas fa-lungs"></i>
+                                                <h6>Respiratory</h6>
+                                                <div class="condition-severity medium">Medium Risk</div>
+                                                <ul class="condition-list">
+                                                    <li>Chronic Bronchitis</li>
+                                                    <li>Reduced Lung Capacity</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="cube-face left">
+                                            <div class="face-content">
+                                                <i class="fas fa-brain"></i>
+                                                <h6>Neurological</h6>
+                                                <div class="condition-severity low">Low Risk</div>
+                                                <ul class="condition-list">
+                                                    <li>Mild Cognitive Decline</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="cube-face right">
+                                            <div class="face-content">
+                                                <i class="fas fa-dna"></i>
+                                                <h6>Metabolic</h6>
+                                                <div class="condition-severity high">High Risk</div>
+                                                <ul class="condition-list">
+                                                    <li>Type 2 Diabetes</li>
+                                                    <li>Insulin Resistance</li>
+                                                    <li>Obesity (BMI: 32)</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="cube-face top">
+                                            <div class="face-content">
+                                                <i class="fas fa-bone"></i>
+                                                <h6>Musculoskeletal</h6>
+                                                <div class="condition-severity medium">Medium Risk</div>
+                                                <ul class="condition-list">
+                                                    <li>Osteoarthritis</li>
+                                                    <li>Lower Back Pain</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="cube-face bottom">
+                                            <div class="face-content">
+                                                <i class="fas fa-kidneys"></i>
+                                                <h6>Renal</h6>
+                                                <div class="condition-severity medium">Medium Risk</div>
+                                                <ul class="condition-list">
+                                                    <li>Stage 3 CKD</li>
+                                                    <li>Proteinuria</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cube-controls">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="rotateCube('rotateX')">
+                                        <i class="fas fa-arrows-alt-v"></i> Rotate X
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="rotateCube('rotateY')">
+                                        <i class="fas fa-arrows-alt-h"></i> Rotate Y
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="resetCube()">
+                                        <i class="fas fa-undo"></i> Reset
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="diagnosis-summary">
+                                <h6 class="text-danger mb-3">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Critical Health Issues Identified
+                                </h6>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="severity-indicator high-severity">
+                                            <div class="severity-count">3</div>
+                                            <div class="severity-label">High Risk Conditions</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="severity-indicator medium-severity">
+                                            <div class="severity-count">3</div>
+                                            <div class="severity-label">Medium Risk Conditions</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="severity-indicator low-severity">
+                                            <div class="severity-count">1</div>
+                                            <div class="severity-label">Low Risk Conditions</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clinical Data Grid -->
+        <div class="row g-4">
+            <!-- Observations -->
+            <div class="col-lg-4">
+                <div class="card clinical-card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-chart-line text-primary me-2"></i>
+                            <h5 class="mb-0">Observations</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="observationsContent">
+                            <div class="clinical-item">
+                                <div class="clinical-item-name">Blood Pressure</div>
+                                <div class="clinical-item-value observation-value">165/95 mmHg</div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="clinical-item-date">Dec 15, 2024, 10:30 AM</div>
+                                    <span class="badge status-badge status-final">final</span>
+                                </div>
+                            </div>
+                            <div class="clinical-item">
+                                <div class="clinical-item-name">HbA1c</div>
+                                <div class="clinical-item-value observation-value">8.2%</div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="clinical-item-date">Dec 10, 2024, 2:15 PM</div>
+                                    <span class="badge status-badge status-final">final</span>
+                                </div>
+                            </div>
+                            <div class="clinical-item">
+                                <div class="clinical-item-name">Creatinine</div>
+                                <div class="clinical-item-value observation-value">1.8 mg/dL</div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="clinical-item-date">Dec 10, 2024, 2:15 PM</div>
+                                    <span class="badge status-badge status-final">final</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medications -->
+            <div class="col-lg-4">
+                <div class="card clinical-card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-pills text-success me-2"></i>
+                            <h5 class="mb-0">Medications</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="medicationsContent">
+                            <div class="clinical-item">
+                                <div class="clinical-item-name">Lisinopril</div>
+                                <div class="clinical-item-value medication-dosage">10mg daily</div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="clinical-item-date">Dec 1, 2024, 9:00 AM</div>
+                                    <span class="badge status-badge status-active">active</span>
+                                </div>
+                            </div>
+                            <div class="clinical-item">
+                                <div class="clinical-item-name">Metformin</div>
+                                <div class="clinical-item-value medication-dosage">1000mg twice daily</div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="clinical-item-date">Nov 15, 2024, 11:30 AM</div>
+                                    <span class="badge status-badge status-active">active</span>
+                                </div>
+                            </div>
+                            <div class="clinical-item">
+                                <div class="clinical-item-name">Warfarin</div>
+                                <div class="clinical-item-value medication-dosage">5mg daily</div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="clinical-item-date">Nov 20, 2024, 3:45 PM</div>
+                                    <span class="badge status-badge status-active">active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Encounters -->
+            <div class="col-lg-4">
+                <div class="card clinical-card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-hospital text-info me-2"></i>
+                            <h5 class="mb-0">Encounters</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="encountersContent">
+                            <div class="clinical-item">
+                                <div class="clinical-item-name">Cardiology Consultation</div>
+                                <div class="clinical-item-value">Dr. Smith - Heart Rhythm Evaluation</div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="clinical-item-date">Dec 15, 2024, 10:00 AM</div>
+                                    <span class="badge status-badge status-final">finished</span>
+                                </div>
+                            </div>
+                            <div class="clinical-item">
+                                <div class="clinical-item-name">Emergency Visit</div>
+                                <div class="clinical-item-value">Chest Pain - Ruled out MI</div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="clinical-item-date">Dec 10, 2024, 8:30 PM</div>
+                                    <span class="badge status-badge status-final">finished</span>
+                                </div>
+                            </div>
+                            <div class="clinical-item">
+                                <div class="clinical-item-name">Primary Care Visit</div>
+                                <div class="clinical-item-value">Routine Follow-up - Diabetes</div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="clinical-item-date">Nov 15, 2024, 2:00 PM</div>
+                                    <span class="badge status-badge status-final">finished</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
