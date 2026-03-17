@@ -342,18 +342,6 @@
                     Generate Idea
                   </button>
      
-                    <button id="startBtn" class="btn btn-secondary">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                        <line x1="12" y1="19" x2="12" y2="23"/>
-                        <line x1="8" y1="23" x2="16" y2="23"/>
-                      </svg>
-                     Start Voice
-                    </button>
-                    <button id="stopBtn" disabled class="btn btn-secondary bg-danger" >
-                     Stop Voice
-                    </button>
                 </div>
               </div>
               <!-- A medication titration calculator based on current labs
@@ -817,7 +805,8 @@
     <div class="modal modal-fullscreen">
       <div class="modal-header">
         <div class="modal-header-info">
-          <h2 class="modal-title" id="preview-app-title">Mini App Preview</h2>
+          <h2 class="modal-title" >Mini App Preview</h2>
+          <!-- <h2 class="modal-title" id="preview-app-title">Mini App Preview</h2> -->
           <span class="badge badge-success" id="preview-app-score"></span>
         </div>
         <div class="modal-header-actions">
@@ -997,68 +986,5 @@
   </script>
 
 
-  <script>
-    let mediaRecorder;
-    let audioChunks = [];
-
-    const startBtn = document.getElementById("startBtn");
-    const stopBtn = document.getElementById("stopBtn");
-    const transcriptionDiv = document.getElementById("transcription");
-
-    startBtn.addEventListener("click", async () => {
-      audioChunks = [];
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-
-        mediaRecorder.ondataavailable = e => {
-          if (e.data.size > 0) {
-            audioChunks.push(e.data);
-            // send small chunks to server for near-live transcription
-            if (audioChunks.length >= 5) sendAudioChunk();
-          }
-        };
-
-        mediaRecorder.onstop = async () => {
-          await sendAudioChunk(); // send any remaining audio
-        };
-
-        mediaRecorder.start(250); // chunk every 250ms
-        startBtn.disabled = true;
-        stopBtn.disabled = false;
-
-      } catch (err) {
-        alert("Microphone access denied or not available: " + err.message);
-      }
-    });
-
-    stopBtn.addEventListener("click", () => {
-      if (mediaRecorder && mediaRecorder.state !== "inactive") {
-        mediaRecorder.stop();
-      }
-      startBtn.disabled = false;
-      stopBtn.disabled = true;
-    });
-
-    async function sendAudioChunk() {
-      if (audioChunks.length === 0) return;
-      const blob = new Blob(audioChunks, { type: "audio/mp4" }); // works on iPhone
-      audioChunks = [];
-
-      const formData = new FormData();
-      formData.append("audio", blob, "voice.m4a");
-
-      try {
-        const response = await fetch("/api/speech-to-text", {
-          method: "POST",
-          body: formData
-        });
-        const data = await response.json();
-        transcriptionDiv.textContent = data.text || transcriptionDiv.textContent;
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  </script>
 </body>
 </html>

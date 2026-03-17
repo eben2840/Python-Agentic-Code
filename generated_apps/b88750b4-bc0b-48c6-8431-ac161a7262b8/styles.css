@@ -1,0 +1,313 @@
+:root {
+    --primary-color: #3b82f6;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --success-color: #22c55e;
+    --info-color: #14b8a6;
+    --light-bg: #f8f9fa;
+    --card-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --border-color: #e5e7eb;
+    --text-muted: #6b7280;
+}
+
+body {
+    background-color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.header-bar {
+    background: var(--light-bg);
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.alert-counter {
+    position: relative;
+}
+
+.alert-counter .badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 10px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-content {
+    min-height: calc(100vh - 80px);
+}
+
+.patient-list-panel {
+    background: #ffffff;
+    border-right: 1px solid var(--border-color);
+    padding: 1.5rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
+}
+
+.patient-detail-panel {
+    background: var(--light-bg);
+    padding: 1.5rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
+}
+
+.panel-header {
+    margin-bottom: 1rem;
+}
+
+.patient-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.patient-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--card-shadow);
+}
+
+.patient-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+.patient-card.selected {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.patient-card.severity-high {
+    border-left: 4px solid var(--danger-color);
+}
+
+.patient-card.severity-medium {
+    border-left: 4px solid var(--warning-color);
+}
+
+.patient-card.severity-low {
+    border-left: 4px solid var(--success-color);
+}
+
+.patient-header {
+    display: flex;
+    justify-content: between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
+.patient-name {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+}
+
+.patient-info {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.severity-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.severity-high {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+}
+
+.severity-medium {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning-color);
+}
+
+.severity-low {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--success-color);
+}
+
+.vital-signs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.vital-item {
+    text-align: center;
+    padding: 0.5rem;
+    background: var(--light-bg);
+    border-radius: 6px;
+}
+
+.vital-value {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 0.25rem;
+}
+
+.vital-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.vital-critical {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+}
+
+.vital-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning-color);
+}
+
+.detail-panel-content {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+}
+
+.patient-detail-header {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-section {
+    margin-bottom: 1.5rem;
+}
+
+.detail-section h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: #374151;
+}
+
+.condition-item, .medication-item, .observation-item {
+    background: var(--light-bg);
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--info-color);
+}
+
+.condition-item h5, .medication-item h5, .observation-item h5 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.condition-item p, .medication-item p, .observation-item p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 0;
+}
+
+.metrics-dashboard {
+    background: var(--light-bg);
+    border-top: 1px solid var(--border-color);
+    padding: 1rem 1.5rem;
+}
+
+.metric-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+}
+
+.metric-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.metric-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.empty-state {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.last-update {
+    font-size: 12px;
+}
+
+@media (max-width: 991px) {
+    .patient-list-panel, .patient-detail-panel {
+        max-height: none;
+    }
+    
+    .main-content {
+        min-height: auto;
+    }
+    
+    .vital-signs {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .header-bar {
+        padding: 0.75rem 1rem;
+    }
+    
+    .patient-list-panel, .patient-detail-panel {
+        padding: 1rem;
+    }
+    
+    .metrics-dashboard {
+        padding: 1rem;
+    }
+    
+    .vital-signs {
+        grid-template-columns: 1fr;
+    }
+}

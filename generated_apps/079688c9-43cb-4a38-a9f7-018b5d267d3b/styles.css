@@ -1,0 +1,266 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f8f9fa;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.header-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 2rem;
+}
+
+.alert-summary {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1.5rem;
+}
+
+.stat-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.stat-card.critical {
+    border-left: 4px solid #dc2626;
+}
+
+.stat-card.high {
+    border-left: 4px solid #ea580c;
+}
+
+.stat-card.monitor {
+    border-left: 4px solid #d97706;
+}
+
+.stat-card.stable {
+    border-left: 4px solid #22c55e;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.alert-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.alert-card.critical {
+    border-left: 6px solid #dc2626;
+}
+
+.alert-card.high {
+    border-left: 6px solid #ea580c;
+}
+
+.alert-card.monitor {
+    border-left: 6px solid #d97706;
+}
+
+.alert-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.priority-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.priority-badge.critical {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.priority-badge.high {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.priority-badge.monitor {
+    background: #fffbeb;
+    color: #d97706;
+}
+
+.patient-info {
+    margin-top: 0.75rem;
+}
+
+.patient-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.patient-location {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.alert-body {
+    padding: 1.5rem;
+}
+
+.concern-section {
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.section-title i {
+    margin-right: 0.5rem;
+    width: 16px;
+}
+
+.concern-text {
+    color: #111827;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+}
+
+.observations-list {
+    list-style: none;
+    padding: 0;
+}
+
+.observations-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.observations-list li:last-child {
+    border-bottom: none;
+}
+
+.obs-label {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.obs-value {
+    color: #111827;
+    font-weight: 500;
+}
+
+.obs-value.abnormal {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.action-required {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.action-text {
+    color: #1e293b;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.action-assignee {
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.no-alerts-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 3rem 2rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.time-indicator {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .header-card {
+        padding: 1.5rem;
+    }
+    
+    .alert-header,
+    .alert-body {
+        padding: 1rem;
+    }
+    
+    .patient-name {
+        font-size: 1.125rem;
+    }
+    
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .observations-list li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .obs-value {
+        margin-top: 0.25rem;
+    }
+}

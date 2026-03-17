@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PflegePlus - Dekubitus-Präventions-Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card header-card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h1 class="h4 mb-1">
+                                    <i class="fas fa-shield-alt text-teal me-2"></i>
+                                    PflegePlus - Dekubitus-Präventions-Dashboard
+                                </h1>
+                                <p class="text-muted mb-0" id="patient-info">Lade Patientendaten...</p>
+                            </div>
+                            <div class="text-end">
+                                <div class="badge bg-light text-dark border" id="current-time"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div class="row">
+            <!-- Risk Assessment Panel -->
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                            Risiko-Assessment
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <div class="risk-score-circle" id="risk-score-circle">
+                                <span class="risk-score-number" id="risk-score">--</span>
+                                <small class="risk-score-label">Risiko-Score</small>
+                            </div>
+                        </div>
+                        
+                        <div class="risk-factors" id="risk-factors">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-spinner fa-spin me-2"></i>
+                                Analysiere Risikofaktoren...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Body Map -->
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-user-md text-blue me-2"></i>
+                            Körperkarte
+                        </h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="body-map-container">
+                            <div class="body-outline">
+                                <div class="pressure-point head" data-region="Kopf" title="Hinterkopf"></div>
+                                <div class="pressure-point shoulders" data-region="Schultern" title="Schulterblätter"></div>
+                                <div class="pressure-point sacrum" data-region="Kreuzbein" title="Kreuzbein"></div>
+                                <div class="pressure-point hips" data-region="Hüften" title="Hüftknochen"></div>
+                                <div class="pressure-point heels" data-region="Fersen" title="Fersen"></div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <span class="badge bg-success me-1">●</span> Niedrig
+                                <span class="badge bg-warning me-1">●</span> Mittel
+                                <span class="badge bg-danger me-1">●</span> Hoch
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Positioning Schedule -->
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-clock text-green me-2"></i>
+                            Lagerungsplan
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="positioning-schedule" id="positioning-schedule">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-calendar-alt fa-2x mb-2"></i>
+                                <p>Erstelle personalisierten Lagerungsplan...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Conditions & Observations -->
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-stethoscope text-blue me-2"></i>
+                            Relevante Diagnosen
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="conditions-list">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-spinner fa-spin me-2"></i>
+                                Lade Diagnosen...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-line text-teal me-2"></i>
+                            Vitalwerte & Beobachtungen
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="observations-list">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-spinner fa-spin me-2"></i>
+                                Lade Beobachtungen...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documentation & Compliance -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-clipboard-check text-green me-2"></i>
+                            Dokumentation & Compliance
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Letzte Maßnahmen</h6>
+                                <div id="recent-actions">
+                                    <div class="text-muted">Keine dokumentierten Maßnahmen verfügbar</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Nächste Lagerung</h6>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <span id="next-positioning">Berechne optimalen Zeitpunkt...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

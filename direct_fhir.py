@@ -288,19 +288,28 @@ class DirectFHIRClient:
         # Fetch all records per resource type and group by patient
         for rtype, _ in self._supported_resource_types():
             all_records = self._fetch_all_records(rtype)
+            print(f"[ALL-PATIENTS] {rtype}: fetched {len(all_records)} records", flush=True)
             for record in all_records:
                 pid = self._patient_ref(record)
                 if pid in patients_by_id:
                     patients_by_id[pid]['data'].setdefault(rtype.lower(), [])
                     patients_by_id[pid]['data'][rtype.lower()].append(self._flatten(record))
+                else:
+                    print(f"[ALL-PATIENTS] {rtype}: NO MATCH for ref='{pid}'", flush=True)
 
         # Vital signs — same approach, observations filtered by category
         all_vs = self._fetch_all_records('Observation?category=vital-signs')
+        print(f"[ALL-PATIENTS] vital_signs: fetched {len(all_vs)} records", flush=True)
         for record in all_vs:
             pid = self._patient_ref(record)
             if pid in patients_by_id:
                 patients_by_id[pid]['data'].setdefault('vital_signs', [])
                 patients_by_id[pid]['data']['vital_signs'].append(self._flatten(record))
+
+        # Summary of what each patient got
+        for p in patients:
+            data_summary = {k: len(v) for k, v in p['data'].items()}
+            print(f"[ALL-PATIENTS] patient={p['id']} data={data_summary}", flush=True)
 
         logger.info(f"Done. {len(patients)} patients with clinical data attached.")
 

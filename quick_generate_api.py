@@ -87,6 +87,12 @@ def generate_miniapp():
         return jsonify({'status': 'error', 'error': str(e)}), 500
 
 
+@quick_generate.route('/summary', methods=['POST'])
+def generate_summary():
+    """POST /api/quick/summary — same as /generate, used for shift handover summaries."""
+    return generate_miniapp()
+
+
 @quick_generate.route('/status/<task_id>', methods=['GET'])
 def get_task_status(task_id):
     """GET /api/quick/status/{task_id}"""

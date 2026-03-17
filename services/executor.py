@@ -100,7 +100,11 @@ def execute_task(task_id: str):
         user_prompt = f"{task.title}\n\n{task.description or ''}\n\n{task.specification or ''}"
         add_task_log(task_id, "Generating HTML structure...", 'info')
 
+        import time
+        _t = time.time()
+        print(f"[EXECUTE-TASK] LLM call START — prompt size: {len(user_prompt)} chars, patient_data keys: {list(patient_data.keys())}", flush=True)
         html_content, css_content, js_content, llm_response = llm.generate_mini_app(user_prompt, patient_data)
+        print(f"[EXECUTE-TASK] LLM call END — took {time.time()-_t:.1f}s", flush=True)
         print(f"[EXECUTE-TASK] Mini app generated: html={len(html_content)} chars, css={len(css_content or '')} chars, js={len(js_content or '')} chars")
 
         task.plan = task.plan.replace("3. Generating HTML structure", "3. Generating HTML structure")
