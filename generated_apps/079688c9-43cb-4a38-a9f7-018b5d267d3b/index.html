@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Alert Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="header-card mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle text-danger me-3" style="font-size: 2rem;"></i>
+                        <div>
+                            <h1 class="mb-1">Emergency Alert Dashboard</h1>
+                            <p class="text-muted mb-0">24-72 Hour Clinical Risk Assessment</p>
+                        </div>
+                    </div>
+                    <div class="alert-summary mt-3">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <div class="stat-card critical">
+                                    <div class="stat-number" id="criticalCount">0</div>
+                                    <div class="stat-label">Critical</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card high">
+                                    <div class="stat-number" id="highCount">0</div>
+                                    <div class="stat-label">High Priority</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card monitor">
+                                    <div class="stat-number" id="monitorCount">0</div>
+                                    <div class="stat-label">Monitor</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card stable">
+                                    <div class="stat-number" id="stableCount">0</div>
+                                    <div class="stat-label">Stable</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div id="alertsContainer">
+                    <!-- Alerts will be populated by JavaScript -->
+                </div>
+                
+                <div id="noAlertsMessage" class="text-center py-5" style="display: none;">
+                    <div class="no-alerts-card">
+                        <i class="fas fa-check-circle text-success mb-3" style="font-size: 3rem;"></i>
+                        <h3 class="text-success mb-2">No Active Emergencies</h3>
+                        <p class="text-muted">All patients are stable with no urgent concerns identified for the next 24-72 hours.</p>
+                        <small class="text-muted">Last updated: <span id="lastUpdated"></span></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

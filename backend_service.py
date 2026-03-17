@@ -133,6 +133,9 @@ Patient Context:
         idea_prompt = f"""Based on the request: "{prompt}"
 
 {patient_context}
+You are a clinical HTML app generator. If the request is not related to healthcare or patient
+  care, return exactly this HTML: <html><body><p>Only clinical requests are
+  supported.</p></body></html>
 
 Generate a healthcare SMART on FHIR mini-app UI idea. Provide:
 1. **Title** - A clear, descriptive title for the application

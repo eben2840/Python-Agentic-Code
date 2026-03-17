@@ -1,0 +1,239 @@
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.header-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    margin-bottom: 24px;
+}
+
+.header-card h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.timestamp {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.sbar-section {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    height: 100%;
+}
+
+.sbar-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.sbar-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    color: #1f2937;
+}
+
+.sbar-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-size: 18px;
+    color: white;
+}
+
+.situation-icon { background-color: #14b8a6; }
+.background-icon { background-color: #3b82f6; }
+.assessment-icon { background-color: #f59e0b; }
+.recommendation-icon { background-color: #ef4444; }
+
+.clinical-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.clinical-item:last-child {
+    border-bottom: none;
+}
+
+.clinical-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.clinical-value {
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.alert-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.alert-urgent {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.alert-abnormal {
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fed7aa;
+}
+
+.alert-normal {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.no-data {
+    color: #9ca3af;
+    font-style: italic;
+    padding: 20px;
+    text-align: center;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    border: 1px dashed #d1d5db;
+}
+
+.patient-list-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.patient-card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.patient-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.patient-name {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.patient-details {
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.condition-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: #f3f4f6;
+    color: #374151;
+    border-radius: 12px;
+    font-size: 11px;
+    margin: 2px;
+}
+
+.medication-item {
+    background-color: #f8fafc;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-left: 3px solid #3b82f6;
+}
+
+.vital-reading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.vital-name {
+    font-weight: 500;
+    color: #374151;
+}
+
+.vital-value {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.priority-high {
+    border-left: 4px solid #ef4444;
+    background-color: #fef2f2;
+}
+
+.priority-medium {
+    border-left: 4px solid #f59e0b;
+    background-color: #fffbeb;
+}
+
+.priority-low {
+    border-left: 4px solid #22c55e;
+    background-color: #f0fdf4;
+}
+
+.task-item {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.task-urgent {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+}
+
+.task-normal {
+    background-color: #ffffff;
+}
+
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 16px;
+    }
+    
+    .sbar-section {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+    
+    .header-card {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+}

@@ -6,7 +6,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, request, redirect, url_for, make_response
 
 from models import db, Task, TaskStatus, TaskComplexity, PatientSession
-from direct_fhir import get_patient_data_direct
+from direct_fhir import get_patient_data_direct, get_all_patients_data_direct
 from llm_service import ClaudeLLMService
 from utils.helpers import add_task_log
 from services.executor import execute_task
@@ -47,7 +47,10 @@ def _handle_flutter_init():
     try:
         print("[INDEX] Fetching patient data from FHIR", flush=True)
         session_data_temp = {'fhir_base_url': fhir_base_url, 'patient_id': patient_id, 'auth_token': access_token}
-        patient_data = get_patient_data_direct(session_data_temp)
+        if patient_id == 'all':
+            patient_data = get_all_patients_data_direct(session_data_temp)
+        else:
+            patient_data = get_patient_data_direct(session_data_temp)
         patient_name = patient_data.get('patient', {}).get('name', 'Unknown Patient')
         print(f"[INDEX] Patient data fetched: {patient_name}", flush=True)
 
