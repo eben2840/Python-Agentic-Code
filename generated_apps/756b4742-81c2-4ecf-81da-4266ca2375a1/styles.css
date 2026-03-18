@@ -1,0 +1,252 @@
+body {
+    background-color: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.header-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.header-card h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.patient-info {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+    border-left: 4px solid #14b8a6;
+}
+
+.patient-info h4 {
+    color: #1f2937;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.patient-details {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.patient-detail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6b7280;
+}
+
+.sbar-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    height: 100%;
+    min-height: 300px;
+}
+
+.sbar-header {
+    background: #f8f9fa;
+    border-radius: 12px 12px 0 0;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+}
+
+.sbar-header h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.sbar-content {
+    padding: 20px;
+    flex: 1;
+}
+
+.situation-card {
+    border-left: 4px solid #3b82f6;
+}
+
+.background-card {
+    border-left: 4px solid #14b8a6;
+}
+
+.assessment-card {
+    border-left: 4px solid #22c55e;
+}
+
+.recommendation-card {
+    border-left: 4px solid #f59e0b;
+}
+
+.clinical-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-left: 3px solid #e5e7eb;
+}
+
+.clinical-item:last-child {
+    margin-bottom: 0;
+}
+
+.clinical-item.urgent {
+    background: #fef2f2;
+    border-left-color: #ef4444;
+}
+
+.clinical-item.abnormal {
+    background: #fff7ed;
+    border-left-color: #f59e0b;
+}
+
+.clinical-item.normal {
+    border-left-color: #22c55e;
+}
+
+.clinical-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 4px;
+}
+
+.clinical-value {
+    color: #6b7280;
+}
+
+.clinical-date {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-top: 4px;
+}
+
+.badge-urgent {
+    background-color: #ef4444;
+    color: white;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.badge-abnormal {
+    background-color: #f59e0b;
+    color: white;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.badge-normal {
+    background-color: #22c55e;
+    color: white;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.patients-overview-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.patients-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.patient-summary-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.patient-summary-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+}
+
+.patient-name {
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.patient-conditions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.condition-badge {
+    background-color: #e5e7eb;
+    color: #374151;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.no-data {
+    color: #9ca3af;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+}
+
+.section-divider {
+    border-top: 1px solid #e5e7eb;
+    margin: 16px 0;
+}
+
+.priority-high {
+    border-left-color: #ef4444 !important;
+    background: #fef2f2;
+}
+
+.priority-medium {
+    border-left-color: #f59e0b !important;
+    background: #fff7ed;
+}
+
+.priority-low {
+    border-left-color: #22c55e !important;
+    background: #f0fdf4;
+}
+
+@media (max-width: 768px) {
+    .patient-details {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .sbar-card {
+        min-height: 250px;
+    }
+    
+    .patients-grid {
+        grid-template-columns: 1fr;
+    }
+}

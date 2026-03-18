@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dekubitus-Präventions-Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="header-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="dashboard-title">
+                                <i class="fas fa-shield-alt text-primary me-2"></i>
+                                Dekubitus-Präventions-Dashboard
+                            </h1>
+                            <p class="text-muted mb-0">Intelligente Risikobewertung und adaptive Lagerungsplanung</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary btn-sm" id="refreshBtn">
+                                <i class="fas fa-sync-alt me-1"></i> Aktualisieren
+                            </button>
+                            <button class="btn btn-outline-success btn-sm" id="exportBtn">
+                                <i class="fas fa-download me-1"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Risk Overview Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="risk-summary-card high-risk">
+                    <div class="risk-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="risk-content">
+                        <h3 id="highRiskCount">0</h3>
+                        <p>Hohes Risiko</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="risk-summary-card medium-risk">
+                    <div class="risk-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="risk-content">
+                        <h3 id="mediumRiskCount">0</h3>
+                        <p>Mittleres Risiko</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="risk-summary-card low-risk">
+                    <div class="risk-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="risk-content">
+                        <h3 id="lowRiskCount">0</h3>
+                        <p>Niedriges Risiko</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="risk-summary-card total-patients">
+                    <div class="risk-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="risk-content">
+                        <h3 id="totalPatients">0</h3>
+                        <p>Gesamt Patienten</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="filter-card">
+                    <div class="d-flex flex-wrap gap-3 align-items-center">
+                        <div class="filter-group">
+                            <label class="form-label">Risikostufe:</label>
+                            <select class="form-select form-select-sm" id="riskFilter">
+                                <option value="">Alle Risikostufen</option>
+                                <option value="high">Hohes Risiko</option>
+                                <option value="medium">Mittleres Risiko</option>
+                                <option value="low">Niedriges Risiko</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="form-label">Diagnosegruppe:</label>
+                            <select class="form-select form-select-sm" id="conditionFilter">
+                                <option value="">Alle Diagnosen</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="form-label">Alter:</label>
+                            <select class="form-select form-select-sm" id="ageFilter">
+                                <option value="">Alle Altersgruppen</option>
+                                <option value="young">< 65 Jahre</option>
+                                <option value="elderly">≥ 65 Jahre</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-outline-secondary btn-sm" id="clearFilters">
+                            <i class="fas fa-times me-1"></i> Filter zurücksetzen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Risk Matrix -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="main-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-th-large text-primary me-2"></i>
+                            Patienten-Risikomatrix
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="patientGrid" class="patient-grid">
+                            <!-- Patient cards will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Positioning Schedule -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="main-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-calendar-alt text-success me-2"></i>
+                            Lagerungsplan - Heute
+                        </h5>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary active" data-view="today">Heute</button>
+                            <button class="btn btn-outline-primary" data-view="week">Woche</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="positioningSchedule" class="positioning-schedule">
+                            <!-- Schedule will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Risk Factors Analysis -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="main-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-pie text-warning me-2"></i>
+                            Risikofaktoren-Analyse
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="riskFactorsChart" class="chart-container">
+                            <div class="risk-factor-item">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>Immobilität</span>
+                                    <span class="badge bg-danger">Hoch</span>
+                                </div>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-danger" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            <div class="risk-factor-item">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>Diabetes</span>
+                                    <span class="badge bg-warning">Mittel</span>
+                                </div>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-warning" style="width: 45%"></div>
+                                </div>
+                            </div>
+                            <div class="risk-factor-item">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>Untergewicht</span>
+                                    <span class="badge bg-info">Niedrig</span>
+                                </div>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-info" style="width: 25%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="main-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-clipboard-check text-info me-2"></i>
+                            Compliance-Übersicht
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="complianceOverview">
+                            <div class="compliance-metric">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>Lagerung durchgeführt</span>
+                                    <span class="text-success fw-bold">92%</span>
+                                </div>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-success" style="width: 92%"></div>
+                                </div>
+                            </div>
+                            <div class="compliance-metric">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>Dokumentation vollständig</span>
+                                    <span class="text-warning fw-bold">78%</span>
+                                </div>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-warning" style="width: 78%"></div>
+                                </div>
+                            </div>
+                            <div class="compliance-metric">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>Zeitplan eingehalten</span>
+                                    <span class="text-info fw-bold">85%</span>
+                                </div>
+                                <div class="progress mb-3">
+                                    <div class="progress-bar bg-info" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Detail Modal -->
+        <div class="modal fade" id="patientModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-user-md me-2"></i>
+                            <span id="modalPatientName">Patient Details</span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="patientDetails">
+                            <!-- Patient details will be populated here -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+                        <button type="button" class="btn btn-primary" id="updatePositioningBtn">
+                            <i class="fas fa-edit me-1"></i> Lagerungsplan anpassen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

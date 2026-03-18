@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Assessment Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <!-- Header -->
+                <div class="card mb-4">
+                    <div class="card-body py-3">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-circle me-3">
+                                <i class="fas fa-clipboard-check text-primary"></i>
+                            </div>
+                            <div>
+                                <h1 class="mb-0">Patient Assessment Form</h1>
+                                <p class="text-muted mb-0">Complete clinical evaluation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Assessment Form -->
+                <form id="assessmentForm">
+                    <!-- Patient Information -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 class="mb-0">
+                                <i class="fas fa-user text-teal me-2"></i>
+                                Patient Information
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Patient Name</label>
+                                    <input type="text" class="form-control" id="patientName" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Age</label>
+                                    <input type="number" class="form-control" id="patientAge" min="0" max="120" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Gender</label>
+                                    <select class="form-select" id="patientGender" required>
+                                        <option value="">Select</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vital Signs -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 class="mb-0">
+                                <i class="fas fa-heartbeat text-danger me-2"></i>
+                                Vital Signs
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Blood Pressure</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="bloodPressure" placeholder="120/80">
+                                        <span class="input-group-text">mmHg</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Heart Rate</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="heartRate" min="30" max="200">
+                                        <span class="input-group-text">bpm</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Temperature</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="temperature" step="0.1" min="35" max="42">
+                                        <span class="input-group-text">°C</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Oxygen Saturation</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="oxygenSat" min="70" max="100">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chief Complaint & History -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 class="mb-0">
+                                <i class="fas fa-stethoscope text-success me-2"></i>
+                                Clinical Assessment
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Chief Complaint</label>
+                                    <textarea class="form-control" id="chiefComplaint" rows="2" placeholder="Primary reason for visit"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">History of Present Illness</label>
+                                    <textarea class="form-control" id="presentIllness" rows="3" placeholder="Detailed description of current symptoms"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Pain Level (0-10)</label>
+                                    <input type="range" class="form-range" id="painLevel" min="0" max="10" value="0">
+                                    <div class="d-flex justify-content-between">
+                                        <small class="text-muted">No Pain</small>
+                                        <span id="painValue" class="badge bg-light text-dark">0</span>
+                                        <small class="text-muted">Severe</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Urgency Level</label>
+                                    <select class="form-select" id="urgencyLevel">
+                                        <option value="routine">Routine</option>
+                                        <option value="urgent">Urgent</option>
+                                        <option value="emergent">Emergent</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Physical Examination -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 class="mb-0">
+                                <i class="fas fa-search text-info me-2"></i>
+                                Physical Examination
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">General Appearance</label>
+                                    <select class="form-select" id="generalAppearance">
+                                        <option value="well-appearing">Well-appearing</option>
+                                        <option value="mild-distress">Mild distress</option>
+                                        <option value="moderate-distress">Moderate distress</option>
+                                        <option value="severe-distress">Severe distress</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Mental Status</label>
+                                    <select class="form-select" id="mentalStatus">
+                                        <option value="alert-oriented">Alert & Oriented</option>
+                                        <option value="confused">Confused</option>
+                                        <option value="lethargic">Lethargic</option>
+                                        <option value="unresponsive">Unresponsive</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Physical Findings</label>
+                                    <textarea class="form-control" id="physicalFindings" rows="3" placeholder="Detailed physical examination findings"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assessment & Plan -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h3 class="mb-0">
+                                <i class="fas fa-notes-medical text-warning me-2"></i>
+                                Assessment & Plan
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Clinical Assessment</label>
+                                    <textarea class="form-control" id="clinicalAssessment" rows="3" placeholder="Diagnosis and clinical impression"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Treatment Plan</label>
+                                    <textarea class="form-control" id="treatmentPlan" rows="3" placeholder="Medications, procedures, follow-up instructions"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-save me-2"></i>
+                                Save Assessment
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-lg px-4 ms-3" id="clearForm">
+                                <i class="fas fa-undo me-2"></i>
+                                Clear Form
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
