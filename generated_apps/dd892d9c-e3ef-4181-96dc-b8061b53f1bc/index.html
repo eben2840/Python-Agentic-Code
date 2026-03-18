@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Condition Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-1 text-dark fw-bold">Patient Condition Tracker</h1>
+                <p class="text-muted mb-0">Comprehensive condition overview and population health management</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary btn-sm" id="exportBtn">
+                    <i class="fas fa-download me-1"></i>Export Report
+                </button>
+                <button class="btn btn-primary btn-sm" id="refreshBtn">
+                    <i class="fas fa-sync-alt me-1"></i>Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- Analytics Dashboard -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon bg-primary">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3 id="totalPatients">0</h3>
+                        <p>Total Patients</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon bg-success">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3 id="totalConditions">0</h3>
+                        <p>Active Conditions</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon bg-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3 id="criticalConditions">0</h3>
+                        <p>Critical Cases</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-icon bg-info">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stats-content">
+                        <h3 id="newConditions">0</h3>
+                        <p>New This Month</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="filter-card mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search conditions, patients, or ICD codes...">
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button class="filter-btn active" data-filter="all">All Conditions</button>
+                        <button class="filter-btn" data-filter="Hypertension">Hypertension</button>
+                        <button class="filter-btn" data-filter="Diabetes">Diabetes</button>
+                        <button class="filter-btn" data-filter="Cancer">Cancer</button>
+                        <button class="filter-btn" data-filter="Asthma">Asthma</button>
+                        <button class="filter-btn" data-filter="Depression">Depression</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5 class="mb-0">Condition Prevalence</h5>
+                        <small class="text-muted">Most common conditions across patient population</small>
+                    </div>
+                    <canvas id="prevalenceChart" height="100"></canvas>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5 class="mb-0">Condition Distribution</h5>
+                        <small class="text-muted">By severity level</small>
+                    </div>
+                    <canvas id="distributionChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient-Condition Matrix -->
+        <div class="table-card">
+            <div class="table-header">
+                <h5 class="mb-0">Patient-Condition Matrix</h5>
+                <div class="table-controls">
+                    <select class="form-select form-select-sm" id="sortSelect">
+                        <option value="patient">Sort by Patient</option>
+                        <option value="condition">Sort by Condition</option>
+                        <option value="date">Sort by Date</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Condition</th>
+                            <th>Diagnosis Date</th>
+                            <th>Status</th>
+                            <th>Severity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="conditionTableBody">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Patient Detail Modal -->
+        <div class="modal fade" id="patientModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalPatientName">Patient Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="modalContent">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

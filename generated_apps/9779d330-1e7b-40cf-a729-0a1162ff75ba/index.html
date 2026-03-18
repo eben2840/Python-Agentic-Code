@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condition Overview Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="header-card">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h1 class="mb-1">Condition Overview Dashboard</h1>
+                            <p class="text-muted mb-0" id="patient-info">Loading patient information...</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary btn-sm" id="refresh-btn">
+                                <i class="fas fa-sync-alt me-1"></i>Refresh
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" id="export-btn">
+                                <i class="fas fa-download me-1"></i>Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-icon active">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="active-conditions">0</h3>
+                        <p>Active Conditions</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-icon resolved">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="resolved-conditions">0</h3>
+                        <p>Resolved Conditions</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-icon chronic">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="chronic-conditions">0</h3>
+                        <p>Chronic Conditions</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <div class="stat-icon recent">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="recent-updates">0</h3>
+                        <p>Recent Updates</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="filter-card">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <span class="filter-label">Filter by:</span>
+                        <button class="filter-btn active" data-filter="all">All Conditions</button>
+                        <button class="filter-btn" data-filter="active">Active</button>
+                        <button class="filter-btn" data-filter="resolved">Resolved</button>
+                        <button class="filter-btn" data-filter="chronic">Chronic</button>
+                        <div class="ms-auto">
+                            <div class="input-group input-group-sm" style="width: 250px;">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" class="form-control" placeholder="Search conditions..." id="search-input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+            <!-- Timeline View -->
+            <div class="col-lg-8 mb-4">
+                <div class="timeline-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-timeline me-2"></i>Condition Timeline
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="timeline-container">
+                            <div class="timeline-placeholder">
+                                <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No condition data available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Condition Details Panel -->
+            <div class="col-lg-4 mb-4">
+                <div class="details-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>Condition Details
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="details-placeholder" class="text-center py-4">
+                            <i class="fas fa-mouse-pointer fa-2x text-muted mb-3"></i>
+                            <p class="text-muted">Select a condition from the timeline to view details</p>
+                        </div>
+                        <div id="condition-details" style="display: none;">
+                            <div class="condition-header mb-3">
+                                <h6 id="condition-name" class="mb-1"></h6>
+                                <span id="condition-status" class="badge"></span>
+                            </div>
+                            <div class="condition-info">
+                                <div class="info-row">
+                                    <span class="info-label">Onset Date:</span>
+                                    <span id="condition-onset">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Clinical Status:</span>
+                                    <span id="condition-clinical-status">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Verification:</span>
+                                    <span id="condition-verification">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Category:</span>
+                                    <span id="condition-category">-</span>
+                                </div>
+                            </div>
+                            <div class="related-data mt-4">
+                                <h6 class="mb-2">Related Information</h6>
+                                <div id="related-medications" class="related-section">
+                                    <small class="text-muted">No related medications found</small>
+                                </div>
+                                <div id="related-encounters" class="related-section mt-2">
+                                    <small class="text-muted">No related encounters found</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Condition Categories -->
+        <div class="row">
+            <div class="col-12">
+                <div class="categories-card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-th-large me-2"></i>Condition Categories
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="categories-container">
+                            <div class="categories-placeholder text-center py-4">
+                                <i class="fas fa-folder-open fa-2x text-muted mb-3"></i>
+                                <p class="text-muted">No condition categories available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
