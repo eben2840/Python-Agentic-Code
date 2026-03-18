@@ -1,7 +1,8 @@
 import uuid
 import logging
+import threading
 
-from flask import Blueprint, request, jsonify, redirect, url_for
+from flask import Blueprint, request, jsonify, redirect, url_for, current_app
 
 from models import db, Task, TaskStatus, TaskComplexity, PatientSession
 from utils.helpers import add_task_log
@@ -9,6 +10,15 @@ from services.executor import execute_task, execute_continuation_task
 
 logger = logging.getLogger(__name__)
 tasks_api = Blueprint('tasks_api', __name__)
+
+
+def execute_task_in_context(app, task_id):
+    with app.app_context():
+        execute_task(task_id)
+
+def _run_in_context(app, fn, *args):
+    with app.app_context():
+        fn(*args)
 
 
 @tasks_api.route('/api/tasks', methods=['GET'])
@@ -78,7 +88,8 @@ def run_task(task_id):
     task.cancel_requested = False
     db.session.commit()
 
-    execute_task(task_id)
+    app = current_app._get_current_object()
+    threading.Thread(target=lambda: execute_task_in_context(app, task_id), daemon=True).start()
     return jsonify(task.to_dict())
 
 
@@ -129,7 +140,8 @@ def continue_task(task_id):
     db.session.commit()
 
     add_task_log(task_id, f"Continuing task with changes: {changes[:100]}...", 'info')
-    execute_continuation_task(task_id, changes)
+    app = current_app._get_current_object()
+    threading.Thread(target=lambda: _run_in_context(app, execute_continuation_task, task_id, changes), daemon=True).start()
     return jsonify({'message': 'Applying changes...', 'task': task.to_dict()})
 
 
@@ -169,7 +181,8 @@ def create_task_form():
     add_task_log(task_id, f"Task created: {title}", 'info')
 
     print(f"[CREATE-TASK] Starting execution for task {task_id}", flush=True)
-    execute_task(task_id)
+    app = current_app._get_current_object()
+    threading.Thread(target=lambda: execute_task_in_context(app, task_id), daemon=True).start()
 
     print("[CREATE-TASK] Redirecting to index", flush=True)
     return redirect(url_for('web.index'))
