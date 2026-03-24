@@ -1,4 +1,5 @@
 import uuid
+import json
 import logging
 import threading
 
@@ -8,10 +9,48 @@ from models import db, Task, TaskStatus, TaskComplexity, PatientSession, TaskLog
 from direct_fhir import get_patient_data_direct, get_all_patients_data_direct
 from utils.helpers import add_task_log
 from services.executor import run_generation
+from llm_service import ClaudeLLMService
 
 logger = logging.getLogger(__name__)
 
 quick_generate = Blueprint('quick_generate', __name__, url_prefix='/api/quick')
+
+_EXTRACTION_SYSTEM = """You are a clinical data extractor. You output JSON only — no explanation, no markdown, no code fences.
+
+Given a nurse's voice transcript, extract any of the following:
+- Vitals: blood pressure, heart rate, temperature, oxygen saturation, pain level
+- Medications: name, dose, route, status (given/refused/held)
+- Interventions: mobility assist, repositioning, meal assist, hygiene, toileting
+- Observations: patient feeling, orientation
+
+Respond with this exact JSON structure and nothing else:
+{"vitals": [], "medications": [], "interventions": [], "observations": []....}
+
+Example output:
+{"vitals": [{"label": "Blood Pressure", "value": "120/80", "unit": "mmHg"}], "medications": [{"name": "Paracetamol", "dose": "500mg", "status": "given"}], "interventions": [], "observations": [{"label": "Patient Feeling", "value": "confused, disoriented"}] " and the rest"...}
+
+If nothing is found for a category, return an empty array for that key."""
+
+
+@quick_generate.route('/extract', methods=['POST'])
+def extract_transcript():
+    data       = request.get_json()
+    transcript = (data.get('transcript') or '').strip()
+
+    if not transcript:
+        return jsonify({'status': 'error', 'error': 'transcript is required'}), 400
+
+    llm      = ClaudeLLMService()
+    response = llm.client.messages.create(
+        model=llm.model,
+        max_tokens=1024,
+        system=_EXTRACTION_SYSTEM,
+        messages=[{"role": "user", "content": transcript}]
+    )
+    extracted = json.loads(response.content[0].text.strip())
+    print(extracted)
+    print(extracted)
+    return jsonify({'status': 'ok', 'extracted': extracted, 'empty': not any(extracted.values()), 'transcript': transcript})
 
 
 @quick_generate.route('/generate', methods=['POST'])
