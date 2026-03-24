@@ -1,0 +1,357 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f8f9fa;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.header-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 1.5rem;
+}
+
+.patient-info {
+    min-width: 200px;
+}
+
+.assessment-card,
+.risk-card,
+.medication-card,
+.trends-card,
+.interventions-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    height: 100%;
+}
+
+.card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 12px 12px 0 0;
+    padding: 1rem 1.5rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.assessment-step {
+    border-bottom: 1px solid #f1f3f4;
+    padding-bottom: 1rem;
+}
+
+.assessment-step:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.step-title {
+    color: #374151;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.form-select {
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 14px;
+}
+
+.form-check {
+    margin-bottom: 0.5rem;
+}
+
+.form-check-input {
+    margin-top: 0.25rem;
+}
+
+.form-check-label {
+    font-size: 14px;
+    color: #374151;
+}
+
+.cam-result .alert {
+    border-radius: 8px;
+    margin-bottom: 0;
+}
+
+.alert-success {
+    background-color: #d1fae5;
+    border-color: #a7f3d0;
+    color: #065f46;
+}
+
+.alert-warning {
+    background-color: #fef3c7;
+    border-color: #fde68a;
+    color: #92400e;
+}
+
+.alert-danger {
+    background-color: #fee2e2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+.risk-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.risk-item:last-child {
+    border-bottom: none;
+}
+
+.risk-label {
+    font-weight: 500;
+    color: #374151;
+}
+
+.risk-value {
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.risk-bar {
+    background: #f3f4f6;
+    border-radius: 4px;
+    height: 6px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+
+.risk-progress {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.risk-progress.low {
+    background: #22c55e;
+}
+
+.risk-progress.medium {
+    background: #f59e0b;
+}
+
+.risk-progress.high {
+    background: #ef4444;
+}
+
+.overall-risk {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.risk-score {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #374151;
+    line-height: 1;
+}
+
+.risk-category {
+    font-weight: 600;
+    margin-top: 0.25rem;
+}
+
+.risk-category.low {
+    color: #22c55e;
+}
+
+.risk-category.medium {
+    color: #f59e0b;
+}
+
+.risk-category.high {
+    color: #ef4444;
+}
+
+.anticholinergic-score {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.score-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #14b8a6;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 auto 0.5rem;
+}
+
+.score-circle.medium {
+    background: #f59e0b;
+}
+
+.score-circle.high {
+    background: #ef4444;
+}
+
+.score-label {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.medication-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-left: 4px solid #e5e7eb;
+}
+
+.medication-item.high-risk {
+    border-left-color: #ef4444;
+    background: #fef2f2;
+}
+
+.medication-item.medium-risk {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.medication-name {
+    font-weight: 600;
+    color: #374151;
+}
+
+.medication-dose {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.medication-risk {
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+.intervention-checklist .form-check {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.intervention-checklist .form-check-input:checked + .form-check-label {
+    color: #22c55e;
+    font-weight: 500;
+}
+
+.prevention-tips h6 {
+    color: #374151;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.prevention-tips li {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.text-primary {
+    color: #3b82f6 !important;
+}
+
+.text-success {
+    color: #22c55e !important;
+}
+
+.text-warning {
+    color: #f59e0b !important;
+}
+
+.text-danger {
+    color: #ef4444 !important;
+}
+
+@media (max-width: 768px) {
+    .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .header-card {
+        padding: 1rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .patient-info {
+        min-width: auto;
+        margin-top: 1rem;
+    }
+    
+    .d-flex.justify-content-between {
+        flex-direction: column;
+    }
+    
+    .risk-score {
+        font-size: 2rem;
+    }
+    
+    .score-circle {
+        width: 60px;
+        height: 60px;
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .chart-container {
+        height: 250px;
+    }
+    
+    .overall-risk {
+        padding: 1rem;
+    }
+    
+    .anticholinergic-score {
+        padding: 1rem;
+    }
+}

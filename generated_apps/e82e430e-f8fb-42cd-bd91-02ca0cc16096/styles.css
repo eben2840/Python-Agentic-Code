@@ -1,0 +1,426 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f8f9fa;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #374151;
+}
+
+.container-fluid {
+    padding: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Header */
+.header-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.header-card h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.patient-info {
+    text-align: right;
+}
+
+.patient-info .fw-bold {
+    font-size: 1.1rem;
+    color: #111827;
+}
+
+/* Risk Dashboard */
+.risk-dashboard {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 1.5rem;
+}
+
+.risk-indicator {
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.risk-indicator.risk-low {
+    border-color: #22c55e;
+    background: #f0fdf4;
+}
+
+.risk-indicator.risk-medium {
+    border-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.risk-indicator.risk-high {
+    border-color: #ef4444;
+    background: #fef2f2;
+}
+
+.risk-icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+    color: #6b7280;
+}
+
+.risk-indicator.risk-low .risk-icon {
+    color: #22c55e;
+}
+
+.risk-indicator.risk-medium .risk-icon {
+    color: #f59e0b;
+}
+
+.risk-indicator.risk-high .risk-icon {
+    color: #ef4444;
+}
+
+.risk-content h6 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+
+.risk-score {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1;
+}
+
+.risk-status {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+.risk-indicator.risk-low .risk-status {
+    color: #22c55e;
+}
+
+.risk-indicator.risk-medium .risk-status {
+    color: #f59e0b;
+}
+
+.risk-indicator.risk-high .risk-status {
+    color: #ef4444;
+}
+
+/* Assessment Cards */
+.assessment-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    height: 100%;
+}
+
+.assessment-header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.assessment-header h5 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.assessment-body {
+    padding: 1.5rem;
+}
+
+.assessment-item {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.assessment-item:hover {
+    background: #f3f4f6;
+}
+
+.assessment-item.checked {
+    background: #dbeafe;
+    border-color: #3b82f6;
+}
+
+.assessment-item label {
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 0;
+}
+
+.assessment-item input[type="checkbox"] {
+    margin-right: 0.75rem;
+    transform: scale(1.2);
+}
+
+.assessment-actions {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Data Integration */
+.data-integration-card,
+.recommendations-card,
+.documentation-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.card-header {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.card-header h5 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.data-section {
+    margin-bottom: 1.5rem;
+}
+
+.data-section h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.75rem;
+}
+
+.data-list {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+    min-height: 100px;
+}
+
+.data-item {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.data-item:last-child {
+    margin-bottom: 0;
+}
+
+.data-item .label {
+    font-weight: 600;
+    color: #374151;
+}
+
+.data-item .value {
+    color: #6b7280;
+    margin-left: 0.5rem;
+}
+
+.no-data {
+    color: #9ca3af;
+    font-style: italic;
+    text-align: center;
+    padding: 1rem;
+}
+
+/* Recommendations */
+.recommendation-item {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: flex-start;
+}
+
+.recommendation-item:last-child {
+    margin-bottom: 0;
+}
+
+.recommendation-item.high-priority {
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.recommendation-item.medium-priority {
+    background: #fffbeb;
+    border-color: #fed7aa;
+}
+
+/* Documentation */
+.assessment-summary {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.assessment-summary h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item .label {
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.summary-item .value {
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.btn-outline-primary {
+    color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-outline-primary:hover {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-outline-secondary {
+    color: #6b7280;
+    border-color: #d1d5db;
+}
+
+.btn-outline-secondary:hover {
+    background: #6b7280;
+    border-color: #6b7280;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 1rem;
+    }
+    
+    .header-card {
+        padding: 1rem;
+    }
+    
+    .header-card .d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .patient-info {
+        text-align: left;
+        margin-top: 1rem;
+    }
+    
+    .risk-indicator {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .risk-icon {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+    
+    .assessment-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .card-header .d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .risk-dashboard .row {
+        gap: 1rem;
+    }
+    
+    .risk-indicator {
+        margin-bottom: 1rem;
+    }
+    
+    .summary-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+}

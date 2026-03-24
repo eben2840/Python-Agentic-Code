@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dekubitus-Monitoring Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="h3 mb-1"><i class="fas fa-chart-line text-primary me-2"></i>Dekubitus-Monitoring Dashboard</h1>
+                        <p class="text-muted mb-0">Monatliche Übersicht und Trend-Analyse</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-primary btn-sm" id="exportPdf">
+                            <i class="fas fa-file-pdf me-1"></i>PDF Export
+                        </button>
+                        <button class="btn btn-outline-success btn-sm" id="exportExcel">
+                            <i class="fas fa-file-excel me-1"></i>Excel Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body py-3">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small">Zeitraum</label>
+                                <select class="form-select form-select-sm" id="timeFilter">
+                                    <option value="current">Aktueller Monat</option>
+                                    <option value="last3">Letzte 3 Monate</option>
+                                    <option value="last6">Letzte 6 Monate</option>
+                                    <option value="year">Letztes Jahr</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small">Station</label>
+                                <select class="form-select form-select-sm" id="wardFilter">
+                                    <option value="all">Alle Stationen</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small">Schweregrad</label>
+                                <select class="form-select form-select-sm" id="severityFilter">
+                                    <option value="all">Alle Grade</option>
+                                    <option value="1">Stadium I</option>
+                                    <option value="2">Stadium II</option>
+                                    <option value="3">Stadium III</option>
+                                    <option value="4">Stadium IV</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small">Aktionen</label>
+                                <div>
+                                    <button class="btn btn-primary btn-sm w-100" id="applyFilters">
+                                        <i class="fas fa-filter me-1"></i>Filter anwenden
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="row mb-4">
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card kpi-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="kpi-icon bg-primary">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="mb-0" id="totalCases">0</h3>
+                                <p class="text-muted mb-0 small">Gesamtzahl Fälle</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card kpi-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="kpi-icon bg-warning">
+                                <i class="fas fa-plus-circle"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="mb-0" id="newCases">0</h3>
+                                <p class="text-muted mb-0 small">Neuauftreten</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card kpi-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="kpi-icon bg-success">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="mb-0" id="healingRate">0%</h3>
+                                <p class="text-muted mb-0 small">Heilungsrate</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card kpi-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="kpi-icon bg-info">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="mb-0" id="riskPatients">0</h3>
+                                <p class="text-muted mb-0 small">Risikopatienten</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-lg-8 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Monatliche Dekubitus-Inzidenz</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="incidenceChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Verteilung nach Schweregrad</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="severityChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Heatmap and Trend Analysis -->
+        <div class="row mb-4">
+            <div class="col-lg-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-th me-2"></i>Risiko-Heatmap nach Körperregionen</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="heatmapContainer"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-trending-up me-2"></i>Trend-Analyse</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="trendChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Details Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-users me-2"></i>Patienten-Detailansicht</h5>
+                        <div class="d-flex gap-2">
+                            <input type="text" class="form-control form-control-sm" placeholder="Suchen..." id="patientSearch" style="width: 200px;">
+                            <button class="btn btn-outline-secondary btn-sm" id="refreshTable">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="patientsTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Patient</th>
+                                        <th>Alter</th>
+                                        <th>Station</th>
+                                        <th>Schweregrad</th>
+                                        <th>Lokalisation</th>
+                                        <th>Braden-Skala</th>
+                                        <th>Auftreten</th>
+                                        <th>Status</th>
+                                        <th>Aktionen</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="patientsTableBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Detail Modal -->
+    <div class="modal fade" id="patientDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Patientendetails</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="patientDetailContent">
+                    <!-- Dynamic content -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Schließen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
