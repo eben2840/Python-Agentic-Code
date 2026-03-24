@@ -133,16 +133,7 @@ class ClaudeLLMService:
         if not html:
             return existing_html, existing_css, existing_js, raw
 
-        return html, css, js, raw
-    
-
-
-
-
-
-
-
-    
+        return html, css, js, raw 
 
     # -------------------------------------------------------------------------
     # Helpers

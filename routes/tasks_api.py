@@ -23,7 +23,7 @@ def _run_in_context(app, fn, *args):
 
 @tasks_api.route('/api/tasks', methods=['GET'])
 def get_tasks():
-    """Get all tasks"""
+    # """Get all tasks"""
     print(f"[DEBUG] GET /api/tasks - fetching all tasks")
     tasks = Task.query.order_by(Task.updated_at.desc()).all()
     print(f"[DEBUG] GET /api/tasks - found {len(tasks)} tasks")
@@ -32,7 +32,7 @@ def get_tasks():
 
 @tasks_api.route('/api/tasks/<task_id>', methods=['GET'])
 def get_task(task_id):
-    """Get a specific task"""
+    # """Get a specific task"""
     task = Task.query.get(task_id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -41,7 +41,7 @@ def get_task(task_id):
 
 @tasks_api.route('/api/tasks/<task_id>', methods=['PATCH', 'PUT'])
 def update_task(task_id):
-    """Update a task"""
+    # """Update a task"""
     task = Task.query.get(task_id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -65,7 +65,7 @@ def update_task(task_id):
 
 @tasks_api.route('/api/tasks/<task_id>', methods=['DELETE'])
 def delete_task(task_id):
-    """Delete a task"""
+    # """Delete a task"""
     task = Task.query.get(task_id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -77,7 +77,7 @@ def delete_task(task_id):
 
 @tasks_api.route('/api/tasks/<task_id>/run', methods=['POST'])
 def run_task(task_id):
-    """Run/restart a task"""
+    # """Run/restart a task"""
     task = Task.query.get(task_id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -95,7 +95,7 @@ def run_task(task_id):
 
 @tasks_api.route('/api/tasks/<task_id>/cancel', methods=['POST'])
 def cancel_task(task_id):
-    """Cancel a running task — move to pending"""
+    # """Cancel a running task — move to pending"""
     task = Task.query.get(task_id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -114,7 +114,7 @@ def cancel_task(task_id):
 
 @tasks_api.route('/api/tasks/<task_id>/continue', methods=['POST'])
 def continue_task(task_id):
-    """Continue a completed task with incremental changes"""
+    # """Continue a completed task with incremental changes"""
     task = Task.query.get(task_id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
