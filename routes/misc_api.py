@@ -72,23 +72,23 @@ def get_status():
     })
 
 
-@misc_api.route('/api/speech-to-text', methods=['POST'])
-def speech_to_text():
-    """Receive audio chunks and transcribe"""
-    if "audio" not in request.files:
-        return jsonify({"error": "audio missing"}), 400
+# @misc_api.route('/api/speech-to-text', methods=['POST'])
+# def speech_to_text():
+#     """Receive audio chunks and transcribe"""
+#     if "audio" not in request.files:
+#         return jsonify({"error": "audio missing"}), 400
 
-    audio_file  = request.files["audio"]
-    audio_bytes = audio_file.read()
+#     audio_file  = request.files["audio"]
+#     audio_bytes = audio_file.read()
 
-    try:
-        response = model.generate_content([
-            {"mime_type": audio_file.mimetype, "data": audio_bytes},
-            "Transcribe this audio accurately."
-        ])
-        return jsonify({"text": response.text.strip()})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+#     try:
+#         response = model.generate_content([
+#             {"mime_type": audio_file.mimetype, "data": audio_bytes},
+#             "Transcribe this audio accurately."
+#         ])
+#         return jsonify({"text": response.text.strip()})
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
 
 
 @misc_api.route('/api/logs', methods=['GET'])

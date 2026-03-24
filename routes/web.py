@@ -30,8 +30,8 @@ def _load_tasks() -> dict:
     }
 
 
+    # """Handle POST / when Flutter headers are present."""
 def _handle_flutter_init():
-    """Handle POST / when Flutter headers are present."""
     print("[INDEX] POST request - checking Flutter headers", flush=True)
     auth_header   = request.headers.get('Authorization', '')
     patient_id    = request.headers.get('X-Patient-Id', '')
@@ -95,8 +95,8 @@ def _handle_flutter_init():
         return _render_dashboard()
 
 
+    # """Render the main dashboard for GET requests."""
 def _render_dashboard():
-    """Render the main dashboard for GET requests."""
     print("[INDEX] GET request - loading dashboard", flush=True)
     patient_session = PatientSession.query.order_by(PatientSession.last_accessed.desc()).first()
     patient_data = session_id = fhir_base_url = patient_id = auth_token = None
