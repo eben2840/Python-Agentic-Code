@@ -1,0 +1,233 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f8f9fa;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #374151;
+}
+
+.container-fluid {
+    max-width: 1400px;
+}
+
+/* Cards */
+.header-card, .clinical-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.header-card {
+    padding: 1.5rem 2rem;
+}
+
+.clinical-card .card-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.clinical-card .card-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.clinical-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Colors */
+.text-teal { color: #14b8a6 !important; }
+.text-blue { color: #3b82f6 !important; }
+.text-green { color: #22c55e !important; }
+
+/* Assessment Items */
+.assessment-item {
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 4px solid #e5e7eb;
+}
+
+.assessment-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.assessment-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.assessment-status {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.assessment-status.normal {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.assessment-status.alert {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* Patient Info */
+.patient-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.patient-detail:last-child {
+    border-bottom: none;
+}
+
+.patient-detail-label {
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.patient-detail-value {
+    font-weight: 600;
+    color: #111827;
+}
+
+/* Location Info */
+.location-item {
+    padding: 1rem;
+    background: #f0f9ff;
+    border-radius: 8px;
+    border-left: 4px solid #3b82f6;
+    margin-bottom: 0.75rem;
+}
+
+.location-item:last-child {
+    margin-bottom: 0;
+}
+
+.location-name {
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.location-ward {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.location-status {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    background: #dcfce7;
+    color: #166534;
+    display: inline-block;
+    margin-top: 0.5rem;
+}
+
+/* Encounters */
+.encounter-item {
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 4px solid #22c55e;
+    margin-bottom: 0.75rem;
+}
+
+.encounter-item:last-child {
+    margin-bottom: 0;
+}
+
+.encounter-status {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    background: #dcfce7;
+    color: #166534;
+    display: inline-block;
+}
+
+/* Alerts */
+.alert {
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.alert:last-child {
+    margin-bottom: 0;
+}
+
+/* Typography */
+h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.text-muted {
+    color: #6b7280 !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 1rem !important;
+    }
+    
+    .header-card {
+        padding: 1rem 1.25rem;
+    }
+    
+    .clinical-card .card-header {
+        padding: 1rem 1.25rem;
+    }
+    
+    .clinical-card .card-body {
+        padding: 1.25rem;
+    }
+    
+    h1 {
+        font-size: 1.25rem;
+    }
+    
+    .assessment-item {
+        padding: 0.75rem;
+    }
+}
