@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Assessment - Spencer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid p-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <!-- Header -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h1 class="h3 mb-1">Risk Assessment</h1>
+                                <p class="text-muted mb-0" id="patient-info">Loading patient information...</p>
+                            </div>
+                            <div class="text-end">
+                                <div class="badge bg-light text-dark fs-6" id="assessment-date"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Assessment Form -->
+                <div class="card">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="mb-0"><i class="fas fa-clipboard-check text-primary me-2"></i>Clinical Risk Assessment</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="risk-assessment-form">
+                            <!-- Fall Risk -->
+                            <div class="assessment-section mb-4">
+                                <h6 class="section-title">Fall Risk Assessment</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Age Factor</label>
+                                            <select class="form-select" name="age_factor" required>
+                                                <option value="">Select...</option>
+                                                <option value="0">Under 65 years (0 points)</option>
+                                                <option value="1">65-79 years (1 point)</option>
+                                                <option value="2">80+ years (2 points)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Previous Falls</label>
+                                            <select class="form-select" name="previous_falls" required>
+                                                <option value="">Select...</option>
+                                                <option value="0">No falls in past year (0 points)</option>
+                                                <option value="2">1 fall in past year (2 points)</option>
+                                                <option value="3">2+ falls in past year (3 points)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Mobility</label>
+                                            <select class="form-select" name="mobility" required>
+                                                <option value="">Select...</option>
+                                                <option value="0">Independent (0 points)</option>
+                                                <option value="1">Uses walking aid (1 point)</option>
+                                                <option value="2">Requires assistance (2 points)</option>
+                                                <option value="3">Bedbound/wheelchair (3 points)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Medications</label>
+                                            <select class="form-select" name="medications" required>
+                                                <option value="">Select...</option>
+                                                <option value="0">No high-risk medications (0 points)</option>
+                                                <option value="1">1-2 high-risk medications (1 point)</option>
+                                                <option value="2">3+ high-risk medications (2 points)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pressure Ulcer Risk -->
+                            <div class="assessment-section mb-4">
+                                <h6 class="section-title">Pressure Ulcer Risk (Braden Scale)</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Sensory Perception</label>
+                                            <select class="form-select" name="sensory_perception" required>
+                                                <option value="">Select...</option>
+                                                <option value="1">Completely limited (1)</option>
+                                                <option value="2">Very limited (2)</option>
+                                                <option value="3">Slightly limited (3)</option>
+                                                <option value="4">No impairment (4)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Moisture</label>
+                                            <select class="form-select" name="moisture" required>
+                                                <option value="">Select...</option>
+                                                <option value="1">Constantly moist (1)</option>
+                                                <option value="2">Very moist (2)</option>
+                                                <option value="3">Occasionally moist (3)</option>
+                                                <option value="4">Rarely moist (4)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Activity</label>
+                                            <select class="form-select" name="activity" required>
+                                                <option value="">Select...</option>
+                                                <option value="1">Bedfast (1)</option>
+                                                <option value="2">Chairfast (2)</option>
+                                                <option value="3">Walks occasionally (3)</option>
+                                                <option value="4">Walks frequently (4)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Nutrition</label>
+                                            <select class="form-select" name="nutrition" required>
+                                                <option value="">Select...</option>
+                                                <option value="1">Very poor (1)</option>
+                                                <option value="2">Probably inadequate (2)</option>
+                                                <option value="3">Adequate (3)</option>
+                                                <option value="4">Excellent (4)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- VTE Risk -->
+                            <div class="assessment-section mb-4">
+                                <h6 class="section-title">VTE Risk Assessment</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Surgery/Trauma</label>
+                                            <select class="form-select" name="surgery_trauma" required>
+                                                <option value="">Select...</option>
+                                                <option value="0">No recent surgery/trauma (0 points)</option>
+                                                <option value="2">Minor surgery (2 points)</option>
+                                                <option value="3">Major surgery (3 points)</option>
+                                                <option value="4">Major trauma (4 points)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Immobility</label>
+                                            <select class="form-select" name="immobility" required>
+                                                <option value="">Select...</option>
+                                                <option value="0">Mobile (0 points)</option>
+                                                <option value="1">Reduced mobility (1 point)</option>
+                                                <option value="2">Bedrest 3+ days (2 points)</option>
+                                                <option value="3">Paralysis (3 points)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Cancer</label>
+                                            <select class="form-select" name="cancer" required>
+                                                <option value="">Select...</option>
+                                                <option value="0">No cancer (0 points)</option>
+                                                <option value="2">Active cancer (2 points)</option>
+                                                <option value="3">Metastatic cancer (3 points)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Previous VTE</label>
+                                            <select class="form-select" name="previous_vte" required>
+                                                <option value="">Select...</option>
+                                                <option value="0">No history (0 points)</option>
+                                                <option value="3">Previous VTE (3 points)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Risk Factors -->
+                            <div class="assessment-section mb-4">
+                                <h6 class="section-title">Additional Risk Factors</h6>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Additional Notes</label>
+                                            <textarea class="form-control" name="additional_notes" rows="3" placeholder="Any additional risk factors or observations..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-3 justify-content-end">
+                                <button type="button" class="btn btn-outline-secondary" id="reset-form">
+                                    <i class="fas fa-undo me-1"></i>Reset
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>Calculate Risk
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Risk Results -->
+                <div class="card mt-4" id="risk-results" style="display: none;">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="mb-0"><i class="fas fa-chart-line text-success me-2"></i>Risk Assessment Results</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="risk-score-card fall-risk">
+                                    <div class="risk-icon">
+                                        <i class="fas fa-walking"></i>
+                                    </div>
+                                    <div class="risk-content">
+                                        <h6>Fall Risk</h6>
+                                        <div class="score" id="fall-score">0</div>
+                                        <div class="risk-level" id="fall-level">Low</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="risk-score-card pressure-risk">
+                                    <div class="risk-icon">
+                                        <i class="fas fa-bed"></i>
+                                    </div>
+                                    <div class="risk-content">
+                                        <h6>Pressure Ulcer</h6>
+                                        <div class="score" id="pressure-score">0</div>
+                                        <div class="risk-level" id="pressure-level">Low</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="risk-score-card vte-risk">
+                                    <div class="risk-icon">
+                                        <i class="fas fa-heart-pulse"></i>
+                                    </div>
+                                    <div class="risk-content">
+                                        <h6>VTE Risk</h6>
+                                        <div class="score" id="vte-score">0</div>
+                                        <div class="risk-level" id="vte-level">Low</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6>Recommended Interventions</h6>
+                            <div id="interventions-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
