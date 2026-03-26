@@ -1,1 +1,0 @@
-// Not applicable for non-clinical request

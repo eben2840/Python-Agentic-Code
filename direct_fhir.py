@@ -240,3 +240,4 @@ def get_patient_data_direct(session_data):
 
 def get_all_patients_data_direct(session_data):
     return DirectFHIRClient(session_data).get_all_patients_data()
+
