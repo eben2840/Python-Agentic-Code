@@ -1,7 +1,6 @@
 # Python
 __pycache__/
 *.pyc
-<<<<<<< HEAD
 
 # Virtual environments
 venv/
@@ -16,21 +15,6 @@ instance/
 
 # OS
 .DS_Store
-=======
- 
-# Virtual environments
-venv/
-env/
- 
-# Environment variables
-.env
- 
-# Flask
-instance/
- 
-# OS
-.DS_Store
 
-#  db
 instance/careit_vibe.db
->>>>>>> 69fd5dc22513a4a5db122908d6bb12403b48ed22
+generated_apps/
