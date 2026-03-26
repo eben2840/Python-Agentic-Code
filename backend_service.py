@@ -280,3 +280,4 @@ def get_task_status(task_id):
         'logs':              [log.to_dict() for log in logs],
         'updated_at':        task.updated_at.isoformat() if task.updated_at else None,
     })
+

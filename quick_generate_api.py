@@ -167,3 +167,4 @@ def get_task_status(task_id):
         response['raw_url'] = url_for('mini_apps.mini_app_raw',     task_id=task_id, _external=True)
 
     return jsonify(response)
+
