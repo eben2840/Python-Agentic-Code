@@ -1,0 +1,167 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f8f9fa;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #374151;
+}
+
+.main-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.card-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.text-teal {
+    color: #14b8a6 !important;
+}
+
+.text-blue {
+    color: #3b82f6 !important;
+}
+
+.text-green {
+    color: #22c55e !important;
+}
+
+.patient-info {
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.patient-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.patient-details {
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.ward-location {
+    text-align: center;
+}
+
+.location-card {
+    background: #ffffff;
+    border: 2px solid #14b8a6;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 1rem;
+}
+
+.location-icon {
+    font-size: 3rem;
+    color: #14b8a6;
+    margin-bottom: 1rem;
+}
+
+.ward-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.room-name {
+    font-size: 1.1rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-active {
+    background: #dcfdf7;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.no-data {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #6b7280;
+}
+
+.no-data-icon {
+    font-size: 3rem;
+    color: #d1d5db;
+    margin-bottom: 1rem;
+}
+
+.multiple-patients {
+    margin-bottom: 2rem;
+}
+
+.patient-section {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.patient-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 1rem;
+    }
+    
+    .card-header {
+        padding: 1rem;
+    }
+    
+    .card-title {
+        font-size: 1.1rem;
+    }
+    
+    .location-card {
+        padding: 1.5rem;
+    }
+    
+    .ward-name {
+        font-size: 1.25rem;
+    }
+    
+    .location-icon {
+        font-size: 2.5rem;
+    }
+}

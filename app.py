@@ -21,7 +21,7 @@ logging.basicConfig(
 # =============================================================================
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'k21vhabf2lbhyblb')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///careit_vibe.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
