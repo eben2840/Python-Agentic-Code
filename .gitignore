@@ -17,3 +17,5 @@ instance/
 
 #  db
 instance/careit_vibe.db
+
+generated_apps/
