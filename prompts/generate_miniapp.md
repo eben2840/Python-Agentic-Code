@@ -32,7 +32,8 @@ $data_context
 - Each resource key is a **flat array** directly — whatever resource types exist in `patient.data`
 - Loop dynamically: `window.PATIENT_DATA.patients.forEach(patient => { Object.entries(patient.data || {}).forEach(([rtype, records]) => { (records || []).forEach(r => ...) }) })`
 - Show EACH patient's data for ALL resource types present — do NOT summarise or aggregate
-- There is NO `.summary` key on any resource — NEVER use `.resourcetype.summary`, it will always be undefined and show 0
+- There is NO `.summary` key on any resource inside `patient.data` — NEVER use `.resourcetype.summary`, it will always be undefined and show 0
+- **Standalone/context resources** (e.g. Location, Organization, Practitioner) are NOT inside `patient.data` — they are top-level keys on `window.PATIENT_DATA` with the structure `{ count, resources, summary }` where `resources` is the full FHIR resource array and `summary` is `[{ name, status, date, value }]`. Access them as `window.PATIENT_DATA.location`, `window.PATIENT_DATA.organization`, etc. (lowercase). Use `resources` for full detail (e.g. `resource.name`, `resource.physicalType`) or `summary` for the flattened view.
 
 ---
 

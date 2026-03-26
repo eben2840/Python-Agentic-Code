@@ -59,6 +59,8 @@ def generate_miniapp():
     POST /api/quick/generate
     Body: { prompt, accessToken, fhirBaseUrl, patientId }
     Returns 202 immediately with task_id. Poll /status/{task_id} for progress.
+    this generate the mini app from the old context, only from the old context
+    this is done with all in the form
     """
     try:
         data          = request.get_json()

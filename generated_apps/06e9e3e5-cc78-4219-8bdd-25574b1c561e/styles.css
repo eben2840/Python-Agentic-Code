@@ -1,0 +1,409 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f8f9fa;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #374151;
+}
+
+.dashboard-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0;
+}
+
+.dashboard-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.card-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1.5rem;
+}
+
+.card-header h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.summary-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+}
+
+.summary-card .icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.summary-card .count {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.summary-card .label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.ward-room-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.ward-section {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ward-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.ward-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.ward-title {
+    display: flex;
+    align-items: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.ward-title i {
+    margin-right: 0.75rem;
+    color: #3b82f6;
+}
+
+.ward-stats {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ward-occupancy {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.ward-capacity {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.capacity-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.capacity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.capacity-dot.occupied {
+    background-color: #f59e0b;
+}
+
+.capacity-dot.available {
+    background-color: #22c55e;
+}
+
+.rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.room-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.room-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+}
+
+.room-card.occupied {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+    color: #92400e;
+}
+
+.room-card.occupied:hover {
+    border-color: #d97706;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+}
+
+.room-card.available {
+    border-color: #22c55e;
+    background: linear-gradient(135deg, #dcfce7 0%, #86efac 100%);
+    color: #166534;
+}
+
+.room-card.available:hover {
+    border-color: #16a34a;
+    box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+}
+
+.room-status {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.room-status.occupied {
+    background-color: #f59e0b;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+.room-status.available {
+    background-color: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+.room-name {
+    font-weight: 600;
+    color: inherit;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.room-name i {
+    margin-right: 0.5rem;
+    color: inherit;
+}
+
+.room-patient-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: inherit;
+}
+
+.room-label {
+    font-size: 0.75rem;
+    color: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+}
+
+.room-patient-list {
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    text-align: left;
+}
+
+.room-patient-item {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.patients-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.patient-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.patient-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.patient-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.patient-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: white;
+    margin-right: 1rem;
+    font-weight: 600;
+}
+
+.patient-info h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 0.25rem 0;
+}
+
+.patient-meta {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.conditions-section h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.75rem;
+}
+
+.condition-item {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.condition-name {
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.25rem;
+}
+
+.condition-date {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.no-data {
+    text-align: center;
+    color: #6b7280;
+    font-style: italic;
+    padding: 2rem;
+}
+
+.text-primary { color: #3b82f6 !important; }
+.text-success { color: #22c55e !important; }
+.text-info { color: #14b8a6 !important; }
+.text-warning { color: #f59e0b !important; }
+
+@media (max-width: 768px) {
+    .dashboard-title {
+        font-size: 1.5rem;
+    }
+    
+    .ward-room-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .patients-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .card-header {
+        padding: 1rem;
+    }
+    
+    .ward-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .rooms-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .summary-card {
+        padding: 1rem;
+    }
+    
+    .patient-card {
+        padding: 1rem;
+    }
+    
+    .ward-section {
+        padding: 1rem;
+    }
+    
+    .rooms-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
