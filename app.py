@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from flask import Flask, request, make_response, jsonify
-import google.generativeai as genai
-
 from models import init_db
 from utils.helpers import time_ago
 
@@ -24,8 +22,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'k21vhabf2lbhyblb')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///careit_vibe.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 OUTPUT_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'generated_apps')
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
