@@ -8,7 +8,7 @@ env/
 FlaskWebVenv/
 
 # Environment variables
-.env
+# .env
 
 # Flask
 instance/
