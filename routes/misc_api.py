@@ -1,17 +1,12 @@
 import logging
 
 from flask import Blueprint, request, jsonify, make_response
-import google.generativeai as genai
-
 from models import TaskLog
 from llm_service import check_llm_available
 from utils.helpers import get_fhir_context_from_cookies
 
 logger = logging.getLogger(__name__)
 misc_api = Blueprint('misc_api', __name__)
-
-model = genai.GenerativeModel("gemini-1.5-pro")
-
 
 @misc_api.route('/api/options', methods=['OPTIONS'])
 def cors_options():
