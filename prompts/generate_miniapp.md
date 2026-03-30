@@ -48,6 +48,30 @@ $data_context
 - **Dynamic**: all data rendering must be driven by `window.PATIENT_DATA` at runtime — no static content, no hardcoded values
 
 ---
+- Make the UI look premium, calm, and highly polished like Apple Health, Notion, and Stripe.
+- Keep the interface extremely clean, modern, and medical-grade, with a soft white/gray background only.
+- Do not use gradients, loud colors, heavy borders, or clutter.
+- Preserve existing logic completely; only improve the visual presentation and layout.
+- All content must be rendered dynamically from `window.PATIENT_DATA` at runtime.
+- Never hardcode patient values, labels, lists, metrics, or table rows.
+- Use Bootstrap 5 responsive grid system with fluid containers and mobile-first breakpoints.
+- Ensure the layout adapts beautifully across mobile, tablet, and desktop.
+- Use Font Awesome icons only for visual accents, status indicators, and badges.
+- Limit accent colors to teal `#14b8a6`, blue `#3b82f6`, and green `#22c55e`.
+- Use accents only sparingly for icons, badges, status chips, and key highlights.
+- Use body typography at 14px and headings between 1rem and 1.5rem.
+- Prefer high spacing consistency, soft shadows, rounded corners, and subtle depth.
+- Cards must have `border-radius: 12px`, `box-shadow: 0 2px 12px rgba(0,0,0,0.08)`, and `border: 1px solid #e5e7eb`.
+- Use a refined card layout with clear hierarchy, strong alignment, and generous breathing room.
+- Create a healthcare dashboard aesthetic inspired by Apple Health, Notion, and Stripe.
+- Make the UI feel elegant, trustworthy, and professional, not flashy.
+- Use section titles, KPI cards, summary panels, alerts, charts, timelines, and tables in a clean visual hierarchy.
+- Prioritize readability, clarity, and a calm visual rhythm.
+- Use empty states and fallback states that are visually polished when data is missing.
+- Keep all styling self-contained and additive only; do not remove existing behavior.
+- Add only; do not change the application logic.
+
+---
 
 # Technical
 - Framework: Bootstrap 5
