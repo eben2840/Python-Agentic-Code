@@ -13,6 +13,7 @@ from flask import Blueprint, request, jsonify, Response
 from models import db, Task, TaskStatus, TaskComplexity, PatientSession, TaskLog
 from llm_service import ClaudeLLMService
 from utils.helpers import add_task_log
+from utils.auth import require_bearer
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +75,7 @@ def _status_page(status_label: str) -> str:
 # -----------------------------------------------------------------------------
 
 @backend_service.route('/dashboard-data', methods=['GET'])
+@require_bearer
 def get_dashboard_data():
     """Get all dashboard data for frontend"""
     try:
@@ -107,6 +109,7 @@ def get_dashboard_data():
 
 
 @backend_service.route('/generate-idea', methods=['POST'])
+@require_bearer
 def generate_idea():
     """Generate idea using LLM with patient data context"""
     try:
@@ -166,6 +169,7 @@ Format your response as a clear, readable document with sections for each item a
 
 
 @backend_service.route('/create-miniapp', methods=['POST'])
+@require_bearer
 def create_miniapp():
     """Create mini app from prompt — task is created pending, user starts it manually"""
     try:
@@ -212,6 +216,7 @@ def create_miniapp():
 
 
 @backend_service.route('/session-status', methods=['GET'])
+@require_bearer
 def session_status():
     """Check session status using PatientSession model"""
     patient_session = PatientSession.query.order_by(PatientSession.last_accessed.desc()).first()
@@ -232,6 +237,7 @@ def session_status():
 
 
 @backend_service.route('/view-app/<task_id>', methods=['GET'])
+@require_bearer
 def view_generated_app(task_id):
     """View generated mini app UI"""
     try:
@@ -262,6 +268,7 @@ def view_generated_app(task_id):
 
 
 @backend_service.route('/task/<task_id>/status', methods=['GET'])
+@require_bearer
 def get_task_status(task_id):
     """Get detailed task status for polling"""
     task = Task.query.get(task_id)

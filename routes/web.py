@@ -162,6 +162,7 @@ def index():
 
 
 @web.route('/task-action', methods=['POST'])
+@require_bearer
 def handle_task_action():
     """Handle task actions (restart, delete, stop)"""
     action  = request.form.get('action')
@@ -208,6 +209,7 @@ def handle_task_action():
 
 
 @web.route('/generate-idea', methods=['POST'])
+@require_bearer
 def generate_idea_form():
     """Generate idea from form"""
     print("[GENERATE-IDEA] Form submitted", flush=True)
