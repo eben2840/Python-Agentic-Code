@@ -26,18 +26,18 @@ patient_data = {
 
 # Check if API key exists
 if not os.getenv('ANTHROPIC_API_KEY'):
-    print("❌ ANTHROPIC_API_KEY not set")
-    print("   This is likely why tasks are failing!")
+    print("ANTHROPIC_API_KEY not set")
+    print("This is likely why tasks are failing!")
     sys.exit(1)
 
-print("✅ ANTHROPIC_API_KEY is set")
+print("ANTHROPIC_API_KEY is set")
 
 # Test import
 try:
     from llm_service import ClaudeLLMService
-    print("✅ LLM service imports successfully")
+    print("LLM service imports successfully")
 except Exception as e:
-    print(f"❌ Failed to import LLM service: {e}")
+    print(f"Failed to import LLM service: {e}")
     import traceback
     traceback.print_exc()
     sys.exit(1)

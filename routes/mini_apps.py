@@ -4,12 +4,14 @@ from flask import Blueprint, render_template, request, jsonify, url_for
 
 from models import Task, TaskStatus
 from utils.helpers import create_combined_html
+from utils.auth import require_bearer
 
 logger = logging.getLogger(__name__)
 mini_apps = Blueprint('mini_apps', __name__)
 
 
 @mini_apps.route('/mini-apps')
+@require_bearer
 def mini_apps_page():
     """Mini apps gallery page"""
     print("[MINI-APPS] Loading mini apps gallery")
@@ -43,6 +45,7 @@ def mini_app_preview(task_id):
 
 
 @mini_apps.route('/api/mini-apps', methods=['GET'])
+@require_bearer
 def get_mini_apps():
     """API endpoint to return completed mini-apps for a specific patient"""
     patient_id = request.args.get('patient_id')
@@ -80,7 +83,6 @@ def mini_app_raw(task_id):
     task = Task.query.get(task_id)
     if not task or not task.html_content:
         return '<html><body><p>No content available</p></body></html>'
-
     html_content = create_combined_html(
         task.html_content, task.css_content or '', task.js_content or '', task.patient_data
     )
