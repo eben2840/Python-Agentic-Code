@@ -9,6 +9,7 @@ from models import db, Task, TaskStatus, TaskComplexity, PatientSession
 from direct_fhir import get_patient_data_direct, get_all_patients_data_direct
 from llm_service import ClaudeLLMService
 from utils.helpers import add_task_log
+from utils.auth import require_bearer
 from services.executor import execute_task
 
 logger = logging.getLogger(__name__)
@@ -146,6 +147,7 @@ def test():
 
 
 @web.route('/', methods=['GET', 'POST'])
+@require_bearer
 def index():
     """Main dashboard page"""
     print(f"\n{'='*60}", flush=True)

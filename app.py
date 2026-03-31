@@ -5,7 +5,7 @@ import logging
 from dotenv import load_dotenv
 load_dotenv()
 
-from flask import Flask, request, make_response, jsonify
+from flask import Flask, request, make_response, jsonify, render_template
 from models import init_db
 from utils.helpers import time_ago
 
@@ -19,6 +19,7 @@ logging.basicConfig(
 # =============================================================================
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'k21vhabf2lbhyblb')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///careit_vibe.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -70,7 +71,9 @@ def add_cors_headers(response):
 
 @app.errorhandler(404)
 def not_found(e):
-    return jsonify({'error': 'Not found'}), 404
+    if request.path.startswith('/api/'):
+        return jsonify({'error': 'Not found'}), 404
+    return render_template('unauthorized.html'), 404
 
 
 @app.errorhandler(500)

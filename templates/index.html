@@ -360,9 +360,10 @@
                     Regenerate
                   </button>
                 </div>
+                 
                 <div id="idea-content" class="idea-content idea-result">
                   {% if generated_idea %}
-                  <h3>{{ generated_idea.title }}</h3>
+                  <h1>{{ generated_idea.title }}</h1>
                   <p>{{ generated_idea.description }}</p>
                   {% if generated_idea.features %}
                   <h4>Features:</h4>
@@ -386,7 +387,7 @@
                       <line x1="12" y1="5" x2="12" y2="19"/>
                       <line x1="5" y1="12" x2="19" y2="12"/>
                     </svg>
-                    Edit Prompt
+                    Edit and Continue
                   </button>
                 </div>
               </div>
