@@ -62,7 +62,14 @@ class Task(db.Model):
     
     # Cancellation flag
     cancel_requested = db.Column(db.Boolean, default=False)
-    
+
+    # CareITWeb / CIW transfer
+    transferred    = db.Column(db.Boolean, default=False)
+    transferred_at = db.Column(db.DateTime, nullable=True)
+    transfer_status  = db.Column(db.String(20), nullable=True)   # 'active' | 'not_active'
+    transfer_roles   = db.Column(db.JSON, nullable=True)         # ['main_page', 'med_board', ...]
+    transfer_show_at = db.Column(db.String(100), nullable=True)
+
     # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -198,6 +205,12 @@ class PatientSession(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'last_accessed': self.last_accessed.isoformat() if self.last_accessed else None,
         }
+
+
+class CIWTransfer:
+    status  = [('active', 'Active'), ('not_active', 'Not Active')]
+    roles   = [('nurse', 'Nurse'), ('doctor', 'Doctor'), ('admin', 'Admin')]
+    show_at = [('main_dashboard', 'Main Dashboard'), ('medboard', 'Med Board'), ('curve', 'Curve')]
 
 
 def init_db(app):

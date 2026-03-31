@@ -4,6 +4,7 @@ from flask import Blueprint, request, jsonify, make_response
 from models import TaskLog
 from llm_service import check_llm_available
 from utils.helpers import get_fhir_context_from_cookies
+from utils.auth import require_bearer
 
 logger = logging.getLogger(__name__)
 misc_api = Blueprint('misc_api', __name__)
@@ -28,6 +29,7 @@ def health_check():
 
 
 @misc_api.route('/api/debug/session')
+@require_bearer
 def debug_session():
     """Debug endpoint to check session data"""
     from flutter_session import flutter_session
@@ -52,6 +54,7 @@ def debug_session():
 
 
 @misc_api.route('/api/status')
+@require_bearer
 def get_status():
     """Get application status"""
     print(f"[DEBUG] GET /api/status - checking status")
@@ -67,26 +70,8 @@ def get_status():
     })
 
 
-# @misc_api.route('/api/speech-to-text', methods=['POST'])
-# def speech_to_text():
-#     """Receive audio chunks and transcribe"""
-#     if "audio" not in request.files:
-#         return jsonify({"error": "audio missing"}), 400
-
-#     audio_file  = request.files["audio"]
-#     audio_bytes = audio_file.read()
-
-#     try:
-#         response = model.generate_content([
-#             {"mime_type": audio_file.mimetype, "data": audio_bytes},
-#             "Transcribe this audio accurately."
-#         ])
-#         return jsonify({"text": response.text.strip()})
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 500
-
-
 @misc_api.route('/api/logs', methods=['GET'])
+@require_bearer
 def get_all_logs():
     """Get all logs"""
     logs = TaskLog.query.order_by(TaskLog.created_at.desc()).limit(100).all()
@@ -94,6 +79,7 @@ def get_all_logs():
 
 
 @misc_api.route('/api/clear-patient-data', methods=['POST'])
+@require_bearer
 def clear_patient_data():
     """Clear patient data from cookies"""
     response = make_response(jsonify({'message': 'Patient data cleared'}))

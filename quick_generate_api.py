@@ -8,6 +8,7 @@ from flask import Blueprint, request, jsonify, url_for, current_app
 from models import db, Task, TaskStatus, TaskComplexity, PatientSession, TaskLog
 from direct_fhir import get_patient_data_direct, get_all_patients_data_direct
 from utils.helpers import add_task_log
+from utils.auth import require_bearer
 from services.executor import run_generation
 from llm_service import ClaudeLLMService
 
@@ -33,6 +34,7 @@ If nothing is found for a category, return an empty array for that key."""
 
 
 @quick_generate.route('/extract', methods=['POST'])
+@require_bearer
 def extract_transcript():
     data       = request.get_json()
     transcript = (data.get('transcript') or '').strip()
@@ -54,6 +56,7 @@ def extract_transcript():
 
 
 @quick_generate.route('/generate', methods=['POST'])
+@require_bearer
 def generate_miniapp():
     """
     POST /api/quick/generate
@@ -129,12 +132,14 @@ def generate_miniapp():
 
 
 @quick_generate.route('/summary', methods=['POST'])
+@require_bearer
 def generate_summary():
     """POST /api/quick/summary — same as /generate, used for shift handover summaries."""
     return generate_miniapp()
 
 
 @quick_generate.route('/status/<task_id>', methods=['GET'])
+@require_bearer
 def get_task_status(task_id):
     """GET /api/quick/status/{task_id}"""
     task = Task.query.get(task_id)
