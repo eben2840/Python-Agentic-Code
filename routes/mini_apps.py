@@ -106,8 +106,8 @@ def get_careit_web():
         "id":      t.id,
         "url":     url_for('mini_apps.mini_app_preview', task_id=t.id, _external=True),
         "title":   t.title,
-        # "patient_id":  t.patient_id,
-        # "description": t.description,
+        "patient_id":  t.patient_id,
+        "description": t.description,
         "status":  t.transfer_status,
         "roles":   t.transfer_roles or [],
         "show_at": t.transfer_show_at,
@@ -122,6 +122,7 @@ def transfer_to_careit_web(task_id):
     task = Task.query.get_or_404(task_id)
 
     if task.status != TaskStatus.completed or not task.html_content:
+        print(f"[transfer_to_careit_web] FAILED for task {task_id}: status={task.status}, has_html={bool(task.html_content)}")
         return jsonify({"error": "Only completed mini apps can be transferred"}), 400
 
     data = request.get_json()
