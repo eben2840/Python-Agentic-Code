@@ -106,6 +106,8 @@ def get_careit_web():
         "id":      t.id,
         "url":     url_for('mini_apps.mini_app_preview', task_id=t.id, _external=True),
         "title":   t.title,
+        # "patient_id":  t.patient_id,
+        # "description": t.description,
         "status":  t.transfer_status,
         "roles":   t.transfer_roles or [],
         "show_at": t.transfer_show_at,
