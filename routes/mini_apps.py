@@ -74,7 +74,6 @@ def get_mini_apps():
             "description": task.description,
             "final_score": task.final_score,
         })
-
     print(f"[API][MINI-APPS] Returning {len(results)} records")
     return jsonify({"count": len(results), "results": results})
 
@@ -93,7 +92,7 @@ def get_transfer_options():
 
 
 @mini_apps.route('/careit-web/api/v1', methods=['GET'])
-@require_bearer
+# @require_bearer
 def get_careit_web():
     tasks = Task.query.filter(
         Task.status == TaskStatus.completed,
