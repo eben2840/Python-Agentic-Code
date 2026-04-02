@@ -14,5 +14,7 @@ def require_bearer(f):
         token = request.headers.get('Authorization', '')
         if token.startswith('Bearer '):
             return f(*args, **kwargs)
+        if request.cookies.get('fhir_token'):
+            return f(*args, **kwargs)
         return _deny_access()
     return decorated

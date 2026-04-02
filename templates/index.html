@@ -841,9 +841,9 @@
     // All patient data now comes from cookies
     window.PATIENT_DATA = null;
     window.FHIR_CONFIG = {
-      fhirBaseUrl: '',
-      patientId: '',
-      accessToken: ''
+      fhirBaseUrl: '{{ fhir_base_url or "" }}',
+      patientId: '{{ patient_id or "" }}',
+      accessToken: '{{ auth_token or "" }}'
     };
     
     function getCookie(name) {
@@ -865,7 +865,9 @@
       
       // Fetch full patient data from session
       try {
-        const response = await fetch('/api/backend/session-status');
+        const response = await fetch('/api/backend/session-status', {
+          headers: { 'Authorization': `Bearer ${window.FHIR_CONFIG.accessToken}` }
+        });
         const sessionData = await response.json();
         
         if (sessionData.authenticated && sessionData.session_data) {
@@ -898,7 +900,7 @@
       
       window.FHIR_CONFIG.fhirBaseUrl = window.PATIENT_DATA.fhir_base_url;
       window.FHIR_CONFIG.patientId = window.PATIENT_DATA.patient_id;
-      window.FHIR_CONFIG.accessToken = getCookie('fhir_token');
+      window.FHIR_CONFIG.accessToken = getCookie('fhir_token') || window.FHIR_CONFIG.accessToken;
       
       // Update patient name display
       var patientNameDisplay = document.getElementById('patient-name-display');
@@ -941,6 +943,7 @@
   </script>
 
   <!-- Scripts -->
+   
   <script src="/static/js/api.js"></script>
   <script src="/static/js/store.js"></script>
   <script src="/static/js/components.js"></script>
