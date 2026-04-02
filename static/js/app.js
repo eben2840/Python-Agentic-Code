@@ -230,7 +230,8 @@ async function generateIdea() {
     const response = await fetch('/api/backend/generate-idea', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${window.FHIR_CONFIG?.accessToken || ''}`
       },
       body: JSON.stringify({ prompt })
     });
@@ -425,7 +426,8 @@ async function createTask(event) {
     const response = await fetch('/api/backend/create-miniapp', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${window.FHIR_CONFIG?.accessToken || ''}`
       },
       body: JSON.stringify({
         title,
