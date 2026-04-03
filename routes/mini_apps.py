@@ -92,7 +92,7 @@ def get_transfer_options():
 
 
 @mini_apps.route('/careit-web/api/v1', methods=['GET'])
-# @require_bearer
+@require_bearer
 def get_careit_web():
     tasks = Task.query.filter(
         Task.status == TaskStatus.completed,
@@ -109,7 +109,7 @@ def get_careit_web():
         "description": t.description,
         "status":  t.transfer_status,
         "roles":   t.transfer_roles or [],
-        "show_at": t.transfer_show_at,
+        "show_at": t.transfer_show_at or [],
     } for t in tasks]
 
     return jsonify({"CareIT_web": results})
@@ -129,7 +129,7 @@ def transfer_to_careit_web(task_id):
     task.transferred_at   = task.transferred_at or datetime.utcnow()
     task.transfer_status  = data.get('status')
     task.transfer_roles   = data.get('roles', [])
-    task.transfer_show_at = data.get('show_at')
+    task.transfer_show_at = data.get('show_at', [])
     db.session.commit()
 
     return jsonify({
