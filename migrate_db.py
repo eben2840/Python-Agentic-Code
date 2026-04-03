@@ -31,5 +31,13 @@ for column, definition in migrations:
         print(f'OK: {column}')
 
 conn.commit()
+
+# Fix any existing rows where transfer_show_at is an empty string (not valid JSON)
+cursor.execute("UPDATE tasks SET transfer_show_at = NULL WHERE transfer_show_at = ''")
+fixed = cursor.rowcount
+if fixed:
+    print(f'Fixed {fixed} rows with empty transfer_show_at')
+
+conn.commit()
 conn.close()
 print('Done.')
