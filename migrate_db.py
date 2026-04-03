@@ -20,7 +20,7 @@ migrations = [
     ('transferred_at',   'DATETIME'),
     ('transfer_status',  'VARCHAR(20)'),
     ('transfer_roles',   'TEXT'),
-    ('transfer_show_at', 'VARCHAR(100)'),
+    ('transfer_show_at', 'TEXT'),
 ]
 
 for column, definition in migrations:

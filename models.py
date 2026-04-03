@@ -68,7 +68,7 @@ class Task(db.Model):
     transferred_at = db.Column(db.DateTime, nullable=True)
     transfer_status  = db.Column(db.String(20), nullable=True)   # 'active' | 'not_active'
     transfer_roles   = db.Column(db.JSON, nullable=True)         # ['main_page', 'med_board', ...]
-    transfer_show_at = db.Column(db.String(100), nullable=True)
+    transfer_show_at = db.Column(db.JSON, nullable=True)
 
     # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
