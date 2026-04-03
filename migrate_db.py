@@ -15,12 +15,14 @@ cursor.execute('PRAGMA table_info(tasks)')
 existing = {col[1] for col in cursor.fetchall()}
 
 migrations = [
-    ('cancel_requested', 'BOOLEAN DEFAULT 0'),
-    ('transferred',      'BOOLEAN DEFAULT 0'),
-    ('transferred_at',   'DATETIME'),
-    ('transfer_status',  'VARCHAR(20)'),
-    ('transfer_roles',   'TEXT'),
-    ('transfer_show_at', 'TEXT'),
+    ('cancel_requested',  'BOOLEAN DEFAULT 0'),
+    ('transferred',       'BOOLEAN DEFAULT 0'),
+    ('transferred_at',    'DATETIME'),
+    ('transfer_status',   'VARCHAR(20)'),
+    ('transfer_roles',    'TEXT'),
+    ('transfer_show_at',  'TEXT'),
+    ('transfer_dept_name', 'VARCHAR(300)'),
+    ('transfer_ward',      'VARCHAR(300)'),
 ]
 
 for column, definition in migrations:
@@ -32,11 +34,11 @@ for column, definition in migrations:
 
 conn.commit()
 
-# Fix any existing rows where transfer_show_at is an empty string (not valid JSON)
-cursor.execute("UPDATE tasks SET transfer_show_at = NULL WHERE transfer_show_at = ''")
+# Convert any plain-string transfer_show_at values to JSON arrays
+cursor.execute("UPDATE tasks SET transfer_show_at = '[\"' || transfer_show_at || '\"]' WHERE transfer_show_at IS NOT NULL AND transfer_show_at NOT LIKE '[%'")
 fixed = cursor.rowcount
 if fixed:
-    print(f'Fixed {fixed} rows with empty transfer_show_at')
+    print(f'Converted {fixed} rows: transfer_show_at → JSON array')
 
 conn.commit()
 conn.close()

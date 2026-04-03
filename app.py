@@ -34,17 +34,21 @@ app.jinja_env.globals['time_ago'] = time_ago
 # BLUEPRINTS
 # =============================================================================
 
-from routes.web       import web
-from routes.mini_apps import mini_apps
-from routes.tasks_api import tasks_api
-from routes.misc_api  import misc_api
-from backend_service  import backend_service
-from quick_generate_api import quick_generate
+from routes.web          import web
+from routes.mini_apps    import mini_apps
+from routes.tasks_api    import tasks_api
+from routes.misc_api     import misc_api
+from routes.organization import organization
+from routes.location     import location
+from backend_service     import backend_service
+from quick_generate_api  import quick_generate
 
 app.register_blueprint(web)
 app.register_blueprint(mini_apps)
 app.register_blueprint(tasks_api)
 app.register_blueprint(misc_api)
+app.register_blueprint(organization)
+app.register_blueprint(location)
 app.register_blueprint(backend_service)
 app.register_blueprint(quick_generate)
 
