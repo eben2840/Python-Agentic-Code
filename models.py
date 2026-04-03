@@ -66,9 +66,11 @@ class Task(db.Model):
     # CareITWeb / CIW transfer
     transferred    = db.Column(db.Boolean, default=False)
     transferred_at = db.Column(db.DateTime, nullable=True)
-    transfer_status  = db.Column(db.String(20), nullable=True)   # 'active' | 'not_active'
-    transfer_roles   = db.Column(db.JSON, nullable=True)         # ['main_page', 'med_board', ...]
-    transfer_show_at = db.Column(db.JSON, nullable=True)
+    transfer_status   = db.Column(db.String(20), nullable=True)   # 'active' | 'not_active'
+    transfer_roles    = db.Column(db.JSON, nullable=True)         # ['main_page', 'med_board', ...]
+    transfer_show_at  = db.Column(db.JSON, nullable=True)
+    transfer_dept_name = db.Column(db.String(300), nullable=True)
+    transfer_ward      = db.Column(db.String(300), nullable=True)
 
     # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -210,7 +212,7 @@ class PatientSession(db.Model):
 class CIWTransfer:
     status  = [('active', 'Active'), ('not_active', 'Not Active')]
     roles   = [('nurse', 'Nurse'), ('doctor', 'Doctor'), ('admin', 'Admin')]
-    show_at = [('main_dashboard', 'Main Dashboard'), ('medboard', 'Med Board'), ('curve', 'Curve')]
+    show_at = [('main_dashboard', 'Ward Overview'), ('medboard', 'Med Board'), ('curve', 'Curve')]
 
 
 def init_db(app):

@@ -2,11 +2,14 @@ import logging
 
 from datetime import datetime
 
+import requests as http_requests
 from flask import Blueprint, render_template, request, jsonify, url_for
 
 from models import db, Task, TaskStatus, CIWTransfer
 from utils.helpers import create_combined_html
-from utils.auth import require_bearer
+from utils.auth import require_bearer, require_bearer_or_basic
+from routes.organization import fetch_departments
+from routes.location import fetch_locations
 
 logger = logging.getLogger(__name__)
 mini_apps = Blueprint('mini_apps', __name__)
@@ -91,15 +94,44 @@ def get_transfer_options():
     })
 
 
-@mini_apps.route('/careit-web/api/v1', methods=['GET'])
+@mini_apps.route('/careit-web/api/v1/transfer-options', methods=['GET'])
 @require_bearer
+def transfer_options():
+    return jsonify({
+        "departments": fetch_departments(),
+        "wards":       fetch_locations(),
+    })
+
+
+
+@mini_apps.route('/careit-web/api/v1', methods=['GET'])
+@require_bearer_or_basic
 def get_careit_web():
-    tasks = Task.query.filter(
+    patient_id = request.args.get('patient_id')
+    show_at    = request.args.get('show_at')
+    roles      = request.args.get('roles')
+    department = request.args.get('department')
+    ward       = request.args.get('ward')
+
+    query = Task.query.filter(
         Task.status == TaskStatus.completed,
         Task.html_content.isnot(None),
         Task.transferred == True,
         Task.transfer_status == 'active'
-    ).order_by(Task.transferred_at.desc()).all()
+    )
+
+    if patient_id:
+        query = query.filter(Task.patient_id == patient_id)
+    if show_at:
+        query = query.filter(Task.transfer_show_at.contains(show_at))
+    if roles:
+        query = query.filter(Task.transfer_roles.contains(roles))
+    if department:
+        query = query.filter(Task.transfer_dept_name == department)
+    if ward:
+        query = query.filter(Task.transfer_ward == ward)
+
+    tasks = query.order_by(Task.transferred_at.desc()).all()
 
     results = [{
         "id":      t.id,
@@ -107,9 +139,11 @@ def get_careit_web():
         "title":   t.title,
         "patient_id":  t.patient_id,
         "description": t.description,
-        "status":  t.transfer_status,
-        "roles":   t.transfer_roles or [],
-        "show_at": t.transfer_show_at or [],
+        "status":     t.transfer_status,
+        "roles":      t.transfer_roles or [],
+        "show_at":    t.transfer_show_at or [],
+        "department": t.transfer_dept_name,
+        "ward":       t.transfer_ward,
     } for t in tasks]
 
     return jsonify({"CareIT_web": results})
@@ -124,22 +158,34 @@ def transfer_to_careit_web(task_id):
         print(f"[transfer_to_careit_web] FAILED for task {task_id}: status={task.status}, has_html={bool(task.html_content)}")
         return jsonify({"error": "Only completed mini apps can be transferred"}), 400
 
-    data = request.get_json()
-    task.transferred      = True
-    task.transferred_at   = task.transferred_at or datetime.utcnow()
-    task.transfer_status  = data.get('status')
-    task.transfer_roles   = data.get('roles', [])
-    task.transfer_show_at = data.get('show_at', [])
+    data    = request.get_json(silent=True) or {}
+    show_at = data.get('show_at', [])
+
+    if any(v in {'medboard', 'curve'} for v in show_at) and task.patient_id == 'all':
+        return jsonify({"error": "Context require a specific patient context"}), 422
+    if 'main_dashboard' in show_at and task.patient_id != 'all':
+        return jsonify({"error": "Context is for all-patient context only"}), 422
+
+    task.transferred       = True
+    task.transferred_at    = task.transferred_at or datetime.utcnow()
+    task.transfer_status   = data.get('status')
+    task.transfer_roles    = data.get('roles', [])
+    task.transfer_show_at  = show_at
+    task.transfer_dept_name = data.get('department')
+    task.transfer_ward      = data.get('ward')
     db.session.commit()
 
     return jsonify({
-        "id":      task.id,
-        "url":     url_for('mini_apps.mini_app_preview', task_id=task.id, _external=True),
-        "title":   task.title,
-        "status":  task.transfer_status,
-        "roles":   task.transfer_roles,
-        "show_at": task.transfer_show_at,
+        "id":         task.id,
+        "url":        url_for('mini_apps.mini_app_preview', task_id=task.id, _external=True),
+        "title":      task.title,
+        "status":     task.transfer_status,
+        "roles":      task.transfer_roles,
+        "show_at":    task.transfer_show_at,
+        "department": task.transfer_dept_name,
+        "ward":       task.transfer_ward,
     })
+
 
 
 
