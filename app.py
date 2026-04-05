@@ -40,6 +40,7 @@ from routes.tasks_api    import tasks_api
 from routes.misc_api     import misc_api
 from routes.organization import organization
 from routes.location     import location
+from routes.bookmarks    import bookmarks
 from backend_service     import backend_service
 from quick_generate_api  import quick_generate
 
@@ -49,6 +50,7 @@ app.register_blueprint(tasks_api)
 app.register_blueprint(misc_api)
 app.register_blueprint(organization)
 app.register_blueprint(location)
+app.register_blueprint(bookmarks)
 app.register_blueprint(backend_service)
 app.register_blueprint(quick_generate)
 

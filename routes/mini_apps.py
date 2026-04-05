@@ -5,7 +5,7 @@ from datetime import datetime
 import requests as http_requests
 from flask import Blueprint, render_template, request, jsonify, url_for
 
-from models import db, Task, TaskStatus, CIWTransfer
+from models import db, Task, TaskStatus, CIWTransfer, Bookmark
 from utils.helpers import create_combined_html
 from utils.auth import require_bearer, require_bearer_or_basic
 from routes.organization import fetch_departments
@@ -112,6 +112,7 @@ def get_careit_web():
     roles      = request.args.get('roles')
     department = request.args.get('department')
     ward       = request.args.get('ward')
+    bookmarked = request.args.get('bookmarked')
 
     query = Task.query.filter(
         Task.status == TaskStatus.completed,
@@ -130,6 +131,8 @@ def get_careit_web():
         query = query.filter(Task.transfer_dept_name == department)
     if ward:
         query = query.filter(Task.transfer_ward == ward)
+    if bookmarked:
+        query = query.filter(Task.bookmarks.any())
 
     tasks = query.order_by(Task.transferred_at.desc()).all()
 

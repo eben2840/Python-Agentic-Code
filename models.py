@@ -215,6 +215,17 @@ class CIWTransfer:
     show_at = [('main_dashboard', 'Ward Overview'), ('medboard', 'Med Board'), ('curve', 'Curve')]
 
 
+class Bookmark(db.Model):
+    __tablename__ = 'bookmarks'
+
+    id         = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    task_id    = db.Column(db.String(36), db.ForeignKey('tasks.id', ondelete='CASCADE'), nullable=False)
+    added_by   = db.Column(db.String(100), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    task = db.relationship('Task', backref=db.backref('bookmarks', lazy='dynamic', cascade='all, delete-orphan'))
+
+
 def init_db(app):
     """Initialize the database"""
     db.init_app(app)
