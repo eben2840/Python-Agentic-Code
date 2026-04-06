@@ -24,7 +24,7 @@ Generate:
 Respond with valid JSON only:
 {{"title": "...", "description": "...", "icon": "..."}}"""
 
-    llm      = ClaudeLLMService()
+    llm = ClaudeLLMService()
     response = llm.client.messages.create(
         model=llm.model,
         max_tokens=256,

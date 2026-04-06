@@ -174,8 +174,10 @@ def transfer_to_careit_web(task_id):
     task = Task.query.get_or_404(task_id)
 
     if task.status != TaskStatus.completed or not task.html_content:
-        # print(f"[transfer_to_careit_web] FAILED for task {task_id}: status={task.status}, has_html={bool(task.html_content)}")
         return jsonify({"error": "Only completed mini apps can be transferred"}), 400
+
+    if task.transferred:
+        return jsonify({"error": "Mini app is already transferred"}), 422
 
     data    = request.get_json(silent=True) or {}
     show_at = data.get('show_at', [])
@@ -214,6 +216,15 @@ def transfer_to_careit_web(task_id):
     })
 
 
+
+
+@mini_apps.route('/careit-web/api/v1/<task_id>', methods=['DELETE'])
+@require_bearer
+def delete_from_careit_web(task_id):
+    task = Task.query.get_or_404(task_id)
+    task.transferred = False
+    db.session.commit()
+    return jsonify({"message": "Removed from CareIT Web"}), 200
 
 
 @mini_apps.route('/mini-apps/<task_id>/raw')
