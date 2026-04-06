@@ -71,6 +71,7 @@ class Task(db.Model):
     transfer_show_at  = db.Column(db.JSON, nullable=True)
     transfer_dept_name = db.Column(db.String(300), nullable=True)
     transfer_ward      = db.Column(db.String(300), nullable=True)
+    transfer_icon      = db.Column(db.String(100), nullable=True)
 
     # Timestamps
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
