@@ -112,6 +112,7 @@ def get_careit_web():
     roles      = request.args.get('roles')
     department = request.args.get('department')
     ward       = request.args.get('ward')
+    ward_id    = request.args.get('ward_id')
     bookmarked = request.args.get('bookmarked')
 
     query = Task.query.filter(
@@ -120,6 +121,10 @@ def get_careit_web():
         Task.transferred == True,
         Task.transfer_status == 'active'
     )
+
+    depts      = {d["name"]: d["id"] for d in fetch_departments()}
+    wards      = {w["name"]: w["id"] for w in fetch_locations()}
+    wards_by_id = {v: k for k, v in wards.items()}
 
     if patient_id:
         query = query.filter(Task.patient_id == patient_id)
@@ -131,22 +136,27 @@ def get_careit_web():
         query = query.filter(Task.transfer_dept_name == department)
     if ward:
         query = query.filter(Task.transfer_ward == ward)
-    if bookmarked:
+    if ward_id:
+        query = query.filter(Task.transfer_ward == wards_by_id.get(ward_id))
+    if bookmarked == 'true':
         query = query.filter(Task.bookmarks.any())
 
     tasks = query.order_by(Task.transferred_at.desc()).all()
 
     results = [{
-        "id":      t.id,
-        "url":     url_for('mini_apps.mini_app_preview', task_id=t.id, _external=True),
-        "title":   t.title,
-        "patient_id":  t.patient_id,
-        "description": t.description,
-        "status":     t.transfer_status,
-        "roles":      t.transfer_roles or [],
-        "show_at":    t.transfer_show_at or [],
-        "department": t.transfer_dept_name,
-        "ward":       t.transfer_ward,
+        "id":            t.id,
+        "url":           url_for('mini_apps.mini_app_preview', task_id=t.id, _external=True),
+        "title":         t.title,
+        "patient_id":    t.patient_id,
+        "description":   t.description,
+        "status":        t.transfer_status,
+        "roles":         t.transfer_roles or [],
+        "show_at":       t.transfer_show_at or [],
+        "department":    t.transfer_dept_name,
+        "department_id": depts.get(t.transfer_dept_name),
+        "ward":          t.transfer_ward,
+        "ward_id":       wards.get(t.transfer_ward),
+        "bookmarked":    bool(t.bookmarks.first()),
     } for t in tasks]
 
     return jsonify({"CareIT_web": results})
@@ -166,7 +176,7 @@ def transfer_to_careit_web(task_id):
 
     if any(v in {'medboard', 'curve'} for v in show_at) and task.patient_id == 'all':
         return jsonify({"error": "Context require a specific patient context"}), 422
-    if 'main_dashboard' in show_at and task.patient_id != 'all':
+    if 'ward_overview' in show_at and task.patient_id != 'all':
         return jsonify({"error": "Context is for all-patient context only"}), 422
 
     task.transferred       = True

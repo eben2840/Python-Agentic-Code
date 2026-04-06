@@ -12,7 +12,11 @@ def fetch_locations():
     resp = requests.get(f"{BASE_URL}/Location", auth=AUTH, timeout=10)
     resp.raise_for_status()
     entries = resp.json().get("entry", [])
-    return [e["resource"]["name"] for e in entries if e.get("resource", {}).get("name")]
+    return [
+        {"id": e["resource"]["id"], "name": e["resource"]["name"]}
+        for e in entries
+        if e.get("resource", {}).get("name")
+    ]
 
 
 @location.route("/api/locations", methods=["GET"])
