@@ -23,6 +23,7 @@ migrations = [
     ('transfer_show_at',  'TEXT'),
     ('transfer_dept_name', 'VARCHAR(300)'),
     ('transfer_ward',      'VARCHAR(300)'),
+    ('transfer_icon',      'VARCHAR(100)'),
 ]
 
 for column, definition in migrations:

@@ -10,6 +10,7 @@ from utils.helpers import create_combined_html
 from utils.auth import require_bearer, require_bearer_or_basic
 from routes.organization import fetch_departments
 from routes.location import fetch_locations
+from routes.careitweb_llm import enhance_transfer_meta
 
 logger = logging.getLogger(__name__)
 mini_apps = Blueprint('mini_apps', __name__)
@@ -97,9 +98,13 @@ def get_transfer_options():
 @mini_apps.route('/careit-web/api/v1/transfer-options', methods=['GET'])
 @require_bearer
 def transfer_options():
+    departments = fetch_departments()
+    wards       = fetch_locations()
+    # print("[transfer_options] departments:", departments)
+    # print("[transfer_options] wards:", wards)
     return jsonify({
-        "departments": fetch_departments(),
-        "wards":       fetch_locations(),
+        "departments": departments,
+        "wards":       wards,
     })
 
 
@@ -156,10 +161,11 @@ def get_careit_web():
         "department_id": depts.get(t.transfer_dept_name),
         "ward":          t.transfer_ward,
         "ward_id":       wards.get(t.transfer_ward),
+        "icon":          t.transfer_icon,
         "bookmarked":    bool(t.bookmarks.first()),
     } for t in tasks]
 
-    return jsonify({"CareIT_web": results})
+    return jsonify({"items": results})
 
 
 @mini_apps.route('/careit-web/api/v1/<task_id>/transfer', methods=['POST'])
@@ -168,7 +174,7 @@ def transfer_to_careit_web(task_id):
     task = Task.query.get_or_404(task_id)
 
     if task.status != TaskStatus.completed or not task.html_content:
-        print(f"[transfer_to_careit_web] FAILED for task {task_id}: status={task.status}, has_html={bool(task.html_content)}")
+        # print(f"[transfer_to_careit_web] FAILED for task {task_id}: status={task.status}, has_html={bool(task.html_content)}")
         return jsonify({"error": "Only completed mini apps can be transferred"}), 400
 
     data    = request.get_json(silent=True) or {}
@@ -179,13 +185,21 @@ def transfer_to_careit_web(task_id):
     if 'ward_overview' in show_at and task.patient_id != 'all':
         return jsonify({"error": "Context is for all-patient context only"}), 422
 
+    task.title, task.description, task.transfer_icon = enhance_transfer_meta(task.title, task.description, task.html_content)
+
     task.transferred       = True
     task.transferred_at    = task.transferred_at or datetime.utcnow()
     task.transfer_status   = data.get('status')
     task.transfer_roles    = data.get('roles', [])
     task.transfer_show_at  = show_at
-    task.transfer_dept_name = data.get('department')
-    task.transfer_ward      = data.get('ward')
+    dept_by_id = {d["id"]: d["name"] for d in fetch_departments()}
+    ward_by_id = {w["id"]: w["name"] for w in fetch_locations()}
+
+    dept_value = data.get('department')
+    ward_value = data.get('ward')
+
+    task.transfer_dept_name = dept_by_id.get(dept_value, dept_value)
+    task.transfer_ward      = ward_by_id.get(ward_value, ward_value)
     db.session.commit()
 
     return jsonify({
