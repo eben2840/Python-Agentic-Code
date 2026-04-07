@@ -37,17 +37,18 @@ $data_context
 
 ---
 
-# Design
-- Background: `#ffffff` / `#f8f9fa` only — no gradients, no loud colors
-- Cards: `border-radius: 12px`, `box-shadow: 0 2px 12px rgba(0,0,0,0.08)`, `border: 1px solid #e5e7eb`
-- Accent palette (icons and badges only): teal `#14b8a6`, blue `#3b82f6`, green `#22c55e`
-- Typography: body `14px`, headings `1–1.5rem`
-- Icons: Font Awesome
-- Reference aesthetic: Apple Health, Notion, Stripe
-- **Responsive**: layout must work on mobile, tablet, and desktop — use Bootstrap grid, fluid containers, and responsive breakpoints
-- **Dynamic**: all data rendering must be driven by `window.PATIENT_DATA` at runtime — no static content, no hardcoded values
+% # Design
+% - Background: `#ffffff` / `#f8f9fa` only — no gradients, no loud colors
+% - Cards: `border-radius: 12px`, `box-shadow: 0 2px 12px rgba(0,0,0,0.08)`, `border: 1px solid #e5e7eb`
+% - Accent palette (icons and badges only): teal `#14b8a6`, blue `#3b82f6`, green `#22c55e`
+% - Typography: body `14px`, headings `1–1.5rem`
+% - Icons: Font Awesome
+% - Reference aesthetic: Apple Health, Notion, Stripe
+% - **Responsive**: layout must work on mobile, tablet, and desktop — use Bootstrap grid, fluid containers, and responsive breakpoints
+% - **Dynamic**: all data rendering must be driven by `window.PATIENT_DATA` at runtime — no static content, no hardcoded values
 
 ---
+- use the frontend-design skill to create the design
 - Make the UI look premium, calm, and highly polished like Apple Health, Notion, and Stripe.
 - Keep the interface extremely clean, modern, and medical-grade, with a soft white/gray background only.
 - Do not use gradients, loud colors, heavy borders, or clutter.
@@ -72,7 +73,6 @@ $data_context
 - Add only; do not change the application logic.
 
 ---
-
 # Technical
 - Framework: Bootstrap 5
 - Structure: separate `index.html`, `styles.css`, `app.js` — HTML must link both files
