@@ -95,7 +95,8 @@ class DirectFHIRClient:
             or self._display(r.get('medicationCodeableConcept'))
             or (r.get('medicationReference') or {}).get('display', '')
             or (r.get('name') if isinstance(r.get('name'), str) else '')
-            or self._display((r.get('type') or [{}])[0])
+            #   or self._display((r.get('type') or [{}])[0])
+            or self._display((r.get('type') if isinstance(r.get('type'), list) else [r.get('type') or {}])[0])
         )
 
         clinical_status = r.get('clinicalStatus') or {}
