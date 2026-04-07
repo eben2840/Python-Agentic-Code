@@ -366,6 +366,7 @@ def run_generation(app, task_id: str, prompt: str, patient_data: dict, patient_n
 6. Integrate patient data
 7. AI Review and scoring
 """
+            
             db.session.commit()
             add_task_log(task_id, "Plan created")
 

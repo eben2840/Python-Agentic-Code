@@ -4,12 +4,11 @@ from flask import Blueprint, jsonify
 
 location = Blueprint('location', __name__)
 
-BASE_URL = os.getenv("CAREIT_BASE_URL")
-AUTH = (os.getenv("CAREIT_USERNAME"), os.getenv("CAREIT_PASSWORD"))
-
 
 def fetch_locations():
-    resp = requests.get(f"{BASE_URL}/Location", auth=AUTH, timeout=10)
+    base_url = os.getenv("CAREIT_BASE_URL")
+    auth = (os.getenv("CAREIT_USERNAME"), os.getenv("CAREIT_PASSWORD"))
+    resp = requests.get(f"{base_url}/Location", auth=auth, timeout=10)
     resp.raise_for_status()
     entries = resp.json().get("entry", [])
     return [

@@ -5,6 +5,7 @@ from datetime import datetime
 import requests as http_requests
 from flask import Blueprint, render_template, request, jsonify, url_for
 
+from sqlalchemy import or_
 from models import db, Task, TaskStatus, CIWTransfer, Bookmark
 from utils.helpers import create_combined_html
 from utils.auth import require_bearer, require_bearer_or_basic
@@ -87,7 +88,6 @@ def get_mini_apps():
 def get_transfer_options():
     def to_options(field):
         return [{'value': v, 'label': l} for v, l in field]
-
     return jsonify({
         'status':  to_options(CIWTransfer.status),
         'roles':   to_options(CIWTransfer.roles),
@@ -100,8 +100,6 @@ def get_transfer_options():
 def transfer_options():
     departments = fetch_departments()
     wards       = fetch_locations()
-    # print("[transfer_options] departments:", departments)
-    # print("[transfer_options] wards:", wards)
     return jsonify({
         "departments": departments,
         "wards":       wards,
@@ -142,7 +140,8 @@ def get_careit_web():
     if ward:
         query = query.filter(Task.transfer_ward == ward)
     if ward_id:
-        query = query.filter(Task.transfer_ward == wards_by_id.get(ward_id))
+        ward_name = wards_by_id.get(ward_id)
+        query = query.filter(or_(Task.transfer_ward == ward_name, Task.transfer_ward.is_(None)))
     if bookmarked == 'true':
         query = query.filter(Task.bookmarks.any())
 
@@ -176,8 +175,8 @@ def transfer_to_careit_web(task_id):
     if task.status != TaskStatus.completed or not task.html_content:
         return jsonify({"error": "Only completed mini apps can be transferred"}), 400
 
-    if task.transferred:
-        return jsonify({"error": "Mini app is already transferred"}), 422
+    # if task.transferred:
+    #     return jsonify({"error": "Mini app is already transferred"}), 422
 
     data    = request.get_json(silent=True) or {}
     show_at = data.get('show_at', [])
