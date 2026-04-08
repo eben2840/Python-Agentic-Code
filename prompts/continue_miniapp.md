@@ -10,6 +10,7 @@ $data_context
 - Return all 3 files even if only one changed
 - UI must remain responsive across mobile, tablet, and desktop views
 - All data rendering must stay dynamic — driven by `window.PATIENT_DATA` at runtime
+- Preserve the existing design system exactly: CSS variables (`--bg: #edf0f7`, `--surface`, `--border`, `--shadow`, `--blue: #4B7BF5`, `--radius: 16px`), Inter font, card styling (`border:none; border-radius:16px; box-shadow:var(--shadow)`), blue active states, sidebar layout, and period tab patterns — do not replace or alter these
 
 # Output
 Return exactly 3 fenced code blocks in this order:
