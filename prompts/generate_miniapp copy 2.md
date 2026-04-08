@@ -39,7 +39,7 @@ $data_context
 
 # Design System
 
-Follow the reference design in `prompts/_design_reference.html` **exactly**. The aesthetic is a premium responsive healthcare dashboard: soft light blue-gray canvas, layered white cards, dark navy primary actions, restrained coral alerts, soft atmospheric gradients, and clean clinical spacing. Match the updated reference composition and visual hierarchy, not just the colors.
+Follow the reference design in `prompts/_design_reference.html` **exactly**. The aesthetic is inspired by the HomeCare dashboard image: light blue-gray page, white rounded cards, dark navy primary color, pill navigation, clean charts, and a warm clinical feel the design should be responsive.
 
 ## CSS Tokens (copy these verbatim into styles.css)
 ```css
@@ -82,50 +82,33 @@ Follow the reference design in `prompts/_design_reference.html` **exactly**. The
 
 ## Rules
 - Page background: `var(--bg)` — the light blue-gray. Never white or dark.
-- The page must feel polished and responsive on desktop, tablet, and mobile. Use layouts that fill the screen cleanly without horizontal overflow.
+- The pages should be responsive! Fit all entire screen
 - Cards: `background: var(--surface); border: none; border-radius: var(--radius); box-shadow: var(--shadow);`
 - All text uses `font-family: var(--font)` (Nunito)
 - **Navy** (`var(--navy)`) is the only primary action color — used for active nav pills, the highlighted medication row, and the today cell in the week strip
 - **Coral** is a secondary accent for alerts and icon backgrounds only
-- Use subtle gradients, soft highlights, and layered surfaces like the reference. Never use loud gradients or dark page backgrounds.
-- Prefer generous spacing, rounded corners, soft borders, and elevated panels to create a calm premium health-product feel.
-- Maintain strong readability and clear section separation. The UI should look modern, clean, and intentionally designed rather than generic Bootstrap.
+- Never use loud gradients or dark page backgrounds
 
 ## Top Nav Pattern
-Use the upgraded top navigation from the reference: a rounded glassy white surface, branded icon tile, stacked logo text, pill navigation, icon action buttons, and user chip on the right. Nav items use `border-radius: 999px`; the active item gets `background: var(--navy); color: #fff`. Preserve the exact overall pattern from the reference.
+Pill navigation bar: white card, logo bold-800, nav items as `border-radius: 999px` buttons, the active one gets `background: var(--navy); color: #fff`. User info + avatar on the right. See reference for exact HTML.
 
 ## Greeting Header
-Use a hero overview card, not plain text alone. Large `2rem` to `2.4rem` `font-weight:800` patient greeting, muted supporting copy, and compact meta badges inside a rounded elevated card. Follow the reference layout and proportions.
+Large `2rem font-weight:800` patient name heading + muted subtitle line with card `background: var(--surface); border: none; border-radius: var(--radius); box-shadow: var(--shadow);`
 
 ## ECG / Heart Beat Card
-Floating white card with a coral heart icon, BPM value, small supporting labels, and an SVG `<polyline>` ECG waveform in `var(--blue)`. Use the exact SVG points from the reference.
-
-## Research / Summary Cards
-Small supporting cards should use rounded white surfaces, subtle internal gradients, compact uppercase labels, bold titles, and a soft icon or emoji treatment anchored to the corner as shown in the reference.
+Floating white card with a coral heart icon, BPM value, and an SVG `<polyline>` ECG waveform in `var(--blue)`. Use the exact SVG points from the reference.
 
 ## Medication List
-Medication should live inside its own elevated panel. Each medication row uses `border: 1px solid var(--border); border-radius: var(--radius-sm)` with clean icon containers and stronger spacing. The **current/active medication** row gets `background: var(--navy)` with white text — this is the primary visual highlight of the list.
+Each medication row: `border: 1px solid var(--border); border-radius: var(--radius-sm)`. The **current/active medication** row gets `background: var(--navy)` with white text — this is the primary visual highlight of the list.
 
 ## Appointment / Schedule Panel
-Use the reference schedule sidebar treatment: elevated panel, compact subtitle, pill month selector, week strip of 5 day cells, and stacked appointment cards. Today's cell: `background: var(--navy); color: #fff`. Appointment list with avatar initials, doctor name, role, datetime, and a status badge:
+Week strip of 5 day cells; today's cell: `background: var(--navy); color: #fff`. Appointment list with avatar initials, doctor name, role, datetime, and a status badge:
 - `Created` → blue-light bg + blue text
 - `Confirmed` → navy bg + white text
 - `Completed` → green-light bg + green text
 
 ## Charts
-Use Chart.js inside styled chart panels like the reference. Add compact section subtitles, rounded inner chart frames, and small legends/captions where appropriate. Line charts use `tension: 0.45`, no point markers, and light gridlines `rgba(0,0,0,0.04)`. Cholesterol chart gets a dashed red reference line. Vitals chart uses red + blue lines. Axes use Nunito `10px`, `var(--text-muted)` color.
-
-## Layout
-- Use a three-zone dashboard layout on desktop similar to the reference:
-- Left: hero overview, heart card, compact summary cards
-- Middle: chart panels, medication panel, allergy section
-- Right: schedule panel
-- Collapse cleanly on smaller screens into a single-column or stacked layout while preserving spacing and card hierarchy.
-
-## Surface Styling
-- Panels should feel layered and refined: soft shadows, subtle borders, occasional glassmorphism only where used in the reference, and no harsh outlines.
-- Rounded corners should be generous across nav, cards, buttons, and chips.
-- Use small uppercase section labels and bold card titles to create hierarchy consistent with the reference.
+Use Chart.js. Line charts with `tension: 0.45`, no point markers, light gridlines `rgba(0,0,0,0.04)`. Cholesterol chart gets a dashed red reference line. Vitals chart uses red + blue lines. Axes use Nunito `10px`, `var(--text-muted)` color.
 
 ## Empty States
 Centered in card: `64px` dashed-border circle with a Font Awesome icon, bold title (`0.9375rem`), short muted description.
