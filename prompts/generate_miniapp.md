@@ -101,7 +101,7 @@ Use a hero overview card, not plain text alone. Large `2rem` to `2.4rem` `font-w
 Floating white card with a coral heart icon, BPM value, small supporting labels, and an SVG `<polyline>` ECG waveform in `var(--blue)`. Use the exact SVG points from the reference.
 
 ## Research / Summary Cards
-Small supporting cards should use rounded white surfaces, subtle internal gradients, compact uppercase labels, bold titles, and a soft icon or emoji treatment anchored to the corner as shown in the reference.
+Small supporting cards should use rounded white surfaces, subtle internal gradients, compact uppercase labels, bold titles, and a soft icon treatment anchored to the corner as shown in the reference.
 
 ## Interaction Fidelity
 Every visible UI control must work. No decorative or dead controls are allowed.
