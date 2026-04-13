@@ -92,7 +92,7 @@ Follow the reference design in `prompts/_design_reference.html` **exactly**. The
 - Maintain strong readability and clear section separation. The UI should look modern, clean, and intentionally designed rather than generic Bootstrap.
 
 ## Top Nav Pattern
-Use the upgraded top navigation from the reference: a rounded glassy white surface, branded icon tile, stacked logo text, pill navigation, icon action buttons, and user chip on the right. Nav items use `border-radius: 999px`; the active item gets `background: var(--navy); color: #fff`. Preserve the exact overall pattern from the reference.
+Use the upgraded top navigation from the reference: a rounded glassy white surface, branded icon tile, stacked logo text, and pill navigation only. Nav items use `border-radius: 999px`; the active item gets `background: var(--navy); color: #fff`. Preserve the exact overall pattern from the reference.
 
 ## Greeting Header
 Use a hero overview card, not plain text alone. Large `2rem` to `2.4rem` `font-weight:800` patient greeting, muted supporting copy, and compact meta badges inside a rounded elevated card. Follow the reference layout and proportions.
@@ -116,8 +116,7 @@ Every visible UI control must work. No decorative or dead controls are allowed.
   - copy useful patient-specific text,
   - expand a row/card into more detail,
   - or trigger another clearly visible UI response
-- Never include placeholder buttons such as Settings, Filter, More, Bell, Search, View All, Next, Previous, Refresh, Export, or icon-only actions unless they are fully wired and visibly do something
-- Icon-only buttons in the top nav and cards must open real panels, menus, or detail views populated from `window.PATIENT_DATA` where possible
+- Never include placeholder buttons such as View All, Next, Previous, Refresh, or Export unless they are fully wired and visibly do something
 - Nav pills must switch the main content area or scroll to the relevant section with a clear active state
 - Schedule controls must change the visible dates or appointments
 - Medication, allergy, chart, and summary cards should support at least one meaningful interaction each, such as expand, filter, switch metric, or open detail
@@ -171,7 +170,6 @@ Before finalizing the mini-app, verify that all of the following are true:
 - No control uses `href="#"` or a click handler that only logs to the console
 - Every top-nav action works:
   - nav pills switch section content or scroll to a target section with active-state updates
-  - profile icon buttons open a working modal, drawer, popover, menu, or detail panel
 - Every summary/stat/research card supports at least one meaningful interaction:
   - open detail,
   - expand more information,
