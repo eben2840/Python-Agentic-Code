@@ -171,7 +171,7 @@ Before finalizing the mini-app, verify that all of the following are true:
 - No control uses `href="#"` or a click handler that only logs to the console
 - Every top-nav action works:
   - nav pills switch section content or scroll to a target section with active-state updates
-  - notification/search/settings/profile icon buttons open a working modal, drawer, popover, menu, or detail panel
+  - profile icon buttons open a working modal, drawer, popover, menu, or detail panel
 - Every summary/stat/research card supports at least one meaningful interaction:
   - open detail,
   - expand more information,
