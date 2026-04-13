@@ -209,86 +209,6 @@
       box-shadow: 0 12px 24px rgba(27,53,102,0.18);
     }
 
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      margin-left: auto;
-    }
-
-    .nav-icon-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: linear-gradient(180deg, #ffffff, #f2f6fb);
-      border: 1px solid rgba(228,232,240,0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 0.92rem;
-      position: relative;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .badge-dot {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--coral);
-      border: 2px solid #fff;
-    }
-
-    .nav-user {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      padding: 0.35rem 0.35rem 0.35rem 0.85rem;
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(245,248,253,0.95), rgba(232,237,248,0.75));
-      border: 1px solid rgba(228,232,240,0.95);
-    }
-
-    .nav-user-info {
-      text-align: right;
-      min-width: 0;
-    }
-
-    .nav-user-name {
-      font-size: 0.875rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      line-height: 1.15;
-      margin: 0;
-    }
-
-    .nav-user-location {
-      font-size: 0.7rem;
-      color: var(--text-secondary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .nav-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: linear-gradient(160deg, var(--navy) 0%, #4166a5 100%);
-      color: #fff;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.9rem;
-      box-shadow: 0 10px 20px rgba(27,53,102,0.2);
-    }
-
     .hero-panel {
       position: relative;
       overflow: hidden;
@@ -926,10 +846,6 @@
 
       .nav-pills::-webkit-scrollbar { display: none; }
 
-      .nav-right {
-        margin-left: 0;
-      }
-
       .mini-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
@@ -948,16 +864,6 @@
 
       .nav-logo-wrap {
         width: 100%;
-      }
-
-      .nav-right {
-        width: 100%;
-        justify-content: space-between;
-      }
-
-      .nav-user {
-        flex: 1;
-        justify-content: space-between;
       }
 
       .hero-panel {
@@ -1037,15 +943,6 @@
         <a class="nav-pill"><i class="fa-regular fa-clock fa-xs"></i> History</a>
       </nav>
 
-      <div class="nav-right">
-        <div class="nav-user">
-          <div class="nav-user-info">
-            <div class="nav-user-name">{{patient_name}}</div>
-            <div class="nav-user-location"><i class="fa-solid fa-location-dot fa-xs"></i> {{location}}</div>
-          </div>
-          <div class="nav-avatar">{{initials}}</div>
-        </div>
-      </div>
     </div>
 
     <div class="row g-4 align-items-start">
