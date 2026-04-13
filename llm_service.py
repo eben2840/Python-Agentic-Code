@@ -31,7 +31,7 @@ class ClaudeLLMService:
         self.api_key = os.getenv('ANTHROPIC_API_KEY')
         self.client = Anthropic(api_key=self.api_key)
         self.model = "claude-sonnet-4-20250514"
-        self.max_tokens = 16000
+        self.max_tokens = 20000
 
     def generate_mini_app(self, user_prompt: str, patient_data: dict) -> tuple:
         """Generate a mini app (HTML, CSS, JS) from a prompt and real FHIR patient data."""

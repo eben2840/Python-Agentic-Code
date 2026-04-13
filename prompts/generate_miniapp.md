@@ -103,6 +103,28 @@ Floating white card with a coral heart icon, BPM value, small supporting labels,
 ## Research / Summary Cards
 Small supporting cards should use rounded white surfaces, subtle internal gradients, compact uppercase labels, bold titles, and a soft icon or emoji treatment anchored to the corner as shown in the reference.
 
+## Interaction Fidelity
+Every visible UI control must work. No decorative or dead controls are allowed.
+- Every button, icon button, nav pill, tab, chip, filter, dropdown trigger, calendar control, carousel arrow, accordion toggle, card action, and clickable icon must have a real click handler in `app.js`
+- If a control is visible, it must either:
+  - change the view,
+  - reveal/hide information,
+  - switch tabs/sections,
+  - filter or sort data,
+  - open a modal, drawer, popover, tooltip, or detail panel,
+  - paginate or step through dates/items,
+  - copy useful patient-specific text,
+  - expand a row/card into more detail,
+  - or trigger another clearly visible UI response
+- Never include placeholder buttons such as Settings, Filter, More, Bell, Search, View All, Next, Previous, Refresh, Export, or icon-only actions unless they are fully wired and visibly do something
+- Icon-only buttons in the top nav and cards must open real panels, menus, or detail views populated from `window.PATIENT_DATA` where possible
+- Nav pills must switch the main content area or scroll to the relevant section with a clear active state
+- Schedule controls must change the visible dates or appointments
+- Medication, allergy, chart, and summary cards should support at least one meaningful interaction each, such as expand, filter, switch metric, or open detail
+- If the available patient data is insufficient for an action, the control must still respond and show a polished empty state, explanatory message, disabled state, or "No data available" panel. Never leave the control clickable with no visible outcome
+- Do not rely on `href="#"`, empty buttons, or console-only actions. Every interaction must produce a visible on-screen result
+- Prefer a small number of well-implemented interactions over many fake controls, but any control you do render must work properly
+
 ## Medication List
 Medication should live inside its own elevated panel. Each medication row uses `border: 1px solid var(--border); border-radius: var(--radius-sm)` with clean icon containers and stronger spacing. The **current/active medication** row gets `background: var(--navy)` with white text — this is the primary visual highlight of the list.
 
@@ -137,6 +159,39 @@ Centered in card: `64px` dashed-border circle with a Font Awesome icon, bold tit
 - Icons: Font Awesome 6
 - Structure: separate `index.html`, `styles.css`, `app.js` — HTML must link both files
 - Data access: `window.PATIENT_DATA` is injected at runtime by the backend — do not fetch or mock it
+- All interactivity must be implemented in vanilla JavaScript inside `app.js`
+- Use event listeners and stateful rendering so interactive elements continue to work after re-renders
+- If using Bootstrap interactive components such as modals, tabs, tooltips, offcanvas, dropdowns, or accordions, initialize them correctly so they function without manual user fixes
+- Every rendered interactive element should be keyboard reachable where appropriate and should have an accessible label if it is icon-only
+
+## Required Interaction Checklist
+Before finalizing the mini-app, verify that all of the following are true:
+
+- Every visible button, icon button, nav pill, tab, chip, dropdown trigger, filter, date control, and clickable card area has a real visible on-screen effect
+- No control uses `href="#"` or a click handler that only logs to the console
+- Every top-nav action works:
+  - nav pills switch section content or scroll to a target section with active-state updates
+  - notification/search/settings/profile icon buttons open a working modal, drawer, popover, menu, or detail panel
+- Every summary/stat/research card supports at least one meaningful interaction:
+  - open detail,
+  - expand more information,
+  - switch metric,
+  - or filter related records
+- Medication rows support interaction such as expand, inspect details, mark current selection, or filter by status
+- Schedule controls work:
+  - previous/next date controls update the visible schedule
+  - clicking a day updates the appointment list
+  - clicking an appointment reveals more detail
+- Charts are interactive where controls are shown:
+  - timeframe toggles, metric switches, legends, or tabs must update the chart or related detail
+- Empty-state controls still behave correctly:
+  - if data is unavailable, the interaction must show a polished empty state, helper text, or disabled treatment
+- Icon-only controls have accessible labels via `aria-label` or equivalent
+- Keyboard users can reach and trigger interactive controls where appropriate
+- All interactions are implemented in `app.js` and remain functional after any DOM re-render
+- The final HTML contains no decorative controls that appear interactive but do nothing
+
+If any visible control does not work, remove it or implement it properly before returning the final result.
 
 ---
 
