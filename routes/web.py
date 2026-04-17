@@ -1,7 +1,8 @@
 import sys
 import uuid
 import logging
-from datetime import datetime
+import os
+from datetime import datetime, timedelta
 
 from flask import Blueprint, render_template, request, redirect, url_for, make_response
 
@@ -14,6 +15,8 @@ from services.executor import execute_task
 
 logger = logging.getLogger(__name__)
 web = Blueprint('web', __name__)
+
+ALL_PATIENTS_CACHE_TTL_MINUTES = int(os.getenv('ALL_PATIENTS_CACHE_TTL_MINUTES', '15'))
 
 
 # -----------------------------------------------------------------------------
@@ -31,6 +34,17 @@ def _load_tasks() -> dict:
     }
 
 
+def _get_cached_patient_session(patient_id: str, fhir_base_url: str):
+    """Reuse a recent cached session for expensive patient contexts like all-patient loads."""
+    cutoff = datetime.utcnow() - timedelta(minutes=ALL_PATIENTS_CACHE_TTL_MINUTES)
+    return PatientSession.query.filter(
+        PatientSession.patient_id == patient_id,
+        PatientSession.fhir_base_url == fhir_base_url,
+        PatientSession.patient_data.isnot(None),
+        PatientSession.last_accessed >= cutoff,
+    ).order_by(PatientSession.last_accessed.desc()).first()
+
+
     # """Handle POST / when Flutter headers are present."""
 def _handle_flutter_init():
     print("[INDEX] POST request - checking Flutter headers", flush=True)
@@ -46,27 +60,40 @@ def _handle_flutter_init():
     access_token = auth_header.replace('Bearer ', '') if auth_header.startswith('Bearer ') else auth_header
 
     try:
-        print("[INDEX] Fetching patient data from FHIR", flush=True)
-        session_data_temp = {'fhir_base_url': fhir_base_url, 'patient_id': patient_id, 'auth_token': access_token}
+        patient_session = None
         if patient_id == 'all':
-            patient_data = get_all_patients_data_direct(session_data_temp)
-        else:
-            patient_data = get_patient_data_direct(session_data_temp)
-        patient_name = patient_data.get('patient', {}).get('name', 'Unknown Patient')
-        print(f"[INDEX] Patient data fetched: {patient_name}", flush=True)
+            patient_session = _get_cached_patient_session(patient_id, fhir_base_url)
+            if patient_session:
+                patient_session.auth_token = access_token
+                patient_session.last_accessed = datetime.utcnow()
+                db.session.commit()
+                patient_data = patient_session.patient_data
+                patient_name = patient_session.patient_name or patient_data.get('patient', {}).get('name', 'All Patients')
+                session_id = patient_session.id
+                print(f"[INDEX] Using cached all-patients data from session {session_id}", flush=True)
 
-        session_id = str(uuid.uuid4())
-        patient_session = PatientSession(
-            id=session_id,
-            patient_id=patient_id,
-            patient_name=patient_name,
-            fhir_base_url=fhir_base_url,
-            auth_token=access_token,
-            patient_data=patient_data
-        )
-        db.session.add(patient_session)
-        db.session.commit()
-        print(f"[INDEX] Session saved to DB: {session_id}", flush=True)
+        if not patient_session:
+            print("[INDEX] Fetching patient data from FHIR", flush=True)
+            session_data_temp = {'fhir_base_url': fhir_base_url, 'patient_id': patient_id, 'auth_token': access_token}
+            if patient_id == 'all':
+                patient_data = get_all_patients_data_direct(session_data_temp)
+            else:
+                patient_data = get_patient_data_direct(session_data_temp)
+            patient_name = patient_data.get('patient', {}).get('name', 'Unknown Patient')
+            print(f"[INDEX] Patient data fetched: {patient_name}", flush=True)
+
+            session_id = str(uuid.uuid4())
+            patient_session = PatientSession(
+                id=session_id,
+                patient_id=patient_id,
+                patient_name=patient_name,
+                fhir_base_url=fhir_base_url,
+                auth_token=access_token,
+                patient_data=patient_data
+            )
+            db.session.add(patient_session)
+            db.session.commit()
+            print(f"[INDEX] Session saved to DB: {session_id}", flush=True)
 
         tasks = _load_tasks()
         print(f"[INDEX] Tasks loaded: pending={len(tasks['pending'])}, running={len(tasks['running'])}, completed={len(tasks['completed'])}", flush=True)

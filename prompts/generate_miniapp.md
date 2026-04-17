@@ -92,7 +92,7 @@ Follow the reference design in `prompts/_design_reference.html` **exactly**. The
 - Maintain strong readability and clear section separation. The UI should look modern, clean, and intentionally designed rather than generic Bootstrap.
 
 ## Top Nav Pattern
-Use the upgraded top navigation from the reference: a rounded glassy white surface, branded icon tile, stacked logo text, and pill navigation only. Nav items use `border-radius: 999px`; the active item gets `background: var(--navy); color: #fff`. Preserve the exact overall pattern from the reference.
+Use the upgraded top navigation from the reference: a rounded glassy white surface, branded icon tile, stacked logo text, pill navigation, a compact utility control on the right, and a user chip. Nav items use `border-radius: 999px`; the active item gets `background: var(--navy); color: #fff`. Preserve the exact overall pattern from the reference.
 
 ## Greeting Header
 Use a hero overview card, not plain text alone. Large `2rem` to `2.4rem` `font-weight:800` patient greeting, muted supporting copy, and compact meta badges inside a rounded elevated card. Follow the reference layout and proportions.

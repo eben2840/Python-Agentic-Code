@@ -2,6 +2,8 @@ import uuid
 import json
 import logging
 import threading
+import os
+from datetime import datetime, timedelta
 
 from flask import Blueprint, request, jsonify, url_for, current_app
 
@@ -15,6 +17,7 @@ from llm_service import ClaudeLLMService
 logger = logging.getLogger(__name__)
 
 quick_generate = Blueprint('quick_generate', __name__, url_prefix='/api/quick')
+ALL_PATIENTS_CACHE_TTL_MINUTES = int(os.getenv('ALL_PATIENTS_CACHE_TTL_MINUTES', '15'))
 
 _EXTRACTION_SYSTEM = """You are a clinical data extractor. You output JSON only — no explanation, no markdown, no code fences.
 
@@ -31,6 +34,16 @@ Example output:
 {"vitals": [{"label": "Blood Pressure", "value": "120/80", "unit": "mmHg"}], "medications": [{"name": "Paracetamol", "dose": "500mg", "status": "given"}], "interventions": [], "observations": [{"label": "Patient Feeling", "value": "confused, disoriented"}] " and the rest"...}
 
 If nothing is found for a category, return an empty array for that key."""
+
+
+def _get_cached_all_patients_session(fhir_base_url: str):
+    cutoff = datetime.utcnow() - timedelta(minutes=ALL_PATIENTS_CACHE_TTL_MINUTES)
+    return PatientSession.query.filter(
+        PatientSession.patient_id == 'all',
+        PatientSession.fhir_base_url == fhir_base_url,
+        PatientSession.patient_data.isnot(None),
+        PatientSession.last_accessed >= cutoff,
+    ).order_by(PatientSession.last_accessed.desc()).first()
 
 
 @quick_generate.route('/extract', methods=['POST'])
@@ -76,26 +89,39 @@ def generate_miniapp():
             return jsonify({'status': 'error', 'error': 'Missing required fields'}), 400
 
         session_data = {'fhir_base_url': fhir_base_url, 'patient_id': patient_id, 'auth_token': access_token}
-
+        patient_session = None
         if patient_id == 'all':
-            patient_data = get_all_patients_data_direct(session_data)
-            count        = patient_data.get('patient', {}).get('count', 0)
-            patient_name = f"All Patients ({count} total)"
+            patient_session = _get_cached_all_patients_session(fhir_base_url)
+            if patient_session:
+                patient_session.auth_token = access_token
+                patient_session.last_accessed = datetime.utcnow()
+                db.session.commit()
+                patient_data = patient_session.patient_data
+                count        = patient_data.get('patient', {}).get('count', 0)
+                patient_name = patient_session.patient_name or f"All Patients ({count} total)"
+                logger.info("[QUICK-GENERATE] Using cached all-patients session %s", patient_session.id)
+            else:
+                patient_data = get_all_patients_data_direct(session_data)
+                count        = patient_data.get('patient', {}).get('count', 0)
+                patient_name = f"All Patients ({count} total)"
         else:
             patient_data = get_patient_data_direct(session_data)
             patient_name = patient_data.get('patient', {}).get('name') or f"Patient {patient_id}"
 
-        session_id = str(uuid.uuid4())
-        patient_session = PatientSession(
-            id=session_id,
-            patient_id=patient_id,
-            patient_name=patient_name,
-            fhir_base_url=fhir_base_url,
-            auth_token=access_token,
-            patient_data=patient_data
-        )
-        db.session.add(patient_session)
-        db.session.commit()
+        if patient_session:
+            session_id = patient_session.id
+        else:
+            session_id = str(uuid.uuid4())
+            patient_session = PatientSession(
+                id=session_id,
+                patient_id=patient_id,
+                patient_name=patient_name,
+                fhir_base_url=fhir_base_url,
+                auth_token=access_token,
+                patient_data=patient_data
+            )
+            db.session.add(patient_session)
+            db.session.commit()
 
         task_id = str(uuid.uuid4())
         task = Task(
@@ -172,4 +198,3 @@ def get_task_status(task_id):
         response['raw_url'] = url_for('mini_apps.mini_app_raw',     task_id=task_id, _external=True)
 
     return jsonify(response)
-
