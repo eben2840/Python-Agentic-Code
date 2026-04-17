@@ -3,1321 +3,822 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CareIT Design Reference</title>
+  <title>CareIT Station Reference</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:           #eef1f8;
-      --surface:      #ffffff;
-      --border:       #e4e8f0;
-      --shadow:       0 2px 16px rgba(27,53,102,0.07);
-      --shadow-sm:    0 1px 6px  rgba(27,53,102,0.05);
-      --radius:       18px;
-      --radius-sm:    12px;
-      --radius-pill:  999px;
-
-      --navy:         #1B3566;
-      --navy-hover:   #142a52;
-      --navy-light:   #e8edf8;
-
-      --coral:        #e07272;
-      --coral-light:  #fdf0f0;
-
-      --blue:         #3b82f6;
-      --blue-light:   #eff6ff;
-      --green:        #22c55e;
-      --green-light:  #f0fdf4;
-      --amber:        #f59e0b;
-      --amber-light:  #fffbeb;
-
-      --text-primary:   #1a1a2e;
-      --text-secondary: #8890a4;
-      --text-muted:     #b0b8cc;
-
-      --font: 'Nunito', sans-serif;
+      --bg:            #f2f4f6;
+      --surface:       #ffffff;
+      --panel-bg:      #ffffff;
+      --border:        #d4dbe0;
+      --divider:       #e8edf0;
+      --teal:          #0e7897;
+      --teal-dark:     #0a647f;
+      --teal-soft:     #6fa8bd;
+      --sidebar-teal:  #0f7696;
+      --sidebar-dark:  #0b6580;
+      --text:          #17333d;
+      --muted:         #6a7f88;
+      --subtle:        #95a6ad;
+      --danger:        #ff1f1f;
+      --shadow-sm:     0 1px 2px rgba(0, 0, 0, 0.08);
+      --radius:        2px;
+      --font:          'IBM Plex Sans', sans-serif;
+      --sidebar-w:     380px;
+      --topbar-h:      58px;
+      --bottombar-h:   56px;
     }
 
-    *, *::before, *::after { box-sizing: border-box; }
+    * { box-sizing: border-box; }
 
-    html {
-      scroll-behavior: smooth;
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: var(--bg);
+      font-family: var(--font);
+      color: var(--text);
     }
 
     body {
-      font-family: var(--font);
       font-size: 14px;
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,0.95) 0, rgba(255,255,255,0) 30%),
-        radial-gradient(circle at top right, rgba(232,237,248,0.9) 0, rgba(232,237,248,0) 32%),
-        linear-gradient(180deg, #f5f8fd 0%, var(--bg) 42%, #edf2fa 100%);
-      color: var(--text-primary);
-      -webkit-font-smoothing: antialiased;
+      line-height: 1.35;
+    }
+
+    .station-app {
       min-height: 100vh;
-      margin: 0;
+      display: grid;
+      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+      grid-template-rows: auto 1fr auto;
+      grid-template-areas:
+        "sidebar topbar"
+        "sidebar main"
+        "sidebar bottombar";
     }
 
-    .page-shell {
-      position: relative;
-      max-width: 1360px;
-      margin: 0 auto;
-      padding: 32px 18px 40px;
-    }
-
-    .page-shell::before,
-    .page-shell::after {
-      content: "";
-      position: fixed;
-      z-index: 0;
-      border-radius: 50%;
-      filter: blur(6px);
-      pointer-events: none;
-    }
-
-    .page-shell::before {
-      width: 280px;
-      height: 280px;
-      top: -110px;
-      right: -60px;
-      background: rgba(59,130,246,0.08);
-    }
-
-    .page-shell::after {
-      width: 240px;
-      height: 240px;
-      left: -80px;
-      bottom: 14%;
-      background: rgba(224,114,114,0.08);
-    }
-
-    .dashboard-frame {
-      position: relative;
-      z-index: 1;
-    }
-
-    .card,
-    .panel-card {
-      background: var(--surface);
-      border: 1px solid rgba(228,232,240,0.7);
-      border-radius: calc(var(--radius) + 6px);
-      box-shadow: 0 24px 60px rgba(27,53,102,0.08), var(--shadow-sm);
-    }
-
-    .card-body {
-      padding: 1.5rem;
-    }
-
-    .top-nav {
-      position: sticky;
-      top: 18px;
-      z-index: 20;
-      background: rgba(255,255,255,0.82);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(228,232,240,0.75);
-      border-radius: 28px;
-      box-shadow: 0 18px 40px rgba(27,53,102,0.08);
-      padding: 0.95rem 1.1rem 0.95rem 1.35rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.75rem;
-    }
-
-    .nav-logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      min-width: fit-content;
-    }
-
-    .nav-logo-mark {
-      width: 46px;
-      height: 46px;
-      border-radius: 16px;
-      background: linear-gradient(145deg, rgba(27,53,102,1), rgba(59,130,246,0.85));
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .sidebar {
+      grid-area: sidebar;
+      background: var(--sidebar-teal);
       color: #fff;
-      box-shadow: 0 14px 30px rgba(27,53,102,0.22);
+      border-right: 1px solid rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .sidebar-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+      font-weight: 700;
       font-size: 1rem;
     }
 
-    .nav-logo-block {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.05;
-    }
-
-    .nav-kicker {
-      font-size: 0.62rem;
-      font-weight: 800;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 0.18rem;
-    }
-
-    .nav-logo {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      letter-spacing: -0.03em;
-      white-space: nowrap;
-      margin: 0;
-    }
-
-    .nav-logo span { color: var(--navy); }
-
-    .nav-pills {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      flex: 1;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .nav-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.62rem 1rem;
-      border-radius: var(--radius-pill);
-      font-size: 0.82rem;
+    .sidebar-top .station-title {
+      font-size: 1rem;
       font-weight: 700;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: 1px solid transparent;
-      background: transparent;
-      text-decoration: none;
     }
 
-    .nav-pill:hover {
-      background: var(--navy-light);
-      color: var(--navy);
-      transform: translateY(-1px);
+    .sidebar-top .toolbar {
+      display: flex;
+      gap: 16px;
+      opacity: 0.95;
+      font-size: 1.05rem;
     }
 
-    .nav-pill.active {
-      background: var(--navy);
-      color: #ffffff;
-      box-shadow: 0 12px 24px rgba(27,53,102,0.18);
-    }
-
-    .nav-right {
+    .sidebar-group {
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+      padding: 10px 12px;
+      font-size: 0.96rem;
       display: flex;
       align-items: center;
-      gap: 0.8rem;
-      margin-left: auto;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 500;
     }
 
-    .nav-icon-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: linear-gradient(180deg, #ffffff, #f2f6fb);
-      border: 1px solid rgba(228,232,240,0.95);
+    .sidebar-group .label {
       display: flex;
       align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 0.92rem;
-      position: relative;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .nav-user {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      padding: 0.35rem 0.35rem 0.35rem 0.85rem;
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(245,248,253,0.95), rgba(232,237,248,0.75));
-      border: 1px solid rgba(228,232,240,0.95);
-    }
-
-    .nav-user-info {
-      text-align: right;
-      min-width: 0;
-    }
-
-    .nav-user-name {
-      font-size: 0.875rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      line-height: 1.15;
-      margin: 0;
-    }
-
-    .nav-user-location {
-      font-size: 0.7rem;
-      color: var(--text-secondary);
+      gap: 8px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .nav-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: linear-gradient(160deg, var(--navy) 0%, #4166a5 100%);
-      color: #fff;
-      overflow: hidden;
+    .sidebar-search {
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+      padding: 10px 12px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.9rem;
-      box-shadow: 0 10px 20px rgba(27,53,102,0.2);
+      gap: 10px;
+      color: rgba(255,255,255,0.9);
     }
 
-    .hero-panel {
-      position: relative;
-      overflow: hidden;
-      padding: 1.7rem;
-      border-radius: 28px;
-      background:
-        radial-gradient(circle at top right, rgba(59,130,246,0.1), transparent 34%),
-        linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,254,0.96));
-      border: 1px solid rgba(228,232,240,0.7);
-      box-shadow: 0 24px 60px rgba(27,53,102,0.08), var(--shadow-sm);
-      margin-bottom: 1rem;
-    }
-
-    .hero-panel::after {
-      content: "";
-      position: absolute;
-      inset: auto -24px -30px auto;
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(27,53,102,0.08) 0, rgba(27,53,102,0) 68%);
-    }
-
-    .section-label {
-      font-size: 0.6875rem;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 0.85rem;
-    }
-
-    .hero-greeting {
-      font-size: clamp(1.8rem, 3vw, 2.45rem);
-      font-weight: 800;
-      color: var(--text-primary);
-      line-height: 1.05;
-      margin-bottom: 0.45rem;
-      letter-spacing: -0.04em;
-      max-width: 10ch;
-    }
-
-    .hero-sub {
-      font-size: 0.96rem;
-      color: var(--text-secondary);
-      margin-bottom: 1.15rem;
-      max-width: 34ch;
-      line-height: 1.6;
-    }
-
-    .hero-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.65rem;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.65rem 0.9rem;
-      border-radius: 16px;
-      background: rgba(245,248,253,0.98);
-      border: 1px solid rgba(228,232,240,0.95);
-      box-shadow: var(--shadow-sm);
-      font-size: 0.76rem;
-      color: var(--text-secondary);
-      font-weight: 700;
-    }
-
-    .hero-badge strong {
-      color: var(--navy);
-      font-size: 0.82rem;
-    }
-
-    .heartbeat-card {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,248,253,0.98));
-      border: 1px solid rgba(228,232,240,0.85);
-      border-radius: 24px;
-      box-shadow: 0 18px 40px rgba(27,53,102,0.08);
-      padding: 1.1rem 1.2rem 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      min-width: 220px;
-    }
-
-    .heartbeat-card::after {
-      content: "";
-      position: absolute;
-      right: -30px;
-      top: -28px;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(224,114,114,0.14), rgba(224,114,114,0));
-    }
-
-    .heartbeat-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      font-size: 0.82rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      position: relative;
-      z-index: 1;
-    }
-
-    .heartbeat-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 12px;
-      background: var(--coral-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--coral);
-      font-size: 0.9rem;
-      box-shadow: inset 0 0 0 1px rgba(224,114,114,0.12);
-    }
-
-    .heartbeat-bpm {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      font-weight: 700;
-      background: rgba(245,248,253,0.92);
-      border: 1px solid rgba(228,232,240,0.9);
-      padding: 0.35rem 0.55rem;
-      border-radius: 999px;
-      white-space: nowrap;
-    }
-
-    .heartbeat-meta {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      color: var(--text-muted);
-      font-size: 0.72rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      position: relative;
-      z-index: 1;
-    }
-
-    .ecg-svg {
-      width: 100%;
-      height: 52px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .mini-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0.75rem;
-    }
-
-    .research-card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,254,0.98));
-      border: 1px solid rgba(228,232,240,0.95);
-      border-radius: 22px;
-      box-shadow: var(--shadow-sm);
-      padding: 1rem 0.95rem;
-      position: relative;
-      overflow: hidden;
-      min-height: 128px;
-      isolation: isolate;
-    }
-
-    .research-card::before {
-      content: "";
-      position: absolute;
-      inset: auto -14px -18px auto;
-      width: 78px;
-      height: 78px;
-      border-radius: 50%;
-      background: rgba(232,237,248,0.75);
-      z-index: -1;
-    }
-
-    .research-label {
-      font-size: 0.63rem;
-      font-weight: 800;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 0.3rem;
-    }
-
-    .research-title {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      margin-bottom: 0.45rem;
-    }
-
-    .research-count {
-      font-size: 0.76rem;
-      color: var(--text-secondary);
-      max-width: 11ch;
-      line-height: 1.45;
-    }
-
-    .research-img-placeholder {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      width: 52px;
-      height: 52px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.72);
-      border: 1px solid rgba(228,232,240,0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 12px 20px rgba(27,53,102,0.06);
-    }
-
-    .research-img-placeholder i {
-      font-size: 1.5rem;
-      color: var(--navy);
-      line-height: 1;
-    }
-
-    .panel-card {
-      height: 100%;
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .panel-card .card-body {
-      padding: 1.35rem 1.35rem 1.4rem;
-    }
-
-    .card-soft {
-      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,254,0.98));
-    }
-
-    .chart-card-header,
-    .panel-header,
-    .schedule-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
-      margin-bottom: 0.95rem;
-    }
-
-    .chart-title,
-    .schedule-title,
-    .panel-title {
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      letter-spacing: -0.02em;
-      margin: 0;
-    }
-
-    .panel-subtitle {
-      font-size: 0.74rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-weight: 800;
-      margin: 0 0 0.3rem;
-    }
-
-    .chart-period-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--navy);
-      color: #fff;
+    .sidebar-search input {
+      flex: 1;
       border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.68rem;
-      cursor: pointer;
-      box-shadow: 0 10px 18px rgba(27,53,102,0.18);
+      background: transparent;
+      color: #fff;
+      font: inherit;
+      outline: none;
     }
 
-    .chart-frame {
-      background: linear-gradient(180deg, #fbfcff 0%, #f5f8fd 100%);
-      border: 1px solid rgba(228,232,240,0.9);
-      border-radius: 20px;
-      padding: 0.9rem 0.9rem 0.6rem;
+    .sidebar-search input::placeholder {
+      color: rgba(255,255,255,0.78);
     }
 
-    .chart-caption {
+    .room-card {
+      background: #dfe5ea;
+      color: #1d2d35;
+      border-top: 1px solid rgba(0,0,0,0.12);
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+    }
+
+    .room-header {
       display: flex;
       justify-content: space-between;
-      gap: 0.5rem;
-      margin-top: 0.75rem;
-      font-size: 0.72rem;
-      color: var(--text-secondary);
+      align-items: center;
+      padding: 11px 12px;
+      font-weight: 700;
+      background: #cfd6dc;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .patient-card {
+      padding: 12px;
+      background: #eef2f5;
+    }
+
+    .patient-card .name-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .patient-card .patient-name {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .patient-card .badge-red {
+      background: #ff1f1f;
+      color: #fff;
+      font-size: 0.64rem;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 1px;
+    }
+
+    .patient-card .meta {
+      color: #2d4854;
+      font-size: 0.82rem;
+      margin-bottom: 8px;
+    }
+
+    .signal-list {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .signal-dot {
+      width: 18px;
+      height: 18px;
+      border: 1px solid #2f6f9d;
+      background: #fff;
+      color: #2f6f9d;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.67rem;
+      border-radius: 999px;
+    }
+
+    .signal-dot.alert {
+      background: #ff1f1f;
+      border-color: #ff1f1f;
+      color: #fff;
       font-weight: 700;
     }
 
-    .chart-caption span {
+    .topbar {
+      grid-area: topbar;
+      background: var(--teal);
+      color: #fff;
+      min-height: var(--topbar-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 22px;
+      border-bottom: 1px solid rgba(0,0,0,0.14);
+    }
+
+    .patient-strip {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+
+    .patient-strip .primary {
+      font-size: 0.98rem;
+      font-weight: 600;
+    }
+
+    .patient-strip .meta-item {
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      white-space: nowrap;
     }
 
-    .chart-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      display: inline-block;
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 0.95rem;
+      white-space: nowrap;
     }
 
-    .chart-dot.blue { background: var(--blue); }
-    .chart-dot.coral { background: var(--coral); }
+    .shortcut-set {
+      display: flex;
+      gap: 8px;
+    }
 
-    .med-list {
+    .shortcut-box {
+      width: 30px;
+      height: 30px;
+      border: 2px solid rgba(255,255,255,0.88);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      border-radius: 2px;
+    }
+
+    .main {
+      grid-area: main;
       display: flex;
       flex-direction: column;
-      gap: 0.65rem;
+      min-width: 0;
     }
 
-    .med-item {
-      display: flex;
-      align-items: center;
-      gap: 0.875rem;
-      padding: 0.85rem 0.95rem;
-      border-radius: 18px;
-      border: 1px solid rgba(228,232,240,0.95);
-      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,254,0.98));
-      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-      box-shadow: 0 10px 20px rgba(27,53,102,0.03);
-    }
-
-    .med-item:hover {
-      transform: translateY(-1px);
-      border-color: rgba(27,53,102,0.18);
-      box-shadow: 0 14px 28px rgba(27,53,102,0.06);
-    }
-
-    .med-item.active {
-      background: linear-gradient(135deg, #1b3566 0%, #294a86 100%);
-      border-color: var(--navy);
-      box-shadow: 0 18px 32px rgba(27,53,102,0.2);
-    }
-
-    .med-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: #f3f7fd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.95rem;
-      flex-shrink: 0;
-      color: var(--navy);
-      border: 1px solid rgba(228,232,240,0.9);
-    }
-
-    .med-item.active .med-icon {
-      background: rgba(255,255,255,0.14);
-      color: #fff;
-      border-color: rgba(255,255,255,0.16);
-    }
-
-    .med-name {
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      line-height: 1.2;
-      margin-bottom: 0.18rem;
-    }
-
-    .med-dose {
-      font-size: 0.76rem;
-      color: var(--text-secondary);
+    .page-title {
+      padding: 10px 22px 6px;
+      font-size: 0.97rem;
       font-weight: 700;
+      color: #214957;
     }
 
-    .med-item.active .med-name,
-    .med-item.active .med-dose { color: #fff; }
-
-    .med-item.active .med-dose { color: rgba(255,255,255,0.74); }
-
-    .med-date {
-      margin-left: auto;
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      text-align: right;
-      white-space: nowrap;
-      font-weight: 700;
-    }
-
-    .med-item.active .med-date { color: rgba(255,255,255,0.7); }
-
-    .allergy-section {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.9rem;
-      padding: 1.15rem 1.2rem;
-      border-radius: 24px;
-      border: 1px solid rgba(245,158,11,0.16);
-      background: linear-gradient(180deg, #fffdf7 0%, #fffaf1 100%);
-      box-shadow: 0 16px 30px rgba(245,158,11,0.08);
-    }
-
-    .allergy-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: var(--amber-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--amber);
-      font-size: 1rem;
-      flex-shrink: 0;
-      border: 1px solid rgba(245,158,11,0.12);
-    }
-
-    .allergy-title {
-      font-size: 0.95rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      margin-bottom: 0.25rem;
-    }
-
-    .allergy-text {
-      font-size: 0.82rem;
-      color: #8f7a4c;
-      line-height: 1.55;
-      font-weight: 700;
-    }
-
-    .schedule-panel {
-      background:
-        radial-gradient(circle at top right, rgba(27,53,102,0.08) 0, rgba(27,53,102,0) 32%),
-        linear-gradient(180deg, rgba(255,255,255,0.98), rgba(247,250,255,0.98));
-    }
-
-    .schedule-month {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.45rem 0.7rem;
-      border-radius: 999px;
-      background: rgba(245,248,253,0.92);
-      border: 1px solid rgba(228,232,240,0.95);
-    }
-
-    .week-strip {
+    .workflow {
+      padding: 0 22px 10px;
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 0.45rem;
-      margin-bottom: 1.25rem;
+      gap: 12px;
     }
 
-    .day-cell {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.32rem;
-      padding: 0.72rem 0.3rem;
-      border-radius: 18px;
-      cursor: pointer;
-      background: rgba(245,248,253,0.92);
-      border: 1px solid rgba(228,232,240,0.95);
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    .day-cell:hover {
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .day-cell.today {
-      background: linear-gradient(135deg, var(--navy) 0%, #32538d 100%);
-      border-color: transparent;
-      box-shadow: 0 14px 28px rgba(27,53,102,0.22);
-    }
-
-    .day-name {
-      font-size: 0.63rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    .day-num {
-      font-size: 1rem;
-      font-weight: 800;
-      color: var(--text-secondary);
-    }
-
-    .day-cell.today .day-name,
-    .day-cell.today .day-num {
-      color: #ffffff;
-    }
-
-    .appt-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-    }
-
-    .appt-item {
-      display: flex;
-      align-items: center;
-      gap: 0.78rem;
-      padding: 0.95rem;
-      border-radius: 20px;
-      border: 1px solid rgba(228,232,240,0.95);
-      background: rgba(255,255,255,0.8);
-      box-shadow: 0 12px 20px rgba(27,53,102,0.04);
-    }
-
-    .appt-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 16px;
-      background: linear-gradient(180deg, var(--navy-light), #f4f7fd);
-      border: 1px solid rgba(228,232,240,0.95);
+    .workflow-step {
+      position: relative;
+      background: #7eafc1;
+      color: #eaf5f8;
+      min-height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--navy);
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 0 18px;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%, 12px 50%);
+    }
+
+    .workflow-step.active {
+      background: #5f9db3;
+      color: #fff;
+    }
+
+    .content-grid {
+      padding: 0 22px 18px;
+      display: grid;
+      grid-template-columns: 1.08fr 1.08fr 1.1fr;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      min-height: 220px;
+    }
+
+    .panel-header {
+      background: var(--teal);
+      color: #fff;
+      min-height: 42px;
+      padding: 10px 14px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .panel-body {
+      padding: 0;
+      font-size: 0.87rem;
+    }
+
+    .info-card-top {
+      background: #6f97b5;
+      color: #fff;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .avatar-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.25);
+      position: relative;
+    }
+
+    .avatar-circle::before,
+    .avatar-circle::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.45);
+    }
+
+    .avatar-circle::before {
+      top: 8px;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+    }
+
+    .avatar-circle::after {
+      bottom: 8px;
+      width: 30px;
+      height: 18px;
+      border-radius: 999px / 12px;
+    }
+
+    .patient-heading {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .patient-line {
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+
+    .swap-icon {
+      font-size: 1.35rem;
+      opacity: 0.95;
+    }
+
+    .info-band {
+      background: #7ea5bf;
+      color: #fff;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+      padding: 10px 14px;
+      font-size: 0.83rem;
+      font-weight: 600;
+    }
+
+    .info-details {
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      row-gap: 10px;
+      column-gap: 16px;
+      min-height: 280px;
+    }
+
+    .label-col {
+      color: #2f667a;
       font-size: 0.82rem;
-      font-weight: 800;
-      flex-shrink: 0;
     }
 
-    .appt-name {
-      font-size: 0.84rem;
-      font-weight: 800;
-      color: var(--text-primary);
-      line-height: 1.2;
-      margin-bottom: 0.18rem;
+    .value-col {
+      color: #111;
+      font-size: 0.82rem;
+      text-align: right;
     }
 
-    .appt-role {
-      font-size: 0.72rem;
-      color: var(--text-secondary);
+    .diagram-zone {
+      min-height: 520px;
+      padding: 14px 16px;
+      position: relative;
+      color: #8c9599;
+    }
+
+    .legend-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 0.8rem;
+    }
+
+    .legend-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-mark {
+      width: 16px;
+      text-align: center;
       font-weight: 700;
     }
 
-    .appt-time {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-top: 0.26rem;
+    .risk-center {
+      position: absolute;
+      left: 52%;
+      top: 42%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #868686;
+      font-size: 1.18rem;
+    }
+
+    .module-grid {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .signal-panel .panel-body,
+    .doc-panel .panel-body,
+    .discharge-panel .panel-body {
+      padding: 14px;
+      min-height: 110px;
+    }
+
+    .signal-repeater {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .signal-square {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #587aa6;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #587aa6;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: #fff;
+    }
+
+    .signal-square.active {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #fff;
+    }
+
+    .warning-copy {
+      color: #b03b3b;
+      font-size: 0.8rem;
+      margin-top: 6px;
+    }
+
+    .empty-box {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #cc0000;
+      text-align: center;
+      font-size: 0.82rem;
+    }
+
+    .discharge-box {
+      border: 1px solid #222;
+      min-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: #111;
+      background: #fff;
+    }
+
+    .bottom-bar {
+      grid-area: bottombar;
+      background: var(--teal);
+      color: #fff;
+      min-height: var(--bottombar-h);
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      border-top: 1px solid rgba(0,0,0,0.18);
+    }
+
+    .bottom-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
       font-weight: 700;
+      font-size: 0.9rem;
+      border-right: 1px solid rgba(255,255,255,0.12);
+      min-height: var(--bottombar-h);
     }
 
-    .appt-badge {
-      margin-left: auto;
-      font-size: 0.66rem;
-      font-weight: 800;
-      border-radius: var(--radius-pill);
-      padding: 0.35rem 0.7rem;
-      white-space: nowrap;
-      letter-spacing: 0.03em;
+    .bottom-item:last-child {
+      border-right: none;
     }
 
-    .appt-badge.created   { background: var(--blue-light);  color: var(--blue);  }
-    .appt-badge.confirmed { background: var(--navy);         color: #ffffff;      }
-    .appt-badge.completed { background: var(--green-light);  color: var(--green); }
-
-    .aside-note {
-      margin-top: 1rem;
-      padding: 0.95rem 1rem;
-      border-radius: 18px;
-      background: rgba(27,53,102,0.04);
-      border: 1px dashed rgba(27,53,102,0.15);
-      font-size: 0.76rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      font-weight: 700;
+    .bottom-item.active {
+      background: rgba(0,0,0,0.12);
+      color: #ffe37a;
     }
 
-    @media (max-width: 1199.98px) {
-      .top-nav {
-        position: static;
+    @media (max-width: 1200px) {
+      .station-app {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "topbar"
+          "sidebar"
+          "main"
+          "bottombar";
       }
 
-      .hero-greeting {
-        max-width: none;
-      }
-    }
-
-    @media (max-width: 991.98px) {
-      .page-shell {
-        padding: 20px 14px 28px;
+      .sidebar {
+        min-height: auto;
       }
 
-      .top-nav {
-        flex-wrap: wrap;
-        justify-content: space-between;
-        border-radius: 24px;
+      .content-grid,
+      .module-grid {
+        grid-template-columns: 1fr;
       }
 
-      .nav-pills {
-        order: 3;
-        width: 100%;
-        justify-content: flex-start;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        padding-bottom: 2px;
+      .workflow {
+        grid-template-columns: 1fr 1fr;
       }
 
-      .nav-pills::-webkit-scrollbar { display: none; }
-
-      .nav-right {
-        margin-left: 0;
-      }
-
-      .mini-grid {
+      .bottom-bar {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
 
-    @media (max-width: 767.98px) {
-      .page-shell {
-        padding: 14px 12px 24px;
+    @media (max-width: 768px) {
+      .topbar,
+      .page-title,
+      .workflow,
+      .content-grid {
+        padding-left: 12px;
+        padding-right: 12px;
       }
 
-      .top-nav {
-        padding: 0.95rem;
-        gap: 0.85rem;
-        margin-bottom: 1rem;
+      .patient-strip,
+      .topbar-right {
+        gap: 10px;
       }
 
-      .nav-logo-wrap {
-        width: 100%;
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
       }
 
-      .nav-right {
-        width: 100%;
-        justify-content: space-between;
-      }
-
-      .nav-user {
-        flex: 1;
-        justify-content: space-between;
-      }
-
-      .hero-panel {
-        padding: 1.25rem;
-      }
-
-      .hero-badges {
-        gap: 0.5rem;
-      }
-
-      .hero-badge {
-        width: 100%;
-        justify-content: space-between;
-      }
-
-      .mini-grid {
+      .workflow {
         grid-template-columns: 1fr;
       }
 
-      .panel-card .card-body,
-      .card-body {
-        padding: 1.1rem;
-      }
-
-      .week-strip {
-        grid-template-columns: repeat(5, minmax(52px, 1fr));
-        overflow-x: auto;
-        padding-bottom: 4px;
-      }
-
-      .appt-item,
-      .med-item {
-        align-items: flex-start;
-        flex-wrap: wrap;
-      }
-
-      .appt-badge,
-      .med-date {
-        margin-left: 50px;
-      }
-    }
-
-    @media (max-width: 575.98px) {
-      .hero-greeting {
-        font-size: 1.75rem;
-      }
-
-      .chart-title,
-      .schedule-title,
-      .panel-title {
-        font-size: 0.92rem;
-      }
-
-      .chart-frame {
-        padding: 0.75rem 0.7rem 0.5rem;
+      .bottom-bar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
   </style>
 </head>
 <body>
-<div class="page-shell">
-  <div class="dashboard-frame container-fluid px-0">
-
-    <div class="top-nav">
-      <div class="nav-logo-wrap">
-        <div class="nav-logo-mark"><i class="fa-solid fa-heart-pulse"></i></div>
-        <div class="nav-logo-block">
-          <div class="nav-kicker">Health Dashboard</div>
-          <div class="nav-logo">Home<span>Care</span></div>
+  <div class="station-app">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="station-title">Station</div>
+        <div class="toolbar">
+          <i class="fa-solid fa-rotate-right"></i>
+          <i class="fa-solid fa-bars"></i>
         </div>
       </div>
-
-      <nav class="nav-pills">
-        <a class="nav-pill active"><i class="fa-solid fa-table-cells-large fa-xs"></i> Dashboard</a>
-        <a class="nav-pill"><i class="fa-regular fa-calendar fa-xs"></i> Schedule</a>
-        <a class="nav-pill"><i class="fa-solid fa-chart-line fa-xs"></i> Analytics</a>
-        <a class="nav-pill"><i class="fa-regular fa-clock fa-xs"></i> History</a>
-      </nav>
-
-      <div class="nav-right">
-        <button class="nav-icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-        <div class="nav-user">
-          <div class="nav-user-info">
-            <div class="nav-user-name">{{patient_name}}</div>
-            <div class="nav-user-location"><i class="fa-solid fa-location-dot fa-xs"></i> {{location}}</div>
-          </div>
-          <div class="nav-avatar">{{initials}}</div>
-        </div>
+      <div class="sidebar-group">
+        <div class="label"><i class="fa-solid fa-house-medical"></i> Chirurgie Ward 3A</div>
+        <i class="fa-solid fa-caret-down"></i>
       </div>
-    </div>
-
-    <div class="row g-4 align-items-start">
-      <div class="col-12 col-xl-4">
-        <div class="hero-panel">
-          <div class="section-label">Patient Overview</div>
-          <div class="hero-greeting">Hello, {{patient_first_name}}!</div>
-          <div class="hero-sub">How are you feeling today? Your latest care snapshot is organized below for quick clinical review.</div>
-          <div class="hero-badges">
-            <div class="hero-badge"><span><i class="fa-solid fa-user"></i> Current patient</span> <strong>{{initials}}</strong></div>
-            <div class="hero-badge"><span><i class="fa-solid fa-location-dot"></i> Care location</span> <strong>{{location}}</strong></div>
-          </div>
+      <div class="sidebar-group">
+        <div class="label"><i class="fa-regular fa-folder-open"></i> Alle Fachbereiche</div>
+        <i class="fa-solid fa-caret-down"></i>
+      </div>
+      <div class="sidebar-search">
+        <input type="text" placeholder="Suchen..." value="">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <i class="fa-solid fa-sliders"></i>
+      </div>
+      <div class="room-card">
+        <div class="room-header">
+          <span>Room 301</span>
+          <span></span>
         </div>
-
-        <div class="heartbeat-card mb-3" style="width:100%;">
-          <div class="heartbeat-header">
-            <div class="d-flex align-items-center gap-2">
-              <div class="heartbeat-icon"><i class="fa-solid fa-heart"></i></div>
-              Heart Beat
-            </div>
-            <span class="heartbeat-bpm">{{heart_rate}} bpm</span>
+        <div class="patient-card">
+          <div class="name-row">
+            <div class="patient-name">1.Cage, 1.Johny</div>
+            <div class="badge-red">PPR</div>
           </div>
-          <svg class="ecg-svg" viewBox="0 0 240 40" preserveAspectRatio="none">
-            <polyline
-              fill="none"
-              stroke="#3b82f6"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              points="0,20 12,20 18,20 22,4 26,36 30,4 34,22 42,22 54,22 60,20 72,20 78,20 82,4 86,36 90,4 94,22 102,22 114,22 120,20 132,20 138,20 142,4 146,36 150,4 154,22 162,22 174,22 180,20 192,20 198,20 202,4 206,36 210,4 214,22 222,22 234,22 240,22"
-            />
-          </svg>
-          <div class="heartbeat-meta">
-            <span>Live reading</span>
-            <span>Stable rhythm</span>
+          <div class="meta">
+            <i class="fa-solid fa-venus-mars"></i>
+            Chirurgie Ward 3A, Room 301
           </div>
-        </div>
-
-        <div class="mini-grid">
-          <div class="research-card">
-            <div class="research-label">Research</div>
-            <div class="research-title">Brain</div>
-            <div class="research-count">{{brain_count}}</div>
-            <div class="research-img-placeholder" aria-hidden="true">
-              <i class="fa-solid fa-brain"></i>
-            </div>
-          </div>
-          <div class="research-card">
-            <div class="research-label">Research</div>
-            <div class="research-title">Heart</div>
-            <div class="research-count">{{heart_count}}</div>
-            <div class="research-img-placeholder" aria-hidden="true">
-              <i class="fa-solid fa-heart"></i>
-            </div>
-          </div>
-          <div class="research-card">
-            <div class="research-label">Research</div>
-            <div class="research-title">Lungs</div>
-            <div class="research-count">{{lungs_count}}</div>
-            <div class="research-img-placeholder" aria-hidden="true">
-              <i class="fa-solid fa-lungs bg-red"></i>
-            </div>
+          <div class="signal-list">
+            <span class="signal-dot">1</span>
+            <span class="signal-dot">2</span>
+            <span class="signal-dot">3</span>
+            <span class="signal-dot alert">4</span>
+            <span class="signal-dot">5</span>
+            <span class="signal-dot">6</span>
+            <span class="signal-dot">7</span>
+            <span class="signal-dot">8</span>
+            <span class="signal-dot">9</span>
+            <span class="signal-dot alert">10</span>
           </div>
         </div>
       </div>
+    </aside>
 
-      <div class="col-12 col-xl-5">
-        <div class="row g-3 mb-3">
-          <div class="col-12 col-md-7">
-            <div class="panel-card card-soft">
-              <div class="card-body">
-                <div class="chart-card-header">
-                  <div>
-                    <p class="panel-subtitle">Trend analysis</p>
-                    <div class="chart-title">{{chart_1_title}}</div>
-                  </div>
-                  <button class="chart-period-btn"><i class="fa-solid fa-chevron-down fa-xs"></i></button>
-                </div>
-                <div class="chart-frame">
-                  <canvas id="chartCholesterol" height="110"></canvas>
-                </div>
-                <div class="chart-caption">
-                  <span><i class="chart-dot blue"></i> Current trend</span>
-                  <span><i class="chart-dot coral"></i> Reference line</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 col-md-5">
-            <div class="panel-card card-soft">
-              <div class="card-body">
-                <div class="chart-card-header">
-                  <div>
-                    <p class="panel-subtitle">Vitals</p>
-                    <div class="chart-title">{{chart_2_title}}</div>
-                  </div>
-                  <button class="chart-period-btn" style="background:var(--coral);"><i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i></button>
-                </div>
-                <div class="chart-frame">
-                  <canvas id="chartVitals" height="110"></canvas>
-                </div>
-                <div class="chart-caption">
-                  <span><i class="chart-dot coral"></i> Pressure</span>
-                  <span><i class="chart-dot blue"></i> Oxygen</span>
-                </div>
-              </div>
-            </div>
-          </div>
+    <header class="topbar">
+      <div class="patient-strip">
+        <div class="primary">1.Cage, 1.Johny</div>
+        <div class="meta-item"><i class="fa-solid fa-venus-mars"></i> *10.04.1996, 30J.</div>
+        <div class="meta-item"><i class="fa-regular fa-clipboard"></i> Fall Nr.: fn-001</div>
+        <div class="meta-item">WVD: 11</div>
+        <div class="shortcut-set">
+          <span class="shortcut-box">C</span>
+          <span class="shortcut-box">A</span>
+          <span class="shortcut-box">V</span>
+          <span class="shortcut-box">E</span>
         </div>
+      </div>
+      <div class="topbar-right">
+        <i class="fa-solid fa-house"></i>
+        <i class="fa-regular fa-rectangle-list"></i>
+        <i class="fa-solid fa-table-cells-large"></i>
+        <i class="fa-solid fa-user-plus"></i>
+        <i class="fa-solid fa-user-doctor"></i>
+      </div>
+    </header>
 
-        <div class="panel-card mb-3">
-          <div class="card-body">
-            <div class="panel-header mb-3">
+    <main class="main">
+      <div class="page-title">Übersicht</div>
+
+      <div class="workflow">
+        <div class="workflow-step active">Anamnese</div>
+        <div class="workflow-step">Assessment</div>
+        <div class="workflow-step">Analyse</div>
+        <div class="workflow-step">Planung</div>
+        <div class="workflow-step">...</div>
+      </div>
+
+      <div class="content-grid">
+        <section class="panel">
+          <div class="panel-header">Information</div>
+          <div class="panel-body">
+            <div class="info-card-top">
+              <div class="avatar-circle"></div>
               <div>
-                <p class="panel-subtitle">Treatment</p>
-                <div class="panel-title">Medication list</div>
+                <div class="patient-heading">1.Cage, 1.Johny</div>
+                <div class="patient-line">Männlich</div>
+                <div class="patient-line">*10.04.1996, 30 Jahre</div>
+                <div class="patient-line" style="margin-top:12px;">Patienten-Nr. pn-001</div>
+                <div class="patient-line">Fall Nr.: fn-001</div>
+                <div class="patient-line">Status: in arbeit</div>
+                <div class="patient-line" style="margin-top:14px;">Von: 05.04.2026 &nbsp;&nbsp; Bis: &nbsp;&nbsp; GE:</div>
               </div>
+              <div class="swap-icon"><i class="fa-solid fa-rotate"></i></div>
             </div>
-            <div class="med-list">
-              <div class="med-item">
-                <div class="med-icon"><i class="fa-solid fa-capsules"></i></div>
-                <div>
-                  <div class="med-name">{{med_1_name}}</div>
-                  <div class="med-dose">{{med_1_dose}}</div>
-                </div>
-                <div class="med-date">{{med_1_date}}</div>
-              </div>
-              <div class="med-item active">
-                <div class="med-icon"><i class="fa-solid fa-pills"></i></div>
-                <div>
-                  <div class="med-name">{{med_2_name}}</div>
-                  <div class="med-dose">{{med_2_dose}}</div>
-                </div>
-                <div class="med-date">{{med_2_date}}</div>
-              </div>
-              <div class="med-item">
-                <div class="med-icon"><i class="fa-solid fa-tablet-screen-button"></i></div>
-                <div>
-                  <div class="med-name">{{med_3_name}}</div>
-                  <div class="med-dose">{{med_3_dose}}</div>
-                </div>
-                <div class="med-date">{{med_3_date}}</div>
-              </div>
-              <div class="med-item">
-                <div class="med-icon"><i class="fa-solid fa-syringe"></i></div>
-                <div>
-                  <div class="med-name">{{med_4_name}}</div>
-                  <div class="med-dose">{{med_4_dose}}</div>
-                </div>
-                <div class="med-date">{{med_4_date}}</div>
-              </div>
+            <div class="info-band">
+              <div>Chirurgie Ward 3A</div>
+              <div>Room 301</div>
+            </div>
+            <div class="info-details">
+              <div class="label-col">Pflegeintensität</div><div class="value-col">-</div>
+              <div class="label-col">Pflegegrad</div><div class="value-col">-</div>
+              <div class="label-col">Fachbereich</div><div class="value-col">-</div>
+              <div class="label-col">Krankenversicherung</div><div class="value-col">?</div>
+              <div class="label-col">Nummer</div><div class="value-col">?</div>
+              <div class="label-col">Privat</div><div class="value-col">Nein</div>
+              <div class="label-col">Verweildauer</div><div class="value-col">11 Tag(e)</div>
+              <div class="label-col">Patient entlassen</div><div class="value-col">-</div>
+              <div class="label-col">Hauptdiagnose</div><div class="value-col">-</div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="allergy-section">
-          <div class="allergy-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-          <div>
-            <div class="allergy-title">Allergies</div>
-            <div class="allergy-text">{{allergy_list}}</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-xl-3">
-        <div class="panel-card schedule-panel h-100">
-          <div class="card-body">
-            <div class="schedule-header">
-              <div>
-                <p class="panel-subtitle">Appointments</p>
-                <div class="schedule-title">My Schedule</div>
+        <section class="panel">
+          <div class="panel-header">Risikoübersicht</div>
+          <div class="panel-body diagram-zone">
+            <div class="legend-row">
+              <div class="legend-group">
+                <div class="legend-item"><span class="legend-mark" style="color:#f19c9c;">◯</span> Risiko vorhanden</div>
+                <div class="legend-item"><span class="legend-mark" style="color:#b8d7b0;">◯</span> Kein Risiko</div>
+                <div class="legend-item"><span class="legend-mark" style="color:#d6d6d6;">◯</span> Risiko n.a.</div>
               </div>
-              <div class="schedule-month">{{month}} <i class="fa-solid fa-chevron-down fa-xs"></i></div>
-            </div>
-
-            <div class="week-strip">
-              <div class="day-cell today">
-                <div class="day-name">Mon</div>
-                <div class="day-num">{{day_1}}</div>
-              </div>
-              <div class="day-cell">
-                <div class="day-name">Tue</div>
-                <div class="day-num">{{day_2}}</div>
-              </div>
-              <div class="day-cell">
-                <div class="day-name">Wed</div>
-                <div class="day-num">{{day_3}}</div>
-              </div>
-              <div class="day-cell">
-                <div class="day-name">Thu</div>
-                <div class="day-num">{{day_4}}</div>
-              </div>
-              <div class="day-cell">
-                <div class="day-name">Fri</div>
-                <div class="day-num">{{day_5}}</div>
+              <div class="legend-group">
+                <div class="legend-item"><span class="legend-mark" style="color:#82cb90;">↓</span> Verbesserung</div>
+                <div class="legend-item"><span class="legend-mark" style="color:#f3a2a2;">↑</span> Verschlechterung</div>
+                <div class="legend-item"><span class="legend-mark" style="color:#d6d6d6;">→</span> Gleichbleibend</div>
               </div>
             </div>
-
-            <div class="appt-list">
-              <div class="appt-item">
-                <div class="appt-avatar">{{doc1_initials}}</div>
-                <div>
-                  <div class="appt-name">{{doctor_1_name}}</div>
-                  <div class="appt-role">{{doctor_1_role}}</div>
-                  <div class="appt-time">{{appt_1_datetime}}</div>
-                </div>
-                <span class="appt-badge created">Created</span>
-              </div>
-              <div class="appt-item">
-                <div class="appt-avatar">{{doc2_initials}}</div>
-                <div>
-                  <div class="appt-name">{{doctor_2_name}}</div>
-                  <div class="appt-role">{{doctor_2_role}}</div>
-                  <div class="appt-time">{{appt_2_datetime}}</div>
-                </div>
-                <span class="appt-badge confirmed">Confirmed</span>
-              </div>
-              <div class="appt-item">
-                <div class="appt-avatar">{{doc3_initials}}</div>
-                <div>
-                  <div class="appt-name">{{doctor_3_name}}</div>
-                  <div class="appt-role">{{doctor_3_role}}</div>
-                  <div class="appt-time">{{appt_3_datetime}}</div>
-                </div>
-                <span class="appt-badge completed">Completed</span>
-              </div>
-            </div>
-
-            <div class="aside-note">
-              Clean, high-contrast scheduling layout with clear status emphasis and comfortable touch targets for mobile review.
+            <div class="risk-center">
+              <div>Sempa-Risiken</div>
             </div>
           </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">PPR 2.0 E <span><i class="fa-solid fa-bell" style="color:#ff8f8f;"></i> <i class="fa-solid fa-pen"></i></span></div>
+          <div class="panel-body">
+            <div class="empty-box">Kein PPR 2.0 E Dokument vorhanden</div>
+          </div>
+        </section>
+
+        <div class="module-grid">
+          <section class="panel signal-panel">
+            <div class="panel-header">Signalreiter <i class="fa-regular fa-circle-question"></i></div>
+            <div class="panel-body">
+              <div class="signal-repeater">
+                <span class="signal-square">1</span>
+                <span class="signal-square">2</span>
+                <span class="signal-square">3</span>
+                <span class="signal-square">4</span>
+                <span class="signal-square active">5</span>
+                <span class="signal-square">6</span>
+                <span class="signal-square">7</span>
+                <span class="signal-square">8</span>
+                <span class="signal-square">9</span>
+                <span class="signal-square active">10</span>
+              </div>
+              <div class="warning-copy">-Kein freigegebenes Assessment vorhanden.</div>
+              <div class="warning-copy">-Kein freigegebenes Assessment vorhanden.</div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">Grafixx <i class="fa-solid fa-pen"></i></div>
+            <div class="panel-body"></div>
+          </section>
+
+          <section class="panel discharge-panel">
+            <div class="panel-header">Entlassmanagement <i class="fa-solid fa-pen"></i></div>
+            <div class="panel-body">
+              <div class="discharge-box">Kein aktiver Entlassplan</div>
+            </div>
+          </section>
         </div>
       </div>
-    </div>
+    </main>
+
+    <nav class="bottom-bar">
+      <div class="bottom-item active"><i class="fa-solid fa-table-cells-large"></i> Übersicht</div>
+      <div class="bottom-item"><i class="fa-solid fa-table-columns"></i> Med-Board</div>
+      <div class="bottom-item"><i class="fa-solid fa-diagram-project"></i> Therapie</div>
+      <div class="bottom-item"><i class="fa-solid fa-sitemap"></i> Pflegeplan</div>
+      <div class="bottom-item"><i class="fa-solid fa-link"></i> Beobachtungen / Wunden</div>
+      <div class="bottom-item"><i class="fa-regular fa-heart"></i> Kurve</div>
+    </nav>
   </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  /* ── Chart: Cholesterol ─────────────────────────── */
-  new Chart(document.getElementById('chartCholesterol'), {
-    type: 'line',
-    data: {
-      labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug'],
-      datasets: [{
-        data: [5.6, 5.8, 5.5, 6.0, 5.9, 6.1, 5.7, 5.8],
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59,130,246,0.08)',
-        borderWidth: 2,
-        pointRadius: 0,
-        tension: 0.45,
-        fill: true
-      },{
-        data: [6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0, 6.0],
-        borderColor: 'rgba(224,114,114,0.5)',
-        borderWidth: 1.5,
-        borderDash: [4,4],
-        pointRadius: 0,
-        fill: false
-      }]
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: { family: 'Nunito', size: 10 }, color: '#b0b8cc' } },
-        y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { family: 'Nunito', size: 10 }, color: '#b0b8cc' }, border: { display: false } }
-      }
-    }
-  });
-
-  /* ── Chart: Vital Signs ─────────────────────────── */
-  new Chart(document.getElementById('chartVitals'), {
-    type: 'line',
-    data: {
-      labels: ['','','','','','','',''],
-      datasets: [{
-        data: [120,118,122,115,125,119,121,118],
-        borderColor: '#e07272',
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        pointRadius: 0,
-        tension: 0.45
-      },{
-        data: [97,96,98,97,97,96,98,97],
-        borderColor: '#3b82f6',
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        pointRadius: 0,
-        tension: 0.45
-      }]
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { display: false },
-        y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { family:'Nunito', size:9 }, color:'#b0b8cc' }, border: { display:false } }
-      }
-    }
-  });
-</script>
 </body>
 </html>

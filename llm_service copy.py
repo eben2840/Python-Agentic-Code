@@ -141,12 +141,9 @@ class ClaudeLLMService:
 
     def _patient_context(self, patient_data: dict) -> str:
         """Render all real FHIR patient data as plain text for the LLM prompt."""
-        patient = patient_data.get('patient', {})
-        if patient.get('id') == 'all':
-            return self._all_patients_context(patient_data)
-
         lines = []
 
+        patient = patient_data.get('patient', {})
         if patient:
             lines.append(f"Patient: {patient.get('name')} | Gender: {patient.get('gender')} | DOB: {patient.get('birthDate')} | ID: {patient.get('id')}")
 
@@ -169,77 +166,6 @@ class ClaudeLLMService:
                         lines.append(f"    {item.get('name')} | {item.get('value')} | {item.get('date')}")
 
         return "\n".join(lines) or "No patient data"
-
-    def _all_patients_context(self, patient_data: dict) -> str:
-        """Render a compact summary for all-patient generation to stay within model limits."""
-        patient = patient_data.get('patient', {})
-        patients = patient_data.get('patients', [])
-        lines = [
-            f"Patient Group: {patient.get('name', 'All Patients')} | Total Patients: {patient.get('count', len(patients))} | ID: {patient.get('id', 'all')}",
-            "",
-            "All-patient mode summary: use this to design overview, ward, operational, and population-level mini apps. The backend still retains the full dataset at runtime.",
-        ]
-
-        top_level_sections = []
-        for key, section in patient_data.items():
-            if key in ('patient', 'patients') or not isinstance(section, dict):
-                continue
-            top_level_sections.append((key, section.get('count', 0), section))
-
-        if top_level_sections:
-            lines.append("")
-            lines.append("Top-level shared resources:")
-            for key, count, section in sorted(top_level_sections, key=lambda item: (-item[1], item[0])):
-                lines.append(f"- {key}: {count} records")
-                for item in (section.get('summary') or [])[:3]:
-                    lines.append(
-                        f"  sample: {item.get('name')} | {item.get('value')} | {item.get('date')} | {item.get('status')}"
-                    )
-
-        resource_totals = {}
-        populated_patients = []
-        for person in patients:
-            pdata = person.get('data') or {}
-            counts = {rtype: len(records or []) for rtype, records in pdata.items() if records}
-            if counts:
-                populated_patients.append((person, counts))
-                for rtype, count in counts.items():
-                    resource_totals[rtype] = resource_totals.get(rtype, 0) + count
-
-        if resource_totals:
-            lines.append("")
-            lines.append("Patient resource totals:")
-            for rtype, count in sorted(resource_totals.items(), key=lambda item: (-item[1], item[0]))[:12]:
-                lines.append(f"- {rtype}: {count} records")
-
-        if populated_patients:
-            lines.append("")
-            lines.append("Sample patients with available data:")
-            for person, counts in populated_patients[:12]:
-                count_summary = ", ".join(
-                    f"{rtype}={count}" for rtype, count in sorted(counts.items(), key=lambda item: (-item[1], item[0]))[:6]
-                )
-                lines.append(
-                    f"- {person.get('name') or 'Unknown'} | ID: {person.get('id')} | Gender: {person.get('gender')} | DOB: {person.get('birthDate')} | {count_summary}"
-                )
-
-                details_added = 0
-                for rtype, records in sorted((person.get('data') or {}).items()):
-                    if not records:
-                        continue
-                    first = records[0]
-                    lines.append(
-                        f"  sample {rtype}: {first.get('name')} | {first.get('value')} | {first.get('date')} | {first.get('status')}"
-                    )
-                    details_added += 1
-                    if details_added >= 2:
-                        break
-
-        if not top_level_sections and not populated_patients:
-            lines.append("")
-            lines.append("No patient data available")
-
-        return "\n".join(lines)
 
 
     def _parse_response(self, response: str) -> tuple:
