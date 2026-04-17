@@ -61,9 +61,14 @@ class DirectFHIRClient:
         resources = []
         url = f"{self.base_url}/{rtype}"
         while url:
-            r = requests.get(url, headers=self.headers, timeout=30)
-            r.raise_for_status()
-            data = r.json()
+            try:
+                r = requests.get(url, headers=self.headers, timeout=30)
+                r.raise_for_status()
+                data = r.json()
+            except Exception as e:
+                logger.error(f"FHIR request failed while fetching all [{rtype}] at [{url}]: {e}")
+                return resources
+
             resources.extend(self._bundle(data))
             url = next((link['url'] for link in data.get('link', []) if link.get('relation') == 'next'), None)
             logger.info(f"  {rtype}: {len(resources)} so far...")
@@ -241,4 +246,3 @@ def get_patient_data_direct(session_data):
 
 def get_all_patients_data_direct(session_data):
     return DirectFHIRClient(session_data).get_all_patients_data()
-
