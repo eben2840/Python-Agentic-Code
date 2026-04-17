@@ -39,69 +39,133 @@ $data_context
 
 # Design System
 
-Follow the reference design in `prompts/_design_reference.html` **exactly**. The aesthetic is a premium responsive healthcare dashboard: soft light blue-gray canvas, layered white cards, dark navy primary actions, restrained coral alerts, soft atmospheric gradients, and clean clinical spacing. Match the updated reference composition and visual hierarchy, not just the colors.
+Follow the reference design in `prompts/_design_reference.html` **exactly**. The target is not a modern wellness dashboard. It is a dense hospital station interface modeled on the provided screenshot: teal system chrome, compact patient metadata, rigid white modules, administrative labels, chevron workflow steps, a persistent left rail, and a bottom navigation strip. Match that structure closely.
 
 ## CSS Tokens (copy these verbatim into styles.css)
 ```css
 :root {
-  --bg:           #eef1f8;
+  --bg:           #f2f4f6;
   --surface:      #ffffff;
-  --border:       #e4e8f0;
-  --shadow:       0 2px 16px rgba(27,53,102,0.07);
-  --shadow-sm:    0 1px 6px  rgba(27,53,102,0.05);
-  --radius:       18px;
-  --radius-sm:    12px;
-  --radius-pill:  999px;
+  --border:       #cfd8de;
+  --shadow:       0 1px 4px rgba(0,0,0,0.10);
+  --shadow-sm:    0 1px 2px rgba(0,0,0,0.08);
+  --radius:       4px;
+  --radius-sm:    2px;
+  --radius-pill:  2px;
 
-  --navy:         #1B3566;
-  --navy-hover:   #142a52;
-  --navy-light:   #e8edf8;
+  --navy:         #0f7796;
+  --navy-hover:   #0b6079;
+  --navy-light:   #d7eaf0;
 
-  --coral:        #e07272;
-  --coral-light:  #fdf0f0;
+  --coral:        #d64545;
+  --coral-light:  #fff1f1;
 
-  --blue:         #3b82f6;
-  --blue-light:   #eff6ff;
-  --green:        #22c55e;
-  --green-light:  #f0fdf4;
-  --amber:        #f59e0b;
-  --amber-light:  #fffbeb;
+  --blue:         #2e79a6;
+  --blue-light:   #e9f3f8;
+  --green:        #5f9f3a;
+  --green-light:  #eef7e7;
+  --amber:        #d99a1d;
+  --amber-light:  #fff8e7;
 
-  --text-primary:   #1a1a2e;
-  --text-secondary: #8890a4;
-  --text-muted:     #b0b8cc;
+  --text-primary:   #15323d;
+  --text-secondary: #5d7480;
+  --text-muted:     #8fa2ab;
 
-  --font: 'Nunito', sans-serif;
+  --font: 'IBM Plex Sans', sans-serif;
 }
 ```
 
 ## Font (always load)
 ```html
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 ```
 
 ## Rules
-- Page background: `var(--bg)` — the light blue-gray. Never white or dark.
-- The page must feel polished and responsive on desktop, tablet, and mobile. Use layouts that fill the screen cleanly without horizontal overflow.
-- Cards: `background: var(--surface); border: none; border-radius: var(--radius); box-shadow: var(--shadow);`
-- All text uses `font-family: var(--font)` (Nunito)
-- **Navy** (`var(--navy)`) is the only primary action color — used for active nav pills, the highlighted medication row, and the today cell in the week strip
-- **Coral** is a secondary accent for alerts and icon backgrounds only
-- Use subtle gradients, soft highlights, and layered surfaces like the reference. Never use loud gradients or dark page backgrounds.
-- Prefer generous spacing, rounded corners, soft borders, and elevated panels to create a calm premium health-product feel.
-- Maintain strong readability and clear section separation. The UI should look modern, clean, and intentionally designed rather than generic Bootstrap.
+- Page background: light neutral workspace gray. Avoid atmospheric gradients and glossy marketing treatment.
+- The page must feel like a clinical workstation on desktop first, while still collapsing cleanly on tablet and mobile.
+- Cards/panels: `background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm);`
+- All text uses `font-family: var(--font)` (IBM Plex Sans)
+- **Teal** (`var(--navy)`) is the primary application chrome color and should dominate headers, navigation bars, active tabs, and panel headings.
+- Use red sparingly for alerts, missing documents, or risk badges.
+- Prefer flat fills, hard dividers, compact spacing, and admin-style clarity over soft gradients or glassmorphism.
+- Keep typography compact and information-dense. This should feel operational, not consumer wellness.
+- Maintain strong readability and clear section separation. The UI should resemble a hospital intranet or nurse station screen.
 
-## Top Nav Pattern
-Use the upgraded top navigation from the reference: a rounded glassy white surface, branded icon tile, stacked logo text, pill navigation, a compact utility control on the right, and a user chip. Nav items use `border-radius: 999px`; the active item gets `background: var(--navy); color: #fff`. Preserve the exact overall pattern from the reference.
+## Global Layout
+Use this exact application pattern:
+- Far left: fixed teal sidebar
+- Top of main area: teal patient metadata strip
+- Under top strip: small page title plus chevron workflow steps
+- Center area: 2-3 column grid of rigid white panels
+- Bottom: full-width teal navigation bar with section tabs
 
-## Greeting Header
-Use a hero overview card, not plain text alone. Large `2rem` to `2.4rem` `font-weight:800` patient greeting, muted supporting copy, and compact meta badges inside a rounded elevated card. Follow the reference layout and proportions.
+The screen should feel like one cohesive hospital application, not a collection of floating cards.
 
-## ECG / Heart Beat Card
-Floating white card with a coral heart icon, BPM value, small supporting labels, and an SVG `<polyline>` ECG waveform in `var(--blue)`. Use the exact SVG points from the reference.
+## Sidebar
+The left rail should closely follow the screenshot:
+- top station title row with 2-3 small icons
+- ward selector row
+- specialty/filter row
+- search row
+- room section with one or more patient cards
 
-## Research / Summary Cards
-Small supporting cards should use rounded white surfaces, subtle internal gradients, compact uppercase labels, bold titles, and a soft icon treatment anchored to the corner as shown in the reference.
+Sidebar styling rules:
+- teal background throughout
+- white text
+- stronger separators between rows
+- no rounded “app shell” framing
+- patient cards can be light gray inside the teal rail, like the screenshot
+
+## Top Patient Strip
+Use a compact teal header bar with:
+- patient name
+- sex/age metadata
+- case number
+- stay/day metadata
+- 3-4 small square shortcut buttons
+- utility icons on the right
+
+This bar should be dense and short in height, similar to hospital software chrome.
+
+## Workflow Bar
+Immediately below the top strip, render a row of chevron-shaped workflow steps.
+- Example labels: `Anamnese`, `Assessment`, `Analyse`, `Planung`, `...`
+- Active step visibly darker or more saturated
+- Keep the chevrons flat and administrative, not playful
+
+## Main Content Modules
+Use rigid white modules with teal headers and minimal border radius.
+
+Preferred modules, depending on request:
+- Information
+- Risikoübersicht / Risk Overview
+- Signalreiter / Alerts / Task markers
+- Documents / Notes / Forms
+- Discharge Management
+- Ward summaries
+- Medication or observation modules
+
+Each module should:
+- have a teal title bar
+- use dense label/value rows or compact task-like structures
+- avoid large decorative hero sections
+- avoid lifestyle widgets unless the prompt explicitly needs them
+
+## Information Panel
+The information module should resemble the screenshot:
+- patient mini profile block at the top with muted blue background
+- small avatar or silhouette area
+- multiple short metadata lines
+- one secondary band for ward/room
+- below that, compact label/value rows
+
+## Risk Panel
+Use a sparse risk-overview module with:
+- small legends at top
+- muted diagram, nodes, or placeholder assessment graphic in the body
+- subdued gray internal content
+
+This panel can be diagrammatic, but it must still feel like internal hospital software.
 
 ## Interaction Fidelity
 Every visible UI control must work. No decorative or dead controls are allowed.
@@ -125,31 +189,36 @@ Every visible UI control must work. No decorative or dead controls are allowed.
 - Prefer a small number of well-implemented interactions over many fake controls, but any control you do render must work properly
 
 ## Medication List
-Medication should live inside its own elevated panel. Each medication row uses `border: 1px solid var(--border); border-radius: var(--radius-sm)` with clean icon containers and stronger spacing. The **current/active medication** row gets `background: var(--navy)` with white text — this is the primary visual highlight of the list.
+Medication should appear as a clinical module rather than a lifestyle card. Use dense rows, short labels, clear status markers, and edit/view affordances in the panel header if appropriate.
 
 ## Appointment / Schedule Panel
-Use the reference schedule sidebar treatment: elevated panel, compact subtitle, pill month selector, week strip of 5 day cells, and stacked appointment cards. Today's cell: `background: var(--navy); color: #fff`. Appointment list with avatar initials, doctor name, role, datetime, and a status badge:
-- `Created` → blue-light bg + blue text
-- `Confirmed` → navy bg + white text
-- `Completed` → green-light bg + green text
+If scheduling is shown, use a compact operational planner with small date cells and plain status chips. Keep it closer to hospital tasking software than a lifestyle appointment app.
 
 ## Charts
-Use Chart.js inside styled chart panels like the reference. Add compact section subtitles, rounded inner chart frames, and small legends/captions where appropriate. Line charts use `tension: 0.45`, no point markers, and light gridlines `rgba(0,0,0,0.04)`. Cholesterol chart gets a dashed red reference line. Vitals chart uses red + blue lines. Axes use Nunito `10px`, `var(--text-muted)` color.
+Use Chart.js only when the request genuinely benefits from it. Charts should sit inside rigid white modules with teal headers and minimal decoration. Axes use IBM Plex Sans `10px`, `var(--text-muted)` color.
+
+## Bottom Navigation
+Use a teal bottom navigation bar similar to the screenshot with 5-7 tabs.
+- Each item should have an icon and label
+- The active item should be visibly highlighted
+- On mobile this can wrap or compress, but it must remain usable
 
 ## Layout
-- Use a three-zone dashboard layout on desktop similar to the reference:
-- Left: hero overview, heart card, compact summary cards
-- Middle: chart panels, medication panel, allergy section
-- Right: schedule panel
-- Collapse cleanly on smaller screens into a single-column or stacked layout while preserving spacing and card hierarchy.
+- Desktop: left rail + top strip + workflow + 2-3 column module grid + bottom nav
+- Tablet/mobile: stack the sidebar content above the main modules if needed, but preserve the same visual language
+- Avoid floating dashboard cards with large outer margins. The UI should feel edge-aligned and application-like.
 
 ## Surface Styling
-- Panels should feel layered and refined: soft shadows, subtle borders, occasional glassmorphism only where used in the reference, and no harsh outlines.
-- Rounded corners should be generous across nav, cards, buttons, and chips.
-- Use small uppercase section labels and bold card titles to create hierarchy consistent with the reference.
+- Panels should feel like enterprise hospital software: flat, crisp, bordered, and compact.
+- Rounded corners should be minimal.
+- Use strong teal panel headers, compact section labels, and small but clear titles.
 
 ## Empty States
-Centered in card: `64px` dashed-border circle with a Font Awesome icon, bold title (`0.9375rem`), short muted description.
+Empty states should feel like hospital software too:
+- plain bordered boxes
+- short explanatory text
+- red text for missing critical documents
+- no cute illustration-style placeholders
 
 ---
 
