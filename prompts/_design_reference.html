@@ -7,6 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     :root {
       --bg:            #f2f4f6;
@@ -44,6 +45,28 @@
     body {
       font-size: 14px;
       line-height: 1.35;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .clickable {
+      cursor: pointer;
+    }
+
+    .icon-btn,
+    .text-btn,
+    .workflow-btn,
+    .shortcut-box,
+    .signal-dot,
+    .signal-square,
+    .bottom-item,
+    .room-trigger {
+      border: none;
+      background: transparent;
+      color: inherit;
+      padding: 0;
     }
 
     .station-app {
@@ -89,6 +112,36 @@
       font-size: 1.05rem;
     }
 
+    .icon-btn {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2px;
+      transition: background 0.16s ease, transform 0.16s ease;
+    }
+
+    .icon-btn:hover,
+    .icon-btn:focus-visible,
+    .text-btn:hover,
+    .text-btn:focus-visible,
+    .shortcut-box:hover,
+    .shortcut-box:focus-visible,
+    .signal-dot:hover,
+    .signal-dot:focus-visible,
+    .signal-square:hover,
+    .signal-square:focus-visible,
+    .workflow-btn:hover,
+    .workflow-btn:focus-visible,
+    .bottom-item:hover,
+    .bottom-item:focus-visible,
+    .room-trigger:hover,
+    .room-trigger:focus-visible {
+      outline: none;
+      background: rgba(255,255,255,0.12);
+    }
+
     .sidebar-group {
       border-bottom: 1px solid rgba(255,255,255,0.25);
       padding: 10px 12px;
@@ -98,6 +151,10 @@
       justify-content: space-between;
       gap: 12px;
       font-weight: 500;
+    }
+
+    .sidebar-group.active {
+      background: rgba(0,0,0,0.08);
     }
 
     .sidebar-group .label {
@@ -131,6 +188,11 @@
       color: rgba(255,255,255,0.78);
     }
 
+    .search-tools {
+      display: flex;
+      gap: 6px;
+    }
+
     .room-card {
       background: #dfe5ea;
       color: #1d2d35;
@@ -146,6 +208,14 @@
       font-weight: 700;
       background: #cfd6dc;
       border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .room-trigger {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: inherit;
     }
 
     .patient-card {
@@ -199,6 +269,7 @@
       justify-content: center;
       font-size: 0.67rem;
       border-radius: 999px;
+      cursor: pointer;
     }
 
     .signal-dot.alert {
@@ -265,6 +336,7 @@
       justify-content: center;
       font-weight: 700;
       border-radius: 2px;
+      cursor: pointer;
     }
 
     .main {
@@ -302,6 +374,16 @@
       clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%, 12px 50%);
     }
 
+    .workflow-btn {
+      width: 100%;
+      min-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: inherit;
+      cursor: pointer;
+    }
+
     .workflow-step.active {
       background: #5f9db3;
       color: #fff;
@@ -313,6 +395,14 @@
       grid-template-columns: 1.08fr 1.08fr 1.1fr;
       gap: 8px;
       align-items: start;
+    }
+
+    .content-grid.compact-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .content-grid.compact-grid .module-grid {
+      grid-template-columns: 1fr 1fr;
     }
 
     .panel {
@@ -333,6 +423,12 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+    }
+
+    .panel-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .panel-body {
@@ -395,6 +491,12 @@
     .swap-icon {
       font-size: 1.35rem;
       opacity: 0.95;
+    }
+
+    .swap-icon .icon-btn {
+      width: 34px;
+      height: 34px;
+      color: #fff;
     }
 
     .info-band {
@@ -504,6 +606,7 @@
       font-size: 0.78rem;
       font-weight: 600;
       background: #fff;
+      cursor: pointer;
     }
 
     .signal-square.active {
@@ -516,6 +619,153 @@
       color: #b03b3b;
       font-size: 0.8rem;
       margin-top: 6px;
+    }
+
+    .warning-copy.hidden {
+      display: none;
+    }
+
+    .graph-panel .panel-body {
+      padding: 12px 14px 14px;
+      min-height: 190px;
+    }
+
+    .graph-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .chart-chip {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: #225163;
+      padding: 4px 8px;
+      font-size: 0.77rem;
+      font-weight: 700;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    .chart-chip.active {
+      background: #d7e5eb;
+      border-color: #7ea5bf;
+    }
+
+    .graph-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .graph-stat {
+      border: 1px solid var(--divider);
+      background: #f8fbfc;
+      padding: 8px;
+      min-height: 54px;
+    }
+
+    .graph-stat .k {
+      color: #5e7885;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .graph-stat .v {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #17333d;
+    }
+
+    .graph-canvas-wrap {
+      height: 158px;
+      border-top: 1px solid var(--divider);
+      padding-top: 12px;
+    }
+
+    .status-dock {
+      position: fixed;
+      right: 16px;
+      bottom: 72px;
+      width: min(320px, calc(100vw - 32px));
+      background: #fff;
+      border: 1px solid var(--border);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      z-index: 20;
+    }
+
+    .status-dock-head {
+      background: #d7e5eb;
+      padding: 8px 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .status-dock-body {
+      padding: 12px;
+      font-size: 0.82rem;
+      color: #244755;
+    }
+
+    .status-dock-body strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #17333d;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -360px;
+      width: min(340px, 92vw);
+      height: 100vh;
+      background: #fff;
+      border-left: 1px solid var(--border);
+      box-shadow: -6px 0 16px rgba(0,0,0,0.12);
+      z-index: 30;
+      transition: right 0.22s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .drawer.open {
+      right: 0;
+    }
+
+    .drawer-head {
+      background: var(--teal);
+      color: #fff;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .drawer-body {
+      padding: 14px;
+      font-size: 0.84rem;
+      color: #244755;
+      display: grid;
+      gap: 12px;
+    }
+
+    .drawer-card {
+      border: 1px solid var(--divider);
+      padding: 10px 12px;
+      background: #f9fbfc;
     }
 
     .empty-box {
@@ -558,6 +808,7 @@
       font-size: 0.9rem;
       border-right: 1px solid rgba(255,255,255,0.12);
       min-height: var(--bottombar-h);
+      cursor: pointer;
     }
 
     .bottom-item:last-child {
@@ -632,27 +883,43 @@
       <div class="sidebar-top">
         <div class="station-title">Station</div>
         <div class="toolbar">
-          <i class="fa-solid fa-rotate-right"></i>
-          <i class="fa-solid fa-bars"></i>
+          <button class="icon-btn clickable" type="button" data-action="refresh-station" aria-label="Refresh station">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+          <button class="icon-btn clickable" type="button" data-action="toggle-drawer" aria-label="Open station actions">
+            <i class="fa-solid fa-bars"></i>
+          </button>
         </div>
       </div>
-      <div class="sidebar-group">
+      <div class="sidebar-group active" data-filter-group="ward">
         <div class="label"><i class="fa-solid fa-house-medical"></i> Chirurgie Ward 3A</div>
-        <i class="fa-solid fa-caret-down"></i>
+        <button class="icon-btn clickable" type="button" data-action="toggle-group" data-group="ward" aria-label="Toggle ward selector">
+          <i class="fa-solid fa-caret-down"></i>
+        </button>
       </div>
-      <div class="sidebar-group">
+      <div class="sidebar-group" data-filter-group="specialty">
         <div class="label"><i class="fa-regular fa-folder-open"></i> Alle Fachbereiche</div>
-        <i class="fa-solid fa-caret-down"></i>
+        <button class="icon-btn clickable" type="button" data-action="toggle-group" data-group="specialty" aria-label="Toggle specialty selector">
+          <i class="fa-solid fa-caret-down"></i>
+        </button>
       </div>
       <div class="sidebar-search">
         <input type="text" placeholder="Suchen..." value="">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <i class="fa-solid fa-sliders"></i>
+        <div class="search-tools">
+          <button class="icon-btn clickable" type="button" data-action="search-patient" aria-label="Search patients">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+          <button class="icon-btn clickable" type="button" data-action="toggle-filter" aria-label="Toggle filters">
+            <i class="fa-solid fa-sliders"></i>
+          </button>
+        </div>
       </div>
       <div class="room-card">
         <div class="room-header">
-          <span>Room 301</span>
-          <span></span>
+          <button class="room-trigger clickable" type="button" data-action="select-room" aria-label="Select room 301">
+            <span>Room 301</span>
+            <span><i class="fa-solid fa-angle-right"></i></span>
+          </button>
         </div>
         <div class="patient-card">
           <div class="name-row">
@@ -664,16 +931,16 @@
             Chirurgie Ward 3A, Room 301
           </div>
           <div class="signal-list">
-            <span class="signal-dot">1</span>
-            <span class="signal-dot">2</span>
-            <span class="signal-dot">3</span>
-            <span class="signal-dot alert">4</span>
-            <span class="signal-dot">5</span>
-            <span class="signal-dot">6</span>
-            <span class="signal-dot">7</span>
-            <span class="signal-dot">8</span>
-            <span class="signal-dot">9</span>
-            <span class="signal-dot alert">10</span>
+            <button class="signal-dot clickable" type="button" data-signal="1" aria-label="Open signal 1">1</button>
+            <button class="signal-dot clickable" type="button" data-signal="2" aria-label="Open signal 2">2</button>
+            <button class="signal-dot clickable" type="button" data-signal="3" aria-label="Open signal 3">3</button>
+            <button class="signal-dot alert clickable" type="button" data-signal="4" aria-label="Open signal 4">4</button>
+            <button class="signal-dot clickable" type="button" data-signal="5" aria-label="Open signal 5">5</button>
+            <button class="signal-dot clickable" type="button" data-signal="6" aria-label="Open signal 6">6</button>
+            <button class="signal-dot clickable" type="button" data-signal="7" aria-label="Open signal 7">7</button>
+            <button class="signal-dot clickable" type="button" data-signal="8" aria-label="Open signal 8">8</button>
+            <button class="signal-dot clickable" type="button" data-signal="9" aria-label="Open signal 9">9</button>
+            <button class="signal-dot alert clickable" type="button" data-signal="10" aria-label="Open signal 10">10</button>
           </div>
         </div>
       </div>
@@ -686,18 +953,18 @@
         <div class="meta-item"><i class="fa-regular fa-clipboard"></i> Fall Nr.: fn-001</div>
         <div class="meta-item">WVD: 11</div>
         <div class="shortcut-set">
-          <span class="shortcut-box">C</span>
-          <span class="shortcut-box">A</span>
-          <span class="shortcut-box">V</span>
-          <span class="shortcut-box">E</span>
+          <button class="shortcut-box clickable" type="button" data-shortcut="clinical" aria-label="Open clinical summary">C</button>
+          <button class="shortcut-box clickable" type="button" data-shortcut="assessment" aria-label="Open assessments">A</button>
+          <button class="shortcut-box clickable" type="button" data-shortcut="vitals" aria-label="Open vitals">V</button>
+          <button class="shortcut-box clickable" type="button" data-shortcut="events" aria-label="Open events">E</button>
         </div>
       </div>
       <div class="topbar-right">
-        <i class="fa-solid fa-house"></i>
-        <i class="fa-regular fa-rectangle-list"></i>
-        <i class="fa-solid fa-table-cells-large"></i>
-        <i class="fa-solid fa-user-plus"></i>
-        <i class="fa-solid fa-user-doctor"></i>
+        <button class="icon-btn clickable" type="button" data-action="home" aria-label="Go to home"><i class="fa-solid fa-house"></i></button>
+        <button class="icon-btn clickable" type="button" data-action="open-list" aria-label="Open patient list"><i class="fa-regular fa-rectangle-list"></i></button>
+        <button class="icon-btn clickable" type="button" data-action="toggle-grid" aria-label="Toggle grid view"><i class="fa-solid fa-table-cells-large"></i></button>
+        <button class="icon-btn clickable" type="button" data-action="assign-user" aria-label="Assign user"><i class="fa-solid fa-user-plus"></i></button>
+        <button class="icon-btn clickable" type="button" data-action="doctor-view" aria-label="Open doctor view"><i class="fa-solid fa-user-doctor"></i></button>
       </div>
     </header>
 
@@ -705,11 +972,11 @@
       <div class="page-title">Übersicht</div>
 
       <div class="workflow">
-        <div class="workflow-step active">Anamnese</div>
-        <div class="workflow-step">Assessment</div>
-        <div class="workflow-step">Analyse</div>
-        <div class="workflow-step">Planung</div>
-        <div class="workflow-step">...</div>
+        <div class="workflow-step active"><button class="workflow-btn clickable" type="button" data-workflow="Anamnese">Anamnese</button></div>
+        <div class="workflow-step"><button class="workflow-btn clickable" type="button" data-workflow="Assessment">Assessment</button></div>
+        <div class="workflow-step"><button class="workflow-btn clickable" type="button" data-workflow="Analyse">Analyse</button></div>
+        <div class="workflow-step"><button class="workflow-btn clickable" type="button" data-workflow="Planung">Planung</button></div>
+        <div class="workflow-step"><button class="workflow-btn clickable" type="button" data-workflow="Weiter">...</button></div>
       </div>
 
       <div class="content-grid">
@@ -727,7 +994,11 @@
                 <div class="patient-line">Status: in arbeit</div>
                 <div class="patient-line" style="margin-top:14px;">Von: 05.04.2026 &nbsp;&nbsp; Bis: &nbsp;&nbsp; GE:</div>
               </div>
-              <div class="swap-icon"><i class="fa-solid fa-rotate"></i></div>
+              <div class="swap-icon">
+                <button class="icon-btn clickable" type="button" data-action="swap-patient" aria-label="Swap patient card">
+                  <i class="fa-solid fa-rotate"></i>
+                </button>
+              </div>
             </div>
             <div class="info-band">
               <div>Chirurgie Ward 3A</div>
@@ -769,7 +1040,13 @@
         </section>
 
         <section class="panel">
-          <div class="panel-header">PPR 2.0 E <span><i class="fa-solid fa-bell" style="color:#ff8f8f;"></i> <i class="fa-solid fa-pen"></i></span></div>
+          <div class="panel-header">
+            <span>PPR 2.0 E</span>
+            <span class="panel-header-actions">
+              <button class="icon-btn clickable" type="button" data-action="ppr-alert" aria-label="Open PPR alerts"><i class="fa-solid fa-bell" style="color:#ff8f8f;"></i></button>
+              <button class="icon-btn clickable" type="button" data-action="ppr-edit" aria-label="Edit PPR"><i class="fa-solid fa-pen"></i></button>
+            </span>
+          </div>
           <div class="panel-body">
             <div class="empty-box">Kein PPR 2.0 E Dokument vorhanden</div>
           </div>
@@ -777,32 +1054,62 @@
 
         <div class="module-grid">
           <section class="panel signal-panel">
-            <div class="panel-header">Signalreiter <i class="fa-regular fa-circle-question"></i></div>
+            <div class="panel-header">
+              <span>Signalreiter</span>
+              <button class="icon-btn clickable" type="button" data-action="signal-help" aria-label="Open signal help"><i class="fa-regular fa-circle-question"></i></button>
+            </div>
             <div class="panel-body">
               <div class="signal-repeater">
-                <span class="signal-square">1</span>
-                <span class="signal-square">2</span>
-                <span class="signal-square">3</span>
-                <span class="signal-square">4</span>
-                <span class="signal-square active">5</span>
-                <span class="signal-square">6</span>
-                <span class="signal-square">7</span>
-                <span class="signal-square">8</span>
-                <span class="signal-square">9</span>
-                <span class="signal-square active">10</span>
+                <button class="signal-square clickable" type="button" data-warning="1" aria-label="Open warning 1">1</button>
+                <button class="signal-square clickable" type="button" data-warning="2" aria-label="Open warning 2">2</button>
+                <button class="signal-square clickable" type="button" data-warning="3" aria-label="Open warning 3">3</button>
+                <button class="signal-square clickable" type="button" data-warning="4" aria-label="Open warning 4">4</button>
+                <button class="signal-square active clickable" type="button" data-warning="5" aria-label="Open warning 5">5</button>
+                <button class="signal-square clickable" type="button" data-warning="6" aria-label="Open warning 6">6</button>
+                <button class="signal-square clickable" type="button" data-warning="7" aria-label="Open warning 7">7</button>
+                <button class="signal-square clickable" type="button" data-warning="8" aria-label="Open warning 8">8</button>
+                <button class="signal-square clickable" type="button" data-warning="9" aria-label="Open warning 9">9</button>
+                <button class="signal-square active clickable" type="button" data-warning="10" aria-label="Open warning 10">10</button>
               </div>
-              <div class="warning-copy">-Kein freigegebenes Assessment vorhanden.</div>
-              <div class="warning-copy">-Kein freigegebenes Assessment vorhanden.</div>
+              <div class="warning-copy" data-warning-copy="1">-Kein freigegebenes Assessment vorhanden.</div>
+              <div class="warning-copy" data-warning-copy="2">-Kein freigegebenes Assessment vorhanden.</div>
             </div>
           </section>
 
-          <section class="panel">
-            <div class="panel-header">Grafixx <i class="fa-solid fa-pen"></i></div>
-            <div class="panel-body"></div>
+          <section class="panel graph-panel">
+            <div class="panel-header">
+              <span>Grafixx</span>
+              <span class="panel-header-actions">
+                <button class="icon-btn clickable" type="button" data-action="graph-edit" aria-label="Edit graph"><i class="fa-solid fa-pen"></i></button>
+              </span>
+            </div>
+            <div class="panel-body">
+              <div class="graph-toolbar">
+                <div class="chip-row">
+                  <button class="chart-chip active" type="button" data-metric="observation">Observationen</button>
+                  <button class="chart-chip" type="button" data-metric="risk">Risikotrend</button>
+                  <button class="chart-chip" type="button" data-metric="load">Stationslast</button>
+                </div>
+                <div class="chip-row">
+                  <button class="chart-chip active" type="button" data-range="7">7 Tage</button>
+                  <button class="chart-chip" type="button" data-range="14">14 Tage</button>
+                  <button class="chart-chip" type="button" data-range="30">30 Tage</button>
+                </div>
+              </div>
+              <div class="graph-meta" id="graphMeta"></div>
+              <div class="graph-canvas-wrap">
+                <canvas id="referenceChart" aria-label="Reference graph demo"></canvas>
+              </div>
+            </div>
           </section>
 
           <section class="panel discharge-panel">
-            <div class="panel-header">Entlassmanagement <i class="fa-solid fa-pen"></i></div>
+            <div class="panel-header">
+              <span>Entlassmanagement</span>
+              <span class="panel-header-actions">
+                <button class="icon-btn clickable" type="button" data-action="discharge-edit" aria-label="Edit discharge management"><i class="fa-solid fa-pen"></i></button>
+              </span>
+            </div>
             <div class="panel-body">
               <div class="discharge-box">Kein aktiver Entlassplan</div>
             </div>
@@ -812,13 +1119,277 @@
     </main>
 
     <nav class="bottom-bar">
-      <div class="bottom-item active"><i class="fa-solid fa-table-cells-large"></i> Übersicht</div>
-      <div class="bottom-item"><i class="fa-solid fa-table-columns"></i> Med-Board</div>
-      <div class="bottom-item"><i class="fa-solid fa-diagram-project"></i> Therapie</div>
-      <div class="bottom-item"><i class="fa-solid fa-sitemap"></i> Pflegeplan</div>
-      <div class="bottom-item"><i class="fa-solid fa-link"></i> Beobachtungen / Wunden</div>
-      <div class="bottom-item"><i class="fa-regular fa-heart"></i> Kurve</div>
+      <button class="bottom-item active clickable" type="button" data-nav="Übersicht"><i class="fa-solid fa-table-cells-large"></i> Übersicht</button>
+      <button class="bottom-item clickable" type="button" data-nav="Med-Board"><i class="fa-solid fa-table-columns"></i> Med-Board</button>
+      <button class="bottom-item clickable" type="button" data-nav="Therapie"><i class="fa-solid fa-diagram-project"></i> Therapie</button>
+      <button class="bottom-item clickable" type="button" data-nav="Pflegeplan"><i class="fa-solid fa-sitemap"></i> Pflegeplan</button>
+      <button class="bottom-item clickable" type="button" data-nav="Beobachtungen / Wunden"><i class="fa-solid fa-link"></i> Beobachtungen / Wunden</button>
+      <button class="bottom-item clickable" type="button" data-nav="Kurve"><i class="fa-regular fa-heart"></i> Kurve</button>
     </nav>
   </div>
+  <aside class="drawer" id="detailDrawer" aria-hidden="true">
+    <div class="drawer-head">
+      <span id="drawerTitle">Details</span>
+      <button class="icon-btn clickable" type="button" data-action="close-drawer" aria-label="Close detail drawer">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="drawer-body" id="drawerBody">
+      <div class="drawer-card">Interaktive Details erscheinen hier.</div>
+    </div>
+  </aside>
+  <div class="status-dock" id="statusDock" role="status" aria-live="polite">
+    <div class="status-dock-head">
+      <span>UI Response</span>
+      <button class="icon-btn clickable" type="button" data-action="clear-status" aria-label="Clear response message">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="status-dock-body" id="statusBody">
+      <strong>Reference loaded</strong>
+      All visible controls in this demo are wired to a visible state change.
+    </div>
+  </div>
+  <script>
+    (() => {
+      const statusBody = document.getElementById('statusBody');
+      const drawer = document.getElementById('detailDrawer');
+      const drawerTitle = document.getElementById('drawerTitle');
+      const drawerBody = document.getElementById('drawerBody');
+      const pageTitle = document.querySelector('.page-title');
+      const workflowSteps = [...document.querySelectorAll('.workflow-step')];
+      const bottomItems = [...document.querySelectorAll('.bottom-item')];
+      const warningCopies = [...document.querySelectorAll('[data-warning-copy]')];
+      const metricButtons = [...document.querySelectorAll('[data-metric]')];
+      const rangeButtons = [...document.querySelectorAll('[data-range]')];
+      const graphMeta = document.getElementById('graphMeta');
+      let chart;
+      let chartState = { metric: 'observation', range: '7' };
+
+      const graphSets = {
+        observation: {
+          label: 'Observationen',
+          stats: [
+            ['Letzter Wert', '8.2'],
+            ['Trend', 'stabil'],
+            ['Hinweis', '2 Marker']
+          ],
+          data: {
+            '7': [4, 6, 5, 8, 7, 9, 8],
+            '14': [3, 4, 5, 6, 5, 7, 8, 7, 9, 8, 9, 10, 9, 8],
+            '30': [2, 3, 4, 5, 5, 6, 5, 7, 6, 6, 7, 8, 8, 7, 9, 8, 9, 10, 9, 8, 7, 8, 8, 7, 6, 7, 8, 8, 9, 8]
+          }
+        },
+        risk: {
+          label: 'Risikotrend',
+          stats: [
+            ['Status', 'moderat'],
+            ['Aenderung', '-1'],
+            ['Review', 'heute']
+          ],
+          data: {
+            '7': [7, 7, 6, 6, 5, 5, 4],
+            '14': [8, 8, 7, 7, 6, 6, 6, 5, 5, 6, 5, 4, 4, 4],
+            '30': [9, 9, 8, 8, 8, 7, 7, 7, 6, 6, 6, 5, 5, 5, 4, 4, 4, 5, 5, 4, 4, 4, 3, 4, 4, 4, 4, 4, 4, 4]
+          }
+        },
+        load: {
+          label: 'Stationslast',
+          stats: [
+            ['Auslastung', '87%'],
+            ['Peak', 'Di 14:00'],
+            ['Team', '6 aktiv']
+          ],
+          data: {
+            '7': [65, 72, 74, 81, 77, 84, 87],
+            '14': [58, 61, 64, 67, 69, 72, 74, 73, 75, 77, 79, 81, 84, 87],
+            '30': [52, 54, 55, 57, 59, 61, 62, 64, 66, 65, 67, 69, 68, 71, 73, 72, 74, 75, 77, 78, 80, 79, 81, 82, 84, 85, 84, 86, 87, 87]
+          }
+        }
+      };
+
+      function setStatus(title, detail) {
+        statusBody.innerHTML = '<strong>' + title + '</strong>' + detail;
+      }
+
+      function openDrawer(title, lines) {
+        drawerTitle.textContent = title;
+        drawerBody.innerHTML = lines.map((line) => '<div class="drawer-card">' + line + '</div>').join('');
+        drawer.classList.add('open');
+        drawer.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeDrawer() {
+        drawer.classList.remove('open');
+        drawer.setAttribute('aria-hidden', 'true');
+      }
+
+      function renderGraphMeta() {
+        const active = graphSets[chartState.metric];
+        graphMeta.innerHTML = active.stats.map(([k, v]) => (
+          '<div class="graph-stat"><div class="k">' + k + '</div><div class="v">' + v + '</div></div>'
+        )).join('');
+      }
+
+      function renderChart() {
+        const active = graphSets[chartState.metric];
+        const points = active.data[chartState.range];
+        const labels = points.map((_, index) => String(index + 1));
+        renderGraphMeta();
+
+        if (!chart) {
+          chart = new Chart(document.getElementById('referenceChart'), {
+            type: 'line',
+            data: {
+              labels,
+              datasets: [{
+                label: active.label,
+                data: points,
+                borderColor: '#0e7897',
+                borderWidth: 2,
+                tension: 0.34,
+                pointRadius: 0,
+                fill: false
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  displayColors: false,
+                  backgroundColor: '#17333d'
+                }
+              },
+              scales: {
+                x: {
+                  grid: { color: '#edf2f4' },
+                  ticks: { color: '#7c8f98', font: { family: 'IBM Plex Sans', size: 10 } }
+                },
+                y: {
+                  grid: { color: '#edf2f4' },
+                  ticks: { color: '#7c8f98', font: { family: 'IBM Plex Sans', size: 10 } }
+                }
+              }
+            }
+          });
+        } else {
+          chart.data.labels = labels;
+          chart.data.datasets[0].label = active.label;
+          chart.data.datasets[0].data = points;
+          chart.update();
+        }
+
+        setStatus(
+          'Chart updated',
+          active.label + ' view for ' + chartState.range + ' days is now visible in the Grafixx module.'
+        );
+      }
+
+      document.addEventListener('click', (event) => {
+        const actionButton = event.target.closest('[data-action]');
+        const workflowButton = event.target.closest('[data-workflow]');
+        const navButton = event.target.closest('[data-nav]');
+        const shortcutButton = event.target.closest('[data-shortcut]');
+        const signalButton = event.target.closest('[data-signal]');
+        const warningButton = event.target.closest('[data-warning]');
+        const metricButton = event.target.closest('[data-metric]');
+        const rangeButton = event.target.closest('[data-range]');
+
+        if (actionButton) {
+          const action = actionButton.dataset.action;
+          if (action === 'close-drawer') closeDrawer();
+          if (action === 'clear-status') {
+            setStatus('Status cleared', 'The response dock remains visible so the prompt can expect on-screen feedback.');
+          }
+          if (action === 'toggle-drawer') {
+            if (drawer.classList.contains('open')) {
+              closeDrawer();
+              setStatus('Drawer closed', 'Station actions drawer has been hidden.');
+            } else {
+              openDrawer('Station Actions', [
+                'Ward filter: Chirurgie Ward 3A',
+                'Current patient: 1.Cage, 1.Johny',
+                'Reference intent: every visible control must create a UI response'
+              ]);
+              setStatus('Drawer opened', 'Station actions are now visible in the side drawer.');
+            }
+          }
+          if (action === 'refresh-station') setStatus('Station refreshed', 'The reference stays static, but this button still provides a visible application response.');
+          if (action === 'toggle-group') {
+            document.querySelectorAll('.sidebar-group').forEach((group) => group.classList.remove('active'));
+            const target = actionButton.closest('.sidebar-group');
+            target.classList.add('active');
+            setStatus('Selector activated', 'Active sidebar selector changed to ' + actionButton.dataset.group + '.');
+          }
+          if (action === 'search-patient') setStatus('Search executed', 'Search feedback is visible even in the reference state.');
+          if (action === 'toggle-filter') openDrawer('Filter Context', ['Ward: Chirurgie Ward 3A', 'Specialty: Alle Fachbereiche', 'Search mode: local station filter']);
+          if (action === 'select-room') openDrawer('Room 301', ['1 active patient card', '2 active alert markers', 'Signals can be opened from the sidebar dots']);
+          if (action === 'home') setStatus('Home selected', 'The top utility bar responded and kept focus in the clinical shell.');
+          if (action === 'open-list') openDrawer('Patient List', ['Patient list would appear here.', 'Reference behavior: icon-only actions open a visible container.']);
+          if (action === 'toggle-grid') {
+            const compact = document.querySelector('.content-grid').classList.toggle('compact-grid');
+            setStatus('Grid view changed', compact ? 'Main modules switched to a denser 2-column layout.' : 'Main modules returned to the default 3-column layout.');
+          }
+          if (action === 'assign-user') setStatus('Assignment opened', 'Assign user action is visibly acknowledged.');
+          if (action === 'doctor-view') openDrawer('Doctor View', ['Primary contact: Dr. Muster', 'Last review: today', 'Visible action confirms the icon is wired']);
+          if (action === 'swap-patient') setStatus('Patient card cycled', 'Reference swaps state messaging instead of leaving the rotate icon decorative.');
+          if (action === 'ppr-alert') openDrawer('PPR Alerts', ['No active PPR 2.0 E document', 'Alert action must still open a polished empty state']);
+          if (action === 'ppr-edit') setStatus('PPR edit opened', 'Edit affordance is now wired to a visible response.');
+          if (action === 'signal-help') openDrawer('Signal Help', ['Signals 1-10 map to station warnings.', 'Active signals can reveal or filter warning copy.']);
+          if (action === 'graph-edit') setStatus('Graph controls ready', 'Metric and timeframe chips above the chart are the graph interaction pattern to reuse.');
+          if (action === 'discharge-edit') openDrawer('Entlassmanagement', ['Kein aktiver Entlassplan', 'Edit control still opens a meaningful empty state']);
+        }
+
+        if (workflowButton) {
+          workflowSteps.forEach((step) => step.classList.remove('active'));
+          workflowButton.closest('.workflow-step').classList.add('active');
+          pageTitle.textContent = workflowButton.dataset.workflow;
+          setStatus('Workflow changed', 'Active workflow step is now ' + workflowButton.dataset.workflow + '.');
+        }
+
+        if (navButton) {
+          bottomItems.forEach((item) => item.classList.remove('active'));
+          navButton.classList.add('active');
+          pageTitle.textContent = navButton.dataset.nav;
+          setStatus('Bottom navigation changed', navButton.dataset.nav + ' is now the active section.');
+        }
+
+        if (shortcutButton) {
+          setStatus('Shortcut opened', 'Top shortcut "' + shortcutButton.textContent + '" is wired to a visible station response.');
+        }
+
+        if (signalButton) {
+          openDrawer('Signal ' + signalButton.dataset.signal, [
+            'Signal marker selected from patient card',
+            'Reference pattern: signal icons should open filtered detail or highlight related content'
+          ]);
+          setStatus('Signal opened', 'Signal ' + signalButton.dataset.signal + ' opened from the sidebar.');
+        }
+
+        if (warningButton) {
+          warningCopies.forEach((copy, index) => {
+            copy.classList.toggle('hidden', String(index + 1) !== warningButton.dataset.warning && !['5', '10'].includes(warningButton.dataset.warning));
+          });
+          setStatus('Signal filter applied', 'Signalreiter filter changed to warning ' + warningButton.dataset.warning + '.');
+        }
+
+        if (metricButton) {
+          chartState.metric = metricButton.dataset.metric;
+          metricButtons.forEach((button) => button.classList.toggle('active', button === metricButton));
+          renderChart();
+        }
+
+        if (rangeButton) {
+          chartState.range = rangeButton.dataset.range;
+          rangeButtons.forEach((button) => button.classList.toggle('active', button === rangeButton));
+          renderChart();
+        }
+      });
+
+      renderChart();
+    })();
+  </script>
 </body>
 </html>

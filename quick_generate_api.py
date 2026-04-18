@@ -1,49 +1,36 @@
+from string import Template
 import uuid
 import json
 import logging
 import threading
-import os
-from datetime import datetime, timedelta
 
 from flask import Blueprint, request, jsonify, url_for, current_app
 
 from models import db, Task, TaskStatus, TaskComplexity, PatientSession, TaskLog
-from direct_fhir import get_patient_data_direct, get_all_patients_data_direct
+from services.patient_context_service import load_patient_context
 from utils.helpers import add_task_log
-from utils.auth import require_bearer
+from utils.auth import require_bearer, require_bearer_or_basic
 from services.executor import run_generation
-from llm_service import ClaudeLLMService
+from llm_service import _PROMPTS_DIR, ClaudeLLMService
 
 logger = logging.getLogger(__name__)
 
 quick_generate = Blueprint('quick_generate', __name__, url_prefix='/api/quick')
-ALL_PATIENTS_CACHE_TTL_MINUTES = int(os.getenv('ALL_PATIENTS_CACHE_TTL_MINUTES', '15'))
-
-_EXTRACTION_SYSTEM = """You are a clinical data extractor. You output JSON only — no explanation, no markdown, no code fences.
-
-Given a nurse's voice transcript, extract any of the following:
-- Vitals: blood pressure, heart rate, temperature, oxygen saturation, pain level
-- Medications: name, dose, route, status (given/refused/held)
-- Interventions: mobility assist, repositioning, meal assist, hygiene, toileting
-- Observations: patient feeling, orientation
-
-Respond with this exact JSON structure and nothing else:
-{"vitals": [], "medications": [], "interventions": [], "observations": []....}
-
-Example output:
-{"vitals": [{"label": "Blood Pressure", "value": "120/80", "unit": "mmHg"}], "medications": [{"name": "Paracetamol", "dose": "500mg", "status": "given"}], "interventions": [], "observations": [{"label": "Patient Feeling", "value": "confused, disoriented"}] " and the rest"...}
-
-If nothing is found for a category, return an empty array for that key."""
 
 
-def _get_cached_all_patients_session(fhir_base_url: str):
-    cutoff = datetime.utcnow() - timedelta(minutes=ALL_PATIENTS_CACHE_TTL_MINUTES)
-    return PatientSession.query.filter(
-        PatientSession.patient_id == 'all',
-        PatientSession.fhir_base_url == fhir_base_url,
-        PatientSession.patient_data.isnot(None),
-        PatientSession.last_accessed >= cutoff,
-    ).order_by(PatientSession.last_accessed.desc()).first()
+def _load_prompt(filename: str, **kwargs) -> str:
+    raw = (_PROMPTS_DIR / filename).read_text(encoding="utf-8")
+    return Template(raw).safe_substitute(**kwargs)
+
+def _build_extraction_system() -> str:
+    prompt_files = [
+        "extraction/extraction_base.md",
+        "extraction/extraction_vitals.md",
+        "extraction/extraction_medications.md",
+        "extraction/extraction_interventions.md",
+        "extraction/extraction_observations.md",
+    ]
+    return "\n\n".join(_load_prompt(filename).strip() for filename in prompt_files)
 
 
 @quick_generate.route('/extract', methods=['POST'])
@@ -54,6 +41,8 @@ def extract_transcript():
 
     if not transcript:
         return jsonify({'status': 'error', 'error': 'transcript is required'}), 400
+    
+    _EXTRACTION_SYSTEM = _build_extraction_system()
 
     llm      = ClaudeLLMService()
     response = llm.client.messages.create(
@@ -63,9 +52,55 @@ def extract_transcript():
         messages=[{"role": "user", "content": transcript}]
     )
     extracted = json.loads(response.content[0].text.strip())
-    print(extracted)
-    print(extracted)
-    return jsonify({'status': 'ok', 'extracted': extracted, 'empty': not any(extracted.values()), 'transcript': transcript})
+    print("Extracted data:===============================", extracted)
+    print("Extracted data:", extracted)
+    payload = {
+    'status': 'ok',
+    'extracted': extracted,
+    'empty': not any(extracted.values()),
+    'transcript': transcript
+        }
+    print("extract response payload:", payload)
+    return jsonify(payload)
+
+    # return jsonify({'status': 'ok', 'extracted': extracted, 'empty': not any(extracted.values()), 'transcript': transcript})
+
+
+
+
+
+# cristian extraction model for backend testing, 
+@quick_generate.route('/extract/v1', methods=['POST'])
+@require_bearer_or_basic
+def extract_transcript_careit_voice():
+    data       = request.get_json()
+    transcript = (data.get('transcript') or '').strip()
+
+    if not transcript:
+        return jsonify({'status': 'error', 'error': 'transcript is required'}), 400
+    
+    _EXTRACTION_SYSTEM = _build_extraction_system()
+
+    llm      = ClaudeLLMService()
+    response = llm.client.messages.create(
+        model=llm.model,
+        max_tokens=1024,
+        system=_EXTRACTION_SYSTEM,
+        messages=[{"role": "user", "content": transcript}]
+    )
+    extracted = json.loads(response.content[0].text.strip())
+    print("Extracted data:===============================", extracted)
+    print("Extracted data:", extracted)
+    payload = {
+    'extracted': extracted,
+    'empty': not any(extracted.values()),
+    'transcript': transcript,
+    'code': 200,
+    'message': 'Data extracted'
+        }
+    print("extract response payload:", payload)
+    return jsonify(payload)
+
 
 
 @quick_generate.route('/generate', methods=['POST'])
@@ -88,40 +123,17 @@ def generate_miniapp():
         if not all([prompt, access_token, fhir_base_url, patient_id]):
             return jsonify({'status': 'error', 'error': 'Missing required fields'}), 400
 
-        session_data = {'fhir_base_url': fhir_base_url, 'patient_id': patient_id, 'auth_token': access_token}
-        patient_session = None
-        if patient_id == 'all':
-            patient_session = _get_cached_all_patients_session(fhir_base_url)
-            if patient_session:
-                patient_session.auth_token = access_token
-                patient_session.last_accessed = datetime.utcnow()
-                db.session.commit()
-                patient_data = patient_session.patient_data
-                count        = patient_data.get('patient', {}).get('count', 0)
-                patient_name = patient_session.patient_name or f"All Patients ({count} total)"
-                logger.info("[QUICK-GENERATE] Using cached all-patients session %s", patient_session.id)
-            else:
-                patient_data = get_all_patients_data_direct(session_data)
-                count        = patient_data.get('patient', {}).get('count', 0)
-                patient_name = f"All Patients ({count} total)"
-        else:
-            patient_data = get_patient_data_direct(session_data)
-            patient_name = patient_data.get('patient', {}).get('name') or f"Patient {patient_id}"
-
-        if patient_session:
-            session_id = patient_session.id
-        else:
-            session_id = str(uuid.uuid4())
-            patient_session = PatientSession(
-                id=session_id,
-                patient_id=patient_id,
-                patient_name=patient_name,
-                fhir_base_url=fhir_base_url,
-                auth_token=access_token,
-                patient_data=patient_data
-            )
-            db.session.add(patient_session)
-            db.session.commit()
+        refresh = bool(data.get('refresh'))
+        context = load_patient_context(
+            patient_id=patient_id,
+            fhir_base_url=fhir_base_url,
+            access_token=access_token,
+            refresh=refresh,
+        )
+        patient_session = context.session
+        patient_data = context.patient_data
+        patient_name = context.patient_name
+        logger.info("[QUICK-GENERATE] Patient context loaded from %s session %s", "cache" if context.reused else "fresh", patient_session.id)
 
         task_id = str(uuid.uuid4())
         task = Task(
