@@ -167,6 +167,22 @@ Use a sparse risk-overview module with:
 
 This panel can be diagrammatic, but it must still feel like internal hospital software.
 
+## Demo Graph Pattern
+The reference file now contains a working `Grafixx` demo module with:
+- metric chips
+- timeframe chips
+- compact KPI stats above the chart
+- a simple rigid Chart.js line graph inside a bordered white module
+
+When the generated app needs a graph, prefer reusing that exact interaction pattern and visual treatment from `prompts/_design_reference.html` instead of inventing a new chart style.
+- If you show chart controls, they must visibly update the chart and/or the KPI stats
+- The graph module should feel operational and compact, not like an analytics marketing dashboard
+- Acceptable graph variants to adapt from the reference are:
+  - observation trend line
+  - risk trend line
+  - ward load trend line
+- If the request does not need a chart, omit it entirely rather than adding a decorative graph
+
 ## Interaction Fidelity
 Every visible UI control must work. No decorative or dead controls are allowed.
 - Every button, icon button, nav pill, tab, chip, filter, dropdown trigger, calendar control, carousel arrow, accordion toggle, card action, and clickable icon must have a real click handler in `app.js`
@@ -251,6 +267,10 @@ Before finalizing the mini-app, verify that all of the following are true:
   - clicking an appointment reveals more detail
 - Charts are interactive where controls are shown:
   - timeframe toggles, metric switches, legends, or tabs must update the chart or related detail
+- If a graph module is included, follow the working `Grafixx` reference pattern:
+  - chart chips switch metric
+  - range chips switch timeframe
+  - KPI summary above the graph updates with the selected metric
 - Empty-state controls still behave correctly:
   - if data is unavailable, the interaction must show a polished empty state, helper text, or disabled treatment
 - Icon-only controls have accessible labels via `aria-label` or equivalent
