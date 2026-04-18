@@ -45,7 +45,13 @@ def _handle_flutter_init():
     access_token = auth_header.replace('Bearer ', '') if auth_header.startswith('Bearer ') else auth_header
 
     try:
-        context = load_patient_context(patient_id=patient_id, fhir_base_url=fhir_base_url, access_token=access_token)
+        print(f"[INDEX] Force refreshing patient context for patient_id={patient_id} at {fhir_base_url}", flush=True)
+        context = load_patient_context(
+            patient_id=patient_id,
+            fhir_base_url=fhir_base_url,
+            access_token=access_token,
+            refresh=True,
+        )
         patient_session = context.session
         patient_data = context.patient_data
         patient_name = context.patient_name
