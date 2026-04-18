@@ -71,7 +71,7 @@ def get_status():
 
 
 @misc_api.route('/api/logs', methods=['GET'])
-@require_bearer
+# @require_bearer
 def get_all_logs():
     """Get all logs"""
     logs = TaskLog.query.order_by(TaskLog.created_at.desc()).limit(100).all()
