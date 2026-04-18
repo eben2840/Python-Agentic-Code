@@ -70,7 +70,7 @@ def extract_transcript():
 
 
 # cristian extraction model for backend testing, 
-@quick_generate.route('/extract/v1', methods=['POST'])
+@quick_generate.route('/v1/extract/', methods=['POST'])
 @require_bearer_or_basic
 def extract_transcript_careit_voice():
     data       = request.get_json()
