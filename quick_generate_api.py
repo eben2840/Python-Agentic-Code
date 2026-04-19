@@ -69,7 +69,43 @@ def extract_transcript():
 
 
 
-# cristian extraction model for backend testing, 
+@quick_generate.route('/questionnaire/v1', methods=['POST'])
+@require_bearer_or_basic
+def extract_questionnaire():
+    data          = request.get_json()
+    transcript    = (data.get('transcript') or '').strip()
+    questionnaire = (data.get('questionnaire') or '').strip()
+
+    if not transcript:
+        return jsonify({'status': 'error', 'error': 'transcript is required'}), 400
+    if not questionnaire:
+        return jsonify({'status': 'error', 'error': 'questionnaire is required'}), 400
+
+    system = _load_prompt(
+        'extraction/extraction_questionnaire.md',
+        transcription=transcript,
+        itemsDescription=questionnaire,
+    )
+
+    llm      = ClaudeLLMService()
+    response = llm.client.messages.create(
+        model=llm.model,
+        max_tokens=1024,
+        system=system,
+        messages=[{"role": "user", "content": transcript}]
+    )
+
+    raw = response.content[0].text.strip()
+    if raw.startswith("```"):
+        raw = raw.split("```", 2)[1]
+        if raw.startswith("json"):
+            raw = raw[4:]
+        raw = raw.rstrip("`").strip()
+    questionnaire = json.loads(raw)
+    return jsonify({'status': 'ok', 'questionnaire': questionnaire, 'transcript': transcript,'code': 200, 'message': 'Questionnaire extracted'})
+
+
+# cristian extraction model for backend testing,
 @quick_generate.route('/v1/extract/', methods=['POST'])
 @require_bearer_or_basic
 def extract_transcript_careit_voice():
@@ -106,13 +142,6 @@ def extract_transcript_careit_voice():
 @quick_generate.route('/generate', methods=['POST'])
 @require_bearer
 def generate_miniapp():
-    """
-    POST /api/quick/generate
-    Body: { prompt, accessToken, fhirBaseUrl, patientId }
-    Returns 202 immediately with task_id. Poll /status/{task_id} for progress.
-    this generate the mini app from the old context, only from the old context
-    this is done with all in the form
-    """
     try:
         data          = request.get_json()
         prompt        = data.get('prompt')
