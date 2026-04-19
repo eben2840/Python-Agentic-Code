@@ -15,33 +15,15 @@ class PatientContextResult:
     reused: bool
 
 
-def _session_query(
-    patient_id: Optional[str] = None,
-    fhir_base_url: Optional[str] = None,
-    access_token: Optional[str] = None,
-):
-    query = PatientSession.query
-
-    if patient_id:
-        query = query.filter_by(patient_id=patient_id)
-    if fhir_base_url:
-        query = query.filter_by(fhir_base_url=fhir_base_url)
-    if access_token:
-        query = query.filter_by(auth_token=access_token)
-
-    return query.order_by(PatientSession.last_accessed.desc())
-
-
-def _latest_session(
-    patient_id: Optional[str] = None,
-    fhir_base_url: Optional[str] = None,
-    access_token: Optional[str] = None,
-):
-    return _session_query(
+def _session_query(patient_id: str, fhir_base_url: str):
+    return PatientSession.query.filter_by(
         patient_id=patient_id,
         fhir_base_url=fhir_base_url,
-        access_token=access_token,
-    ).first()
+    ).order_by(PatientSession.last_accessed.desc())
+
+
+def _latest_session(patient_id: str, fhir_base_url: str):
+    return _session_query(patient_id, fhir_base_url).first()
 
 
 def _fetch_patient_data(session_data: dict):
@@ -78,11 +60,7 @@ def _save_session(session: Optional[PatientSession], patient_id: str, fhir_base_
 
 
 def load_patient_context(patient_id: str, fhir_base_url: str, access_token: str, refresh: bool = False):
-    session = None if refresh else _latest_session(
-        patient_id=patient_id,
-        fhir_base_url=fhir_base_url,
-        access_token=access_token,
-    )
+    session = None if refresh else _latest_session(patient_id, fhir_base_url)
     if session and session.patient_data:
         session = _touch_session(session, access_token)
         return PatientContextResult(session=session, patient_data=session.patient_data, patient_name=session.patient_name or _derive_patient_name(patient_id, session.patient_data), reused=True)
@@ -98,18 +76,7 @@ def load_latest_patient_session(
     fhir_base_url: Optional[str] = None,
     access_token: Optional[str] = None,
 ):
-    session = _latest_session(
-        patient_id=patient_id,
-        fhir_base_url=fhir_base_url,
-        access_token=access_token,
-    )
-    if session:
-        return session
-
     if patient_id or fhir_base_url:
         return _latest_session(patient_id=patient_id, fhir_base_url=fhir_base_url)
 
-    if access_token:
-        return _latest_session(access_token=access_token)
-
-    return _latest_session()
+    return PatientSession.query.order_by(PatientSession.last_accessed.desc()).first()

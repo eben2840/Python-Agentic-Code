@@ -3,6 +3,7 @@ import logging
 from flask import Blueprint, request, jsonify, make_response
 from models import TaskLog
 from llm_service import check_llm_available
+from utils.debug_console import DEBUG_LOG_PATH, read_debug_tail
 from utils.helpers import get_fhir_context_from_cookies
 from utils.auth import require_bearer
 
@@ -76,6 +77,18 @@ def get_all_logs():
     """Get all logs"""
     logs = TaskLog.query.order_by(TaskLog.created_at.desc()).limit(100).all()
     return jsonify([log.to_dict() for log in logs])
+
+
+@misc_api.route('/api/debug/console-logs', methods=['GET'])
+# @require_bearer
+def get_console_logs():
+    limit = request.args.get('limit', default=1000, type=int)
+    lines = read_debug_tail(limit)
+    return jsonify({
+        'path': DEBUG_LOG_PATH,
+        'count': len(lines),
+        'lines': lines,
+    })
 
 
 @misc_api.route('/api/clear-patient-data', methods=['POST'])
