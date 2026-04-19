@@ -10,10 +10,11 @@ from datetime import datetime
 import anthropic
 from flask import Blueprint, request, jsonify, Response
 
-from models import db, Task, TaskStatus, TaskComplexity, PatientSession, TaskLog
+from models import db, Task, TaskStatus, TaskComplexity, TaskLog
 from llm_service import ClaudeLLMService
 from utils.helpers import add_task_log
 from utils.auth import require_bearer
+from services.patient_context_service import load_latest_patient_session
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +71,30 @@ def _status_page(status_label: str) -> str:
 </html>'''
 
 
+def _request_access_token() -> str:
+    auth_header = request.headers.get('Authorization', '')
+    if auth_header.startswith('Bearer '):
+        return auth_header.replace('Bearer ', '', 1)
+    return request.cookies.get('fhir_token', '')
+
+
+def _request_session_scope() -> dict:
+    return {
+        'patient_id': request.headers.get('X-Patient-Id') or request.args.get('patient_id') or request.cookies.get('patient_id'),
+        'fhir_base_url': request.headers.get('X-FHIR-Base') or request.args.get('fhir_base_url') or request.cookies.get('fhir_base_url'),
+        'access_token': _request_access_token(),
+    }
+
+
+def _get_request_patient_session():
+    scope = _request_session_scope()
+    return load_latest_patient_session(
+        patient_id=scope['patient_id'] or None,
+        fhir_base_url=scope['fhir_base_url'] or None,
+        access_token=scope['access_token'] or None,
+    )
+
+
 # -----------------------------------------------------------------------------
 # Routes
 # -----------------------------------------------------------------------------
@@ -79,7 +104,7 @@ def _status_page(status_label: str) -> str:
 def get_dashboard_data():
     """Get all dashboard data for frontend"""
     try:
-        patient_session = PatientSession.query.order_by(PatientSession.last_accessed.desc()).first()
+        patient_session = _get_request_patient_session()
         tasks = Task.query.all()
         task_data = {
             'pending':   [t.to_dict() for t in tasks if t.status == TaskStatus.pending],
@@ -119,7 +144,7 @@ def generate_idea():
             return jsonify({'error': 'Prompt required'}), 400
 
         logger.info(f"[GENERATE-IDEA] Prompt: {prompt}")
-        patient_session = PatientSession.query.order_by(PatientSession.last_accessed.desc()).first()
+        patient_session = _get_request_patient_session()
         patient_data    = patient_session.patient_data if patient_session else None
 
         patient_context = ''
@@ -186,7 +211,7 @@ def create_miniapp():
         logger.info(f"[CREATE-MINIAPP] Title: {title}")
         logger.info(f"[CREATE-MINIAPP] Description: {description[:100]}...")
 
-        patient_session = PatientSession.query.order_by(PatientSession.last_accessed.desc()).first()
+        patient_session = _get_request_patient_session()
         if not patient_session:
             logger.error("[CREATE-MINIAPP] No patient session found")
             return jsonify({'error': 'No patient session found. Please connect to FHIR server and load patient data first.'}), 400
@@ -219,7 +244,7 @@ def create_miniapp():
 @require_bearer
 def session_status():
     """Check session status using PatientSession model"""
-    patient_session = PatientSession.query.order_by(PatientSession.last_accessed.desc()).first()
+    patient_session = _get_request_patient_session()
     if not patient_session:
         return jsonify({'authenticated': False, 'session_data': None})
 
@@ -287,4 +312,3 @@ def get_task_status(task_id):
         'logs':              [log.to_dict() for log in logs],
         'updated_at':        task.updated_at.isoformat() if task.updated_at else None,
     })
-
