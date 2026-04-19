@@ -7,10 +7,7 @@ load_dotenv()
 
 from flask import Flask, request, make_response, jsonify, render_template
 from models import init_db
-from utils.debug_console import install_debug_console
 from utils.helpers import time_ago
-
-install_debug_console()
 
 logging.basicConfig(
     level=logging.INFO,
