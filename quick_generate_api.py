@@ -123,12 +123,10 @@ def generate_miniapp():
         if not all([prompt, access_token, fhir_base_url, patient_id]):
             return jsonify({'status': 'error', 'error': 'Missing required fields'}), 400
 
-        refresh = bool(data.get('refresh'))
         context = load_patient_context(
             patient_id=patient_id,
             fhir_base_url=fhir_base_url,
             access_token=access_token,
-            refresh=refresh,
         )
         patient_session = context.session
         patient_data = context.patient_data
