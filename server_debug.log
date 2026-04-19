@@ -906,3 +906,98 @@
 2026-04-19 12:51:26,407 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:51:26] "[36mGET /static/css/components.css HTTP/1.1[0m" 304 -
 2026-04-19 12:51:26,493 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:51:26] "OPTIONS /api/backend/session-status HTTP/1.1" 200 -
 2026-04-19 12:51:27,009 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:51:27] "GET /api/backend/session-status HTTP/1.1" 200 -
+2026-04-19 12:53:33,762 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+Extracted data:=============================== {'vitals': [], 'medications': [], 'interventions': [], 'observations': []}
+Extracted data: {'vitals': [], 'medications': [], 'interventions': [], 'observations': []}
+extract response payload: {'status': 'ok', 'extracted': {'vitals': [], 'medications': [], 'interventions': [], 'observations': []}, 'empty': True, 'transcript': 'Show me the high risk patient in a dashboard'}
+2026-04-19 12:53:33,769 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:53:33] "POST /api/quick/extract HTTP/1.1" 200 -
+2026-04-19 12:54:58,326 - quick_generate_api - INFO - [QUICK-GENERATE] Patient context loaded from cache session 8b17c67c-e4a8-410c-89f6-12ffdfcc8aa0
+2026-04-19 12:54:58,374 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:54:58] "[35m[1mPOST /api/quick/generate HTTP/1.1[0m" 202 -
+2026-04-19 12:54:59,523 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:54:59] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:01,520 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:01] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:03,563 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:03] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:06,058 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:06] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:07,523 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:07] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:09,483 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:09] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:11,522 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:11] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:13,982 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:13] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:15,516 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:15] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:17,543 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:17] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:19,509 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:19] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:21,868 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:21] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:23,565 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:23] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:25,589 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:25] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:27,575 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:27] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:29,554 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:29] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:31,603 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:31] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:33,558 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:33] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:35,557 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:35] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:37,537 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:37] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:39,582 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:39] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:41,635 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:41] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:43,794 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:43] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:45,801 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:45] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:47,599 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:47] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:49,485 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:49] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:51,570 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:51] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:53,517 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:53] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:55,519 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:55] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:57,513 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:57] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:55:59,528 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:55:59] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:01,562 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:01] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:03,670 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:03] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:05,567 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:05] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:07,571 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:07] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:09,527 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:09] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:11,559 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:11] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:13,458 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:13] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:15,588 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:15] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:17,512 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:17] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:19,442 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:19] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:21,579 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:21] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:23,612 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:23] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:25,554 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:25] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:27,579 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:27] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:29,533 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:29] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:31,650 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:31] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:33,532 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:33] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:35,603 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:35] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:37,498 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:37] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:39,594 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:39] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:41,541 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:41] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:43,633 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:43] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:45,529 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:45] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:47,556 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:47] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:50,279 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:50] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:54,156 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:54] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:55,066 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:55] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:55,540 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:55] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:57,592 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:57] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:56:59,571 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:56:59] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:01,510 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:01] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:03,552 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:03] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:05,577 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:05] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:07,461 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:07] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:09,498 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:09] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:11,485 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:11] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:13,542 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:13] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:15,489 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:15] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:17,591 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:17] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:19,517 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:19] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:21,682 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:21] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:23,516 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:23] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:25,526 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:25] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:27,631 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:27] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:29,624 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:29] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:31,563 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:31] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:31,870 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-19 12:57:33,801 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:33] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:35,477 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:35] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:37,633 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:37] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:39,635 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:39] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:41,301 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2026-04-19 12:57:41,531 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:41] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+2026-04-19 12:57:43,533 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:57:43] "GET /api/quick/status/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
+[MINI-APP-PREVIEW] Loading preview for task 46f2907c-ccd4-4eb9-9128-8441b6ac4dff
+[MINI-APP-PREVIEW] Rendering preview for task 46f2907c-ccd4-4eb9-9128-8441b6ac4dff
+2026-04-19 12:59:46,838 - werkzeug - INFO - 192.168.0.239 - - [19/Apr/2026 12:59:46] "GET /mini-apps/46f2907c-ccd4-4eb9-9128-8441b6ac4dff HTTP/1.1" 200 -
