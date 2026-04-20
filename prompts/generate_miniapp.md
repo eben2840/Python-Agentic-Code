@@ -39,7 +39,7 @@ $data_context
 
 # Design System
 
-Follow the reference design in `prompts/_design_reference.html` **exactly**. The target is not a modern wellness dashboard. It is a dense hospital station interface modeled on the provided screenshot: teal system chrome, compact patient metadata, rigid white modules, administrative labels, chevron workflow steps, a persistent left rail, and a bottom navigation strip. Match that structure closely.
+Follow the reference design in `prompts/_design_reference.html` **exactly**. The target is not a modern wellness dashboard. It is a dense hospital station interface modeled on the provided screenshot: teal system chrome, compact patient metadata, rigid white modules, administrative labels, chevron workflow steps, and a persistent left rail. Match that structure closely.
 
 ## CSS Tokens (copy these verbatim into styles.css)
 ```css
@@ -97,7 +97,6 @@ Use this exact application pattern:
 - Top of main area: teal patient metadata strip
 - Under top strip: small page title plus chevron workflow steps
 - Center area: 2-3 column grid of rigid white panels
-- Bottom: full-width teal navigation bar with section tabs
 
 The screen should feel like one cohesive hospital application, not a collection of floating cards.
 
@@ -116,7 +115,6 @@ Use a compact teal header bar with:
 - case number
 - stay/day metadata
 - 3-4 small square shortcut buttons
-- utility icons on the right
 
 This bar should be dense and short in height, similar to hospital software chrome.
 
