@@ -101,13 +101,6 @@ Use this exact application pattern:
 
 The screen should feel like one cohesive hospital application, not a collection of floating cards.
 
-## Sidebar
-The left rail should closely follow the screenshot:
-- top station title row with 2-3 small icons
-- ward selector row
-- specialty/filter row
-- search row
-- room section with one or more patient cards
 
 Sidebar styling rules:
 - teal background throughout
@@ -167,8 +160,7 @@ Use a sparse risk-overview module with:
 
 This panel can be diagrammatic, but it must still feel like internal hospital software.
 
-## Demo Graph Pattern
-The reference file now contains a working `Grafixx` demo module with:
+##  Graph Pattern
 - metric chips
 - timeframe chips
 - compact KPI stats above the chart
@@ -207,20 +199,14 @@ Every visible UI control must work. No decorative or dead controls are allowed.
 ## Medication List
 Medication should appear as a clinical module rather than a lifestyle card. Use dense rows, short labels, clear status markers, and edit/view affordances in the panel header if appropriate.
 
-## Appointment / Schedule Panel
-If scheduling is shown, use a compact operational planner with small date cells and plain status chips. Keep it closer to hospital tasking software than a lifestyle appointment app.
+
 
 ## Charts
 Use Chart.js only when the request genuinely benefits from it. Charts should sit inside rigid white modules with teal headers and minimal decoration. Axes use IBM Plex Sans `10px`, `var(--text-muted)` color.
 
-## Bottom Navigation
-Use a teal bottom navigation bar similar to the screenshot with 5-7 tabs.
-- Each item should have an icon and label
-- The active item should be visibly highlighted
-- On mobile this can wrap or compress, but it must remain usable
 
 ## Layout
-- Desktop: left rail + top strip + workflow + 2-3 column module grid + bottom nav
+- Desktop:  top strip + workflow + 2-3 column module grid 
 - Tablet/mobile: stack the sidebar content above the main modules if needed, but preserve the same visual language
 - Avoid floating dashboard cards with large outer margins. The UI should feel edge-aligned and application-like.
 
