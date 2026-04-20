@@ -28,11 +28,19 @@ $data_context
 - `data.locations.summary` → `[{ name, value, status }]` where `name` = room, `value` = ward
 
 **All patients** (`data.patient.id === 'all'`):
-- `data.patients` → array of patients, each with `{ id, name, gender, birthDate, data: { <resourcetype>: [...], ... } }`
+- `data.patients` → array of patients, each with `{ id, name, gender, birthDate, telecom, address, resource, data: { <resourcetype>: [...], ... } }`
 - Each resource key is a **flat array** directly — whatever resource types exist in `patient.data`
 - Loop dynamically: `window.PATIENT_DATA.patients.forEach(patient => { Object.entries(patient.data || {}).forEach(([rtype, records]) => { (records || []).forEach(r => ...) }) })`
 - Show EACH patient's data for ALL resource types present — do NOT summarise or aggregate
 - There is NO `.summary` key on any resource inside `patient.data` — NEVER use `.resourcetype.summary`, it will always be undefined and show 0
+- Patient demographics are available and should be shown directly from each `patient` object when relevant:
+  - `patient.name`
+  - `patient.gender`
+  - `patient.birthDate`
+  - `patient.telecom`
+  - `patient.address`
+  - `patient.resource` for any additional raw `Patient` fields
+- If the request is patient-list oriented, render the patient identity/details first, then render the patient-linked resource records underneath. Do not show anonymous counts when patient details are available.
 - **Standalone/context resources** (e.g. Location, Organization, Practitioner) are NOT inside `patient.data` — they are top-level keys on `window.PATIENT_DATA` with the structure `{ count, resources, summary }` where `resources` is the full FHIR resource array and `summary` is `[{ name, status, date, value }]`. Access them as `window.PATIENT_DATA.location`, `window.PATIENT_DATA.organization`, etc. (lowercase). Use `resources` for full detail (e.g. `resource.name`, `resource.physicalType`) or `summary` for the flattened view.
 
 ---
@@ -114,14 +122,17 @@ Use a compact teal header bar with:
 - sex/age metadata
 - case number
 - stay/day metadata
-- 3-4 small square shortcut buttons
 
 This bar should be dense and short in height, similar to hospital software chrome.
 
 ## Workflow Bar
-Immediately below the top strip, render a row of chevron-shaped workflow steps.
-- Example labels: `Anamnese`, `Assessment`, `Analyse`, `Planung`, `...`
-- Active step visibly darker or more saturated
+Only render a chevron-style workflow bar if the app truly has multiple main views or sections to switch between.
+- Do not show the default labels `Anamnese`, `Assessment`, `Analyse`, `Planung` unless the generated app actually contains those corresponding sections
+- If the app has only one main view, omit the workflow bar entirely
+- If the app has multiple views, show only the relevant steps for those views
+- Every workflow step must work:
+  - clicking it must switch the visible section or content area
+  - active state must update visibly
 - Keep the chevrons flat and administrative, not playful
 
 ## Main Content Modules
@@ -176,6 +187,7 @@ When the generated app needs a graph, prefer reusing that exact interaction patt
 ## Interaction Fidelity
 Every visible UI control must work. No decorative or dead controls are allowed.
 - Every button, icon button, nav pill, tab, chip, filter, dropdown trigger, calendar control, carousel arrow, accordion toggle, card action, and clickable icon must have a real click handler in `app.js`
+- Do not add settings, notifications, refresh, export, search, or filter icon buttons unless the user explicitly asks for them
 - If a control is visible, it must either:
   - change the view,
   - reveal/hide information,

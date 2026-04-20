@@ -40,7 +40,20 @@ def _parse_json_response(raw: str):
         if text.startswith("json"):
             text = text[4:]
         text = text.rstrip("`").strip()
-    return json.loads(text)
+
+    if text:
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError:
+            pass
+
+    start = min([idx for idx in (text.find('{'), text.find('[')) if idx != -1], default=-1)
+    if start == -1:
+        raise ValueError("Model did not return JSON content")
+
+    decoder = json.JSONDecoder()
+    payload, _ = decoder.raw_decode(text[start:])
+    return payload
 
 
 @quick_generate.route('/extract', methods=['POST'])
