@@ -6,8 +6,8 @@ import threading
 
 from flask import Blueprint, request, jsonify, url_for, current_app
 
-from models import db, Task, TaskStatus, TaskComplexity, PatientSession, TaskLog
-from services.patient_context_service import load_patient_context
+from models import db, Task, TaskStatus, TaskComplexity, TaskLog
+from direct_fhir import get_patient_data_direct
 from utils.helpers import add_task_log
 from utils.auth import require_bearer, require_bearer_or_basic
 from services.executor import run_generation
@@ -33,6 +33,16 @@ def _build_extraction_system() -> str:
     return "\n\n".join(_load_prompt(filename).strip() for filename in prompt_files)
 
 
+def _parse_json_response(raw: str):
+    text = raw.strip()
+    if text.startswith("```"):
+        text = text.split("```", 2)[1]
+        if text.startswith("json"):
+            text = text[4:]
+        text = text.rstrip("`").strip()
+    return json.loads(text)
+
+
 @quick_generate.route('/extract', methods=['POST'])
 @require_bearer
 def extract_transcript():
@@ -44,6 +54,7 @@ def extract_transcript():
     
     _EXTRACTION_SYSTEM = _build_extraction_system()
 
+
     llm      = ClaudeLLMService()
     response = llm.client.messages.create(
         model=llm.model,
@@ -51,7 +62,7 @@ def extract_transcript():
         system=_EXTRACTION_SYSTEM,
         messages=[{"role": "user", "content": transcript}]
     )
-    extracted = json.loads(response.content[0].text.strip())
+    extracted = _parse_json_response(response.content[0].text)
     print("Extracted data:===============================", extracted)
     print("Extracted data:", extracted)
     payload = {
@@ -124,7 +135,7 @@ def extract_transcript_careit_voice():
         system=_EXTRACTION_SYSTEM,
         messages=[{"role": "user", "content": transcript}]
     )
-    extracted = json.loads(response.content[0].text.strip())
+    extracted = _parse_json_response(response.content[0].text)
     print("Extracted data:===============================", extracted)
     print("Extracted data:", extracted)
     payload = {
@@ -149,18 +160,28 @@ def generate_miniapp():
         fhir_base_url = data.get('fhirBaseUrl')
         patient_id    = data.get('patientId')
 
+        print(
+            "[QUICK-GENERATE][REQUEST] "
+            f"patient_id={patient_id!r} "
+            f"type={type(patient_id).__name__} "
+            f"fhir_base_url={fhir_base_url!r} "
+            f"access_token={access_token}",
+            flush=True,
+        )
+
         if not all([prompt, access_token, fhir_base_url, patient_id]):
             return jsonify({'status': 'error', 'error': 'Missing required fields'}), 400
 
-        context = load_patient_context(
-            patient_id=patient_id,
-            fhir_base_url=fhir_base_url,
-            access_token=access_token,
-        )
-        patient_session = context.session
-        patient_data = context.patient_data
-        patient_name = context.patient_name
-        logger.info("[QUICK-GENERATE] Patient context loaded from %s session %s", "cache" if context.reused else "fresh", patient_session.id)
+        patient_data = None
+        patient_name = 'All Patients' if patient_id == 'all' else f"Patient {patient_id}"
+        if patient_id != 'all':
+            patient_data = get_patient_data_direct({
+                'fhir_base_url': fhir_base_url,
+                'patient_id': patient_id,
+                'auth_token': access_token,
+            })
+            patient_name = patient_data.get('patient', {}).get('name') or patient_name
+            logger.info("[QUICK-GENERATE] Patient context loaded directly for patient %s", patient_id)
 
         task_id = str(uuid.uuid4())
         task = Task(
@@ -171,16 +192,22 @@ def generate_miniapp():
             status=TaskStatus.planning,
             patient_id=patient_id,
             fhir_base_url=fhir_base_url,
-            patient_data=patient_data
+            patient_data=patient_data,
         )
         db.session.add(task)
         db.session.commit()
         add_task_log(task_id, "Task created, starting generation...")
 
-        app = current_app._get_current_object()
         threading.Thread(
             target=run_generation,
-            args=(app, task_id, prompt, patient_data, patient_name)
+            args=(
+                current_app._get_current_object(),
+                task_id,
+                prompt,
+                patient_id,
+                fhir_base_url,
+                access_token,
+            ),
         ).start()
 
         return jsonify({

@@ -29,7 +29,7 @@ def _load_tasks() -> dict:
         'failed':    Task.query.filter_by(status=TaskStatus.failed).order_by(Task.updated_at.desc()).all(),
     }
 
-
+  
     # """Handle POST / when Flutter headers are present."""
 def _handle_flutter_init():
     print("[INDEX] POST request - checking Flutter headers", flush=True)

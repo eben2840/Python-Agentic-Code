@@ -20,13 +20,30 @@ class DirectFHIRClient:
     def __init__(self, session_data: dict):
         self.base_url = session_data['fhir_base_url'].rstrip('/')
         self.patient_id = session_data['patient_id']
+        self.auth_token = session_data["auth_token"]
         self.headers = {
-            'Authorization': f'Bearer {session_data["auth_token"]}',
+            'Authorization': f'Bearer {self.auth_token}',
             'Accept': 'application/fhir+json',
         }
+        print(
+            "[DIRECT-FHIR][INIT] "
+            f"patient_id={self.patient_id!r} "
+            f"base_url={self.base_url!r} "
+            f"auth_prefix={self.headers['Authorization'][:40]}...",
+            flush=True,
+        )
 
     def _get(self, endpoint, params=None):
         try:
+            print(
+                "[DIRECT-FHIR][GET] "
+                f"url={self.base_url}/{endpoint} "
+                f"params={params} "
+                f"auth_prefix={self.headers['Authorization'][:40]}... "
+                f"token_start={self.auth_token[:24]} "
+                f"token_end={self.auth_token[-24:]}",
+                flush=True,
+            )
             r = requests.get(f"{self.base_url}/{endpoint}", headers=self.headers, params=params, timeout=30)
             r.raise_for_status()
             return r.json()
@@ -51,16 +68,41 @@ class DirectFHIRClient:
                     supported.append((rtype, 'subject'))
         return supported
 
+    def _server_resource_types(self):
+        resources = []
+        for rest in self._get('metadata').get('rest', []):
+            for resource in rest.get('resource', []):
+                rtype = resource.get('type', '')
+                if not rtype or rtype in FHIR_DEFINITION_TYPES:
+                    continue
+                resources.append(rtype)
+        return resources
+
+    def supported_resources(self):
+        return [rtype for rtype, _ in self._supported_resource_types()]
+
+    def server_resources(self):
+        return self._server_resource_types()
+
     def _fetch(self, rtype, param, extra=None):
         params = {param: self.patient_id, '_count': 100}
         if extra:
             params.update(extra)
         return self._bundle(self._get(rtype, params=params))
 
-    def _fetch_all(self, rtype):
+    def search(self, rtype, params=None):
+        return self._bundle(self._get(rtype, params=params))
+
+    def read(self, reference):
+        return self._get(reference)
+
+    def fetch_all_resource(self, rtype):
+        return self._fetch_all(rtype)
+
+    def _fetch_all(self, rtype, max_records=50):
         resources = []
         url = f"{self.base_url}/{rtype}"
-        while url:
+        while url and len(resources) < max_records:
             try:
                 r = requests.get(url, headers=self.headers, timeout=30)
                 r.raise_for_status()
@@ -72,7 +114,7 @@ class DirectFHIRClient:
             resources.extend(self._bundle(data))
             url = next((link['url'] for link in data.get('link', []) if link.get('relation') == 'next'), None)
             logger.info(f"  {rtype}: {len(resources)} so far...")
-        return resources
+        return resources[:max_records]
 
     def _patient_ref(self, resource):
         ref_obj = resource.get('subject') or resource.get('patient') or {}
@@ -148,6 +190,12 @@ class DirectFHIRClient:
             'telecom': r.get('telecom'),
             'address': r.get('address'),
         }
+
+    def patient_info(self, patient_id=None):
+        return self._patient_info(self._get(f"Patient/{patient_id or self.patient_id}"))
+
+    def entry(self, resources):
+        return self._as_entry(resources)
 
     def _fetch_locations(self, encounters):
         locations = []
@@ -239,6 +287,34 @@ class DirectFHIRClient:
             **context,
         }
 
+    def get_selected_all_patients_data(self, resource_types):
+        logger.info("Fetching selected all-patient data")
+        patients = [self._patient_info(resource) for resource in self._fetch_all('Patient')]
+        patients_by_id = {p['id']: p for p in patients if p.get('id')}
+        for patient in patients:
+            patient['data'] = {}
+
+        selected = list(dict.fromkeys(resource_types))
+        context = {}
+
+        for rtype in selected:
+            all_records = self._fetch_all(rtype)
+            print(f"[ALL-PATIENTS] {rtype}: fetched {len(all_records)} records", flush=True)
+            matched = 0
+            for record in all_records:
+                pid = self._patient_ref(record)
+                if pid in patients_by_id:
+                    patients_by_id[pid]['data'].setdefault(rtype.lower(), []).append(self._flatten(record))
+                    matched += 1
+            if all_records and matched == 0:
+                context[rtype.lower()] = self._as_entry(all_records)
+
+        return {
+            'patient': {'id': 'all', 'name': 'All Patients', 'count': len(patients)},
+            'patients': patients,
+            **context,
+        }
+
 
 def get_patient_data_direct(session_data):
     return DirectFHIRClient(session_data).get_patient_data()
@@ -246,3 +322,7 @@ def get_patient_data_direct(session_data):
 
 def get_all_patients_data_direct(session_data):
     return DirectFHIRClient(session_data).get_all_patients_data()
+
+
+def get_selected_all_patients_data_direct(session_data, resource_types):
+    return DirectFHIRClient(session_data).get_selected_all_patients_data(resource_types)
