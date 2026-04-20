@@ -3,11 +3,11 @@ import logging
 from llm_service import ClaudeLLMService
 
 logger = logging.getLogger(__name__)
+DEFAULT_TRANSFER_ICON = "dashboard"
 
 
 def enhance_transfer_meta(title: str, description: str, html_content: str) -> tuple:
     """Use Claude to generate a clean title, description and Material Design icon name for a transferred mini app."""
-
     prompt = f"""You are given a healthcare mini app with the following details:
 
 Title: {title}
@@ -24,13 +24,20 @@ Generate:
 Respond with valid JSON only:
 {{"title": "...", "description": "...", "icon": "..."}}"""
 
-    llm = ClaudeLLMService()
-    response = llm.client.messages.create(
-        model=llm.model,
-        max_tokens=256,
-        messages=[{"role": "user", "content": prompt}]
-    )
-
-    text   = response.content[0].text.strip().strip('```json').strip('```').strip()
-    result = json.loads(text)
-    return result["title"], result["description"], result["icon"]
+    try:
+        llm = ClaudeLLMService()
+        response = llm.client.messages.create(
+            model=llm.model,
+            max_tokens=256,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        text = response.content[0].text.strip().strip('```json').strip('```').strip()
+        result = json.loads(text)
+        return (
+            result.get("title") or title,
+            result.get("description") or description,
+            result.get("icon") or DEFAULT_TRANSFER_ICON,
+        )
+    except Exception as exc:
+        logger.warning("Transfer metadata enhancement failed: %s", exc)
+        return title, description, DEFAULT_TRANSFER_ICON

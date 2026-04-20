@@ -29,7 +29,6 @@
       --font:          'IBM Plex Sans', sans-serif;
       --sidebar-w:     380px;
       --topbar-h:      58px;
-      --bottombar-h:   56px;
     }
 
     * { box-sizing: border-box; }
@@ -61,7 +60,6 @@
     .shortcut-box,
     .signal-dot,
     .signal-square,
-    .bottom-item,
     .room-trigger {
       border: none;
       background: transparent;
@@ -76,8 +74,7 @@
       grid-template-rows: auto 1fr auto;
       grid-template-areas:
         "sidebar topbar"
-        "sidebar main"
-        "sidebar bottombar";
+        "sidebar main";
     }
 
     .sidebar {
@@ -134,8 +131,6 @@
     .signal-square:focus-visible,
     .workflow-btn:hover,
     .workflow-btn:focus-visible,
-    .bottom-item:hover,
-    .bottom-item:focus-visible,
     .room-trigger:hover,
     .room-trigger:focus-visible {
       outline: none;
@@ -789,45 +784,13 @@
       background: #fff;
     }
 
-    .bottom-bar {
-      grid-area: bottombar;
-      background: var(--teal);
-      color: #fff;
-      min-height: var(--bottombar-h);
-      display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      border-top: 1px solid rgba(0,0,0,0.18);
-    }
-
-    .bottom-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      border-right: 1px solid rgba(255,255,255,0.12);
-      min-height: var(--bottombar-h);
-      cursor: pointer;
-    }
-
-    .bottom-item:last-child {
-      border-right: none;
-    }
-
-    .bottom-item.active {
-      background: rgba(0,0,0,0.12);
-      color: #ffe37a;
-    }
-
     @media (max-width: 1200px) {
       .station-app {
         grid-template-columns: 1fr;
         grid-template-areas:
           "topbar"
           "sidebar"
-          "main"
-          "bottombar";
+          "main";
       }
 
       .sidebar {
@@ -843,9 +806,6 @@
         grid-template-columns: 1fr 1fr;
       }
 
-      .bottom-bar {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
     }
 
     @media (max-width: 768px) {
@@ -871,9 +831,6 @@
         grid-template-columns: 1fr;
       }
 
-      .bottom-bar {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
     }
   </style>
 </head>
@@ -882,14 +839,6 @@
    <aside class="sidebar">
       <div class="sidebar-top">
         <div class="station-title">Station</div>
-        <div class="toolbar">
-          <button class="icon-btn clickable" type="button" data-action="refresh-station" aria-label="Refresh station">
-            <i class="fa-solid fa-rotate-right"></i>
-          </button>
-          <button class="icon-btn clickable" type="button" data-action="toggle-drawer" aria-label="Open station actions">
-            <i class="fa-solid fa-bars"></i>
-          </button>
-        </div>
       </div>
       <div class="sidebar-group active" data-filter-group="ward">
         <div class="label"><i class="fa-solid fa-house-medical"></i> Chirurgie Ward 3A</div>
@@ -1030,7 +979,6 @@
           <div class="panel-header">
             <span>PPR 2.0 E</span>
             <span class="panel-header-actions">
-              <button class="icon-btn clickable" type="button" data-action="ppr-alert" aria-label="Open PPR alerts"><i class="fa-solid fa-bell" style="color:#ff8f8f;"></i></button>
               <button class="icon-btn clickable" type="button" data-action="ppr-edit" aria-label="Edit PPR"><i class="fa-solid fa-pen"></i></button>
             </span>
           </div>
@@ -1136,7 +1084,6 @@
       const drawerBody = document.getElementById('drawerBody');
       const pageTitle = document.querySelector('.page-title');
       const workflowSteps = [...document.querySelectorAll('.workflow-step')];
-      const bottomItems = [...document.querySelectorAll('.bottom-item')];
       const warningCopies = [...document.querySelectorAll('[data-warning-copy]')];
       const metricButtons = [...document.querySelectorAll('[data-metric]')];
       const rangeButtons = [...document.querySelectorAll('[data-range]')];
@@ -1268,7 +1215,6 @@
       document.addEventListener('click', (event) => {
         const actionButton = event.target.closest('[data-action]');
         const workflowButton = event.target.closest('[data-workflow]');
-        const navButton = event.target.closest('[data-nav]');
         const shortcutButton = event.target.closest('[data-shortcut]');
         const signalButton = event.target.closest('[data-signal]');
         const warningButton = event.target.closest('[data-warning]');
@@ -1281,20 +1227,6 @@
           if (action === 'clear-status') {
             setStatus('Status cleared', 'The response dock remains visible so the prompt can expect on-screen feedback.');
           }
-          if (action === 'toggle-drawer') {
-            if (drawer.classList.contains('open')) {
-              closeDrawer();
-              setStatus('Drawer closed', 'Station actions drawer has been hidden.');
-            } else {
-              openDrawer('Station Actions', [
-                'Ward filter: Chirurgie Ward 3A',
-                'Current patient: 1.Cage, 1.Johny',
-                'Reference intent: every visible control must create a UI response'
-              ]);
-              setStatus('Drawer opened', 'Station actions are now visible in the side drawer.');
-            }
-          }
-          if (action === 'refresh-station') setStatus('Station refreshed', 'The reference stays static, but this button still provides a visible application response.');
           if (action === 'toggle-group') {
             document.querySelectorAll('.sidebar-group').forEach((group) => group.classList.remove('active'));
             const target = actionButton.closest('.sidebar-group');
@@ -1313,7 +1245,6 @@
           if (action === 'assign-user') setStatus('Assignment opened', 'Assign user action is visibly acknowledged.');
           if (action === 'doctor-view') openDrawer('Doctor View', ['Primary contact: Dr. Muster', 'Last review: today', 'Visible action confirms the icon is wired']);
           if (action === 'swap-patient') setStatus('Patient card cycled', 'Reference swaps state messaging instead of leaving the rotate icon decorative.');
-          if (action === 'ppr-alert') openDrawer('PPR Alerts', ['No active PPR 2.0 E document', 'Alert action must still open a polished empty state']);
           if (action === 'ppr-edit') setStatus('PPR edit opened', 'Edit affordance is now wired to a visible response.');
           if (action === 'signal-help') openDrawer('Signal Help', ['Signals 1-10 map to station warnings.', 'Active signals can reveal or filter warning copy.']);
           if (action === 'graph-edit') setStatus('Graph controls ready', 'Metric and timeframe chips above the chart are the graph interaction pattern to reuse.');
@@ -1325,13 +1256,6 @@
           workflowButton.closest('.workflow-step').classList.add('active');
           pageTitle.textContent = workflowButton.dataset.workflow;
           setStatus('Workflow changed', 'Active workflow step is now ' + workflowButton.dataset.workflow + '.');
-        }
-
-        if (navButton) {
-          bottomItems.forEach((item) => item.classList.remove('active'));
-          navButton.classList.add('active');
-          pageTitle.textContent = navButton.dataset.nav;
-          setStatus('Bottom navigation changed', navButton.dataset.nav + ' is now the active section.');
         }
 
         if (shortcutButton) {
