@@ -7,7 +7,7 @@ Given a nurse's voice transcript, extract any of the following:
 - Observations: patient feeling, orientation
 
 Respond with this exact JSON structure and nothing else:
-{"vitals": [], "medications": [], "interventions": [], "observations": []....}
+{"vitals": [], "medications": [], "interventions": [], "observations": [], "progress_reports":[]....}
 
 Example output:
 {"vitals": [{"label": "Blood Pressure", "value": "120/80", "unit": "mmHg"}], "medications": [{"name": "Paracetamol", "dose": "500mg", "status": "given"}], "interventions": [], "observations": [{"label": "Patient Feeling", "value": "confused, disoriented"}] " and the rest"...}

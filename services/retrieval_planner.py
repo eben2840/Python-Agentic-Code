@@ -61,7 +61,7 @@ def _planner_system(patient_id: str, supported_resources: list[str]) -> str:
 
 
 def _parse_plan(raw: str) -> RetrievalPlan:
-    payload = json.loads(_strip_code_fence(raw))
+    payload = _parse_json_payload(raw)
     queries = [_parse_query(query) for query in payload.get('queries', [])]
     if not queries:
         raise ValueError("Retrieval planner returned no queries")
@@ -85,6 +85,22 @@ def _strip_code_fence(raw: str) -> str:
         return text
     text = text.split("```", 2)[1]
     return text[4:].strip() if text.startswith("json") else text.strip()
+
+
+def _parse_json_payload(raw: str) -> dict:
+    text = _strip_code_fence(raw)
+    if text:
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError:
+            pass
+
+    start = min([idx for idx in (text.find('{'), text.find('[')) if idx != -1], default=-1)
+    if start == -1:
+        raise ValueError("Retrieval planner did not return JSON content")
+
+    payload, _ = json.JSONDecoder().raw_decode(text[start:])
+    return payload
 
 
 def _validate_resources(plan: RetrievalPlan, supported_resources: list[str]):

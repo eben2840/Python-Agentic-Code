@@ -69,13 +69,29 @@ def _execute_all_patient_retrieval(plan, fhir_base_url: str, access_token: str) 
 
 def _group_patients(client: DirectFHIRClient, sections: dict) -> list[dict]:
     grouped = {}
+    for resource in sections.get('patient', {}).get('resources', []):
+        patient_id = resource.get('id')
+        if not patient_id:
+            continue
+        patient = grouped.setdefault(patient_id, _patient_stub(patient_id))
+        _merge_patient_details(patient, client._patient_info(resource), resource)
+
     for resource_type, section in sections.items():
+        if resource_type == 'patient':
+            continue
         for resource in section.get('resources', []):
             patient_id = client._patient_ref(resource)
             if not patient_id:
                 continue
             patient = grouped.setdefault(patient_id, _patient_stub(patient_id))
             patient['data'].setdefault(resource_type, []).append(client._flatten(resource))
+
+    for patient_id, patient in grouped.items():
+        if patient.get('resource'):
+            continue
+        resource = client.read(f'Patient/{patient_id}')
+        if resource and resource.get('resourceType') == 'Patient':
+            _merge_patient_details(patient, client._patient_info(resource), resource)
     return list(grouped.values())
 
 
@@ -85,5 +101,20 @@ def _patient_stub(patient_id: str) -> dict:
         'name': f"Patient {patient_id}",
         'gender': None,
         'birthDate': None,
+        'telecom': None,
+        'address': None,
+        'resource': None,
         'data': {},
     }
+
+
+def _merge_patient_details(patient: dict, info: dict, resource: dict) -> None:
+    patient.update({
+        'id': info.get('id') or patient['id'],
+        'name': info.get('name') or patient['name'],
+        'gender': info.get('gender'),
+        'birthDate': info.get('birthDate'),
+        'telecom': info.get('telecom'),
+        'address': info.get('address'),
+        'resource': resource,
+    })
