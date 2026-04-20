@@ -74,7 +74,6 @@ def extract_transcript():
     print("extract response payload:", payload)
     return jsonify(payload)
 
-    # return jsonify({'status': 'ok', 'extracted': extracted, 'empty': not any(extracted.values()), 'transcript': transcript})
 
 
 

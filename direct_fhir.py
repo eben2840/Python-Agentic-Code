@@ -4,7 +4,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 FHIR_DEFINITION_TYPES = {
-    'Patient', 'SearchParameter', 'OperationDefinition', 'StructureDefinition',
+    'SearchParameter', 'OperationDefinition', 'StructureDefinition',
     'ValueSet', 'CodeSystem', 'ConceptMap', 'NamingSystem',
     'CapabilityStatement', 'CompartmentDefinition', 'ImplementationGuide',
 }
@@ -59,7 +59,7 @@ class DirectFHIRClient:
         for rest in self._get('metadata').get('rest', []):
             for resource in rest.get('resource', []):
                 rtype = resource.get('type', '')
-                if not rtype or rtype == 'Patient':
+                if not rtype:
                     continue
                 search_params = [sp.get('name') for sp in resource.get('searchParam', [])]
                 if 'patient' in search_params:
@@ -85,7 +85,7 @@ class DirectFHIRClient:
         return self._server_resource_types()
 
     def _fetch(self, rtype, param, extra=None):
-        params = {param: self.patient_id, '_count': 100}
+        params = {param: self.patient_id, '_count': 50}
         if extra:
             params.update(extra)
         return self._bundle(self._get(rtype, params=params))
