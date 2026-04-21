@@ -52,7 +52,6 @@
 
     .icon-btn,
     .text-btn,
-    .workflow-btn,
     .signal-dot,
     .signal-square {
       border: none;
@@ -82,9 +81,7 @@
     .signal-dot:hover,
     .signal-dot:focus-visible,
     .signal-square:hover,
-    .signal-square:focus-visible,
-    .workflow-btn:hover,
-    .workflow-btn:focus-visible {
+    .signal-square:focus-visible {
       outline: none;
       background: rgba(255,255,255,0.12);
     }
@@ -121,42 +118,6 @@
       font-size: 0.97rem;
       font-weight: 700;
       color: #214957;
-    }
-
-    .workflow {
-      padding: 0 22px 10px;
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .workflow-step {
-      position: relative;
-      background: #7eafc1;
-      color: #eaf5f8;
-      min-height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.88rem;
-      padding: 0 18px;
-      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 50%, calc(100% - 16px) 100%, 0 100%, 12px 50%);
-    }
-
-    .workflow-btn {
-      width: 100%;
-      min-height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: inherit;
-      cursor: pointer;
-    }
-
-    .workflow-step.active {
-      background: #5f9db3;
-      color: #fff;
     }
 
     .content-grid {
@@ -206,98 +167,153 @@
       font-size: 0.87rem;
     }
 
-    .info-card-top {
-      background: #6f97b5;
-      color: #fff;
+    .focus-panel .panel-body {
+      padding: 14px;
+      min-height: 520px;
+      display: grid;
+      gap: 12px;
+      background: linear-gradient(180deg, #f8fbfc 0%, #f1f6f8 100%);
+    }
+
+    .focus-hero {
+      border: 1px solid #d7e0e5;
+      background: #ffffff;
+      box-shadow: var(--shadow-sm);
       padding: 14px;
       display: grid;
-      grid-template-columns: 54px 1fr auto;
-      gap: 12px;
-      align-items: start;
+      gap: 8px;
     }
 
-    .avatar-circle {
-      width: 48px;
-      height: 48px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.25);
-      position: relative;
+    .focus-kicker {
+      font-size: 0.72rem;
+      color: #6b8089;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
-    .avatar-circle::before,
-    .avatar-circle::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255,255,255,0.45);
-    }
-
-    .avatar-circle::before {
-      top: 8px;
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-    }
-
-    .avatar-circle::after {
-      bottom: 8px;
-      width: 30px;
-      height: 18px;
-      border-radius: 999px / 12px;
-    }
-
-    .patient-heading {
-      font-size: 0.95rem;
+    .focus-title {
+      font-size: 1.08rem;
       font-weight: 700;
-      margin-bottom: 2px;
+      color: #17333d;
     }
 
-    .patient-line {
-      font-size: 0.8rem;
+    .focus-copy {
+      font-size: 0.81rem;
+      color: #546a74;
+      line-height: 1.4;
+    }
+
+    .focus-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .focus-chip {
+      border: 1px solid #c8d9e0;
+      background: #edf5f8;
+      color: #255365;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 2px;
+    }
+
+    .focus-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .focus-mini-card {
+      border: 1px solid #d7e0e5;
+      background: #ffffff;
+      box-shadow: var(--shadow-sm);
+      padding: 12px;
+      min-height: 88px;
+    }
+
+    .focus-mini-label {
+      font-size: 0.72rem;
+      color: #6b8089;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .focus-mini-value {
+      font-size: 1.28rem;
+      font-weight: 700;
+      color: #17333d;
+      line-height: 1.1;
       margin-bottom: 4px;
     }
 
-    .swap-icon {
-      font-size: 1.35rem;
-      opacity: 0.95;
+    .focus-mini-copy {
+      font-size: 0.76rem;
+      color: #617781;
+      line-height: 1.35;
     }
 
-    .swap-icon .icon-btn {
-      width: 34px;
-      height: 34px;
-      color: #fff;
-    }
-
-    .info-band {
-      background: #7ea5bf;
-      color: #fff;
+    .focus-list {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0;
-      padding: 10px 14px;
-      font-size: 0.83rem;
-      font-weight: 600;
+      gap: 8px;
     }
 
-    .info-details {
-      padding: 14px;
+    .focus-row {
+      border: 1px solid #d7e0e5;
+      background: #ffffff;
+      box-shadow: var(--shadow-sm);
+      padding: 10px 12px;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      row-gap: 10px;
-      column-gap: 16px;
-      min-height: 280px;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
     }
 
-    .label-col {
-      color: #2f667a;
-      font-size: 0.82rem;
+    .focus-row-index {
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #dbeaf0;
+      color: #215063;
+      font-size: 0.74rem;
+      font-weight: 700;
+      border-radius: 2px;
     }
 
-    .value-col {
-      color: #111;
-      font-size: 0.82rem;
-      text-align: right;
+    .focus-row-title {
+      font-size: 0.81rem;
+      font-weight: 700;
+      color: #17333d;
+      margin-bottom: 2px;
+    }
+
+    .focus-row-copy {
+      font-size: 0.75rem;
+      color: #627882;
+      line-height: 1.3;
+    }
+
+    .focus-row-time {
+      font-size: 0.74rem;
+      color: #315869;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .focus-action {
+      border: 1px solid #7ea5bf;
+      background: #dbeaf0;
+      color: #204d60;
+      padding: 8px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 2px;
+      cursor: pointer;
+      text-align: left;
     }
 
     .risk-overview {
@@ -462,7 +478,7 @@
 
     .signal-panel .panel-body,
     .doc-panel .panel-body,
-    .discharge-panel .panel-body {
+    .pathway-panel .panel-body {
       padding: 14px;
       min-height: 110px;
     }
@@ -658,15 +674,105 @@
       font-size: 0.82rem;
     }
 
-    .discharge-box {
-      border: 1px solid #222;
-      min-height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      color: #111;
-      background: #fff;
+    .pathway-panel .panel-body {
+      display: grid;
+      gap: 10px;
+      background: linear-gradient(180deg, #f8fbfc 0%, #f3f7f9 100%);
+    }
+
+    .pathway-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .pathway-stat {
+      border: 1px solid #d7e0e5;
+      background: #ffffff;
+      box-shadow: var(--shadow-sm);
+      padding: 10px;
+      min-height: 58px;
+    }
+
+    .pathway-stat .k {
+      font-size: 0.72rem;
+      color: #6b8089;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .pathway-stat .v {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #17333d;
+    }
+
+    .pathway-diagram {
+      border: 1px solid #d7e0e5;
+      background: #ffffff;
+      box-shadow: var(--shadow-sm);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .pathway-node {
+      position: relative;
+      border: 1px solid #cfe0e7;
+      background: #f9fbfc;
+      padding: 10px 12px;
+      display: grid;
+      gap: 4px;
+    }
+
+    .pathway-node::after {
+      content: "";
+      position: absolute;
+      left: 18px;
+      bottom: -11px;
+      width: 1px;
+      height: 10px;
+      background: #9fb9c6;
+    }
+
+    .pathway-node:last-child::after {
+      display: none;
+    }
+
+    .pathway-node-title {
+      font-size: 0.81rem;
+      font-weight: 700;
+      color: #17333d;
+    }
+
+    .pathway-node-copy {
+      font-size: 0.75rem;
+      color: #627882;
+      line-height: 1.3;
+    }
+
+    .pathway-node-status {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .pathway-node-status.done { color: #4e8831; }
+    .pathway-node-status.active { color: #1f6985; }
+    .pathway-node-status.pending { color: #a67714; }
+
+    .pathway-action {
+      border: 1px solid #7ea5bf;
+      background: #dbeaf0;
+      color: #204d60;
+      padding: 8px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 2px;
+      cursor: pointer;
+      text-align: left;
     }
 
     @media (max-width: 1200px) {
@@ -675,22 +781,13 @@
         grid-template-columns: 1fr;
       }
 
-      .workflow {
-        grid-template-columns: 1fr 1fr;
-      }
-
     }
 
     @media (max-width: 768px) {
       .page-title,
-      .workflow,
       .content-grid {
         padding-left: 12px;
         padding-right: 12px;
-      }
-
-      .workflow {
-        grid-template-columns: 1fr;
       }
 
     }
@@ -701,46 +798,61 @@
     <main class="main">
       <div class="page-title">Übersicht</div>
 
-      <div class="workflow">
-        <div class="workflow-step active"><button class="workflow-btn clickable" type="button" data-workflow="Anamnese">Anamnese</button></div>
-        <div class="workflow-step"><button class="workflow-btn clickable" type="button" data-workflow="Assessment">Assessment</button></div>
-        <div class="workflow-step"><button class="workflow-btn clickable" type="button" data-workflow="Analyse">Analyse</button></div>
-        <div class="workflow-step"><button class="workflow-btn clickable" type="button" data-workflow="Planung">Planung</button></div>
-        <div class="workflow-step"><button class="workflow-btn clickable" type="button" data-workflow="Weiter">...</button></div>
-      </div>
-
       <div class="content-grid">
-        <section class="panel">
-          <div class="panel-header">Information</div>
+        <section class="panel focus-panel">
+          <div class="panel-header">
+            <span>Stationsfokus</span>
+          </div>
           <div class="panel-body">
-            <div class="info-card-top">
-              <div class="avatar-circle"></div>
-              <div>
-                <div class="patient-heading">1.Cage, 1.Johny</div>
-                <div class="patient-line">Männlich</div>
-                <div class="patient-line">*10.04.1996, 30 Jahre</div>
-                <div class="patient-line" style="margin-top:12px;">Patienten-Nr. pn-001</div>
-                <div class="patient-line">Fall Nr.: fn-001</div>
-                <div class="patient-line">Status: in arbeit</div>
-                <div class="patient-line" style="margin-top:14px;">Von: 05.04.2026 &nbsp;&nbsp; Bis: &nbsp;&nbsp; GE:</div>
+            <div class="focus-hero">
+              <div class="focus-kicker">Schichtstatus</div>
+              <div class="focus-title">3 Aufgaben mit hoher Prioritaet vor 14:00 Uhr</div>
+              <div class="focus-copy">Mobilisation, Atemtraining und Entlassabklaerung sind fuer die aktuelle Runde gebuendelt und sollten ohne Medienbruch abgearbeitet werden.</div>
+              <div class="focus-chip-row">
+                <span class="focus-chip">Zimmer 301</span>
+                <span class="focus-chip">Fruehschicht</span>
+                <span class="focus-chip">2 offene Rueckfragen</span>
               </div>
-              <div class="swap-icon"></div>
             </div>
-            <div class="info-band">
-              <div>Chirurgie Ward 3A</div>
-              <div>Room 301</div>
+            <div class="focus-grid">
+              <div class="focus-mini-card">
+                <div class="focus-mini-label">Naechster Schritt</div>
+                <div class="focus-mini-value">10:30</div>
+                <div class="focus-mini-copy">Assistierte Mobilisation mit Transferdokumentation.</div>
+              </div>
+              <div class="focus-mini-card">
+                <div class="focus-mini-label">Abstimmung</div>
+                <div class="focus-mini-value">2</div>
+                <div class="focus-mini-copy">Rueckfragen an Physio und Sozialdienst noch offen.</div>
+              </div>
             </div>
-            <div class="info-details">
-              <div class="label-col">Pflegeintensität</div><div class="value-col">-</div>
-              <div class="label-col">Pflegegrad</div><div class="value-col">-</div>
-              <div class="label-col">Fachbereich</div><div class="value-col">-</div>
-              <div class="label-col">Krankenversicherung</div><div class="value-col">?</div>
-              <div class="label-col">Nummer</div><div class="value-col">?</div>
-              <div class="label-col">Privat</div><div class="value-col">Nein</div>
-              <div class="label-col">Verweildauer</div><div class="value-col">11 Tag(e)</div>
-              <div class="label-col">Patient entlassen</div><div class="value-col">-</div>
-              <div class="label-col">Hauptdiagnose</div><div class="value-col">-</div>
+            <div class="focus-list">
+              <div class="focus-row">
+                <span class="focus-row-index">1</span>
+                <div>
+                  <div class="focus-row-title">Mobilisation absichern</div>
+                  <div class="focus-row-copy">Transferhilfe pruefen, Belastung dokumentieren, Rueckmeldung an Therapie.</div>
+                </div>
+                <div class="focus-row-time">10:30</div>
+              </div>
+              <div class="focus-row">
+                <span class="focus-row-index">2</span>
+                <div>
+                  <div class="focus-row-title">Atemtraining nachfassen</div>
+                  <div class="focus-row-copy">Durchfuehrung bestaetigen und Husteneffekt in der Verlaufsnotiz sichern.</div>
+                </div>
+                <div class="focus-row-time">11:15</div>
+              </div>
+              <div class="focus-row">
+                <span class="focus-row-index">3</span>
+                <div>
+                  <div class="focus-row-title">Entlasspfad vorbereiten</div>
+                  <div class="focus-row-copy">Hilfsmittelbedarf abgleichen und Kontaktfenster mit dem Sozialdienst festlegen.</div>
+                </div>
+                <div class="focus-row-time">13:00</div>
+              </div>
             </div>
+            <button class="focus-action clickable" type="button" data-action="open-focus-summary">Priorisierte Schichtuebersicht oeffnen</button>
           </div>
         </section>
 
@@ -864,14 +976,36 @@
             </div>
           </section>
 
-          <section class="panel discharge-panel">
+          <section class="panel pathway-panel">
             <div class="panel-header">
-              <span>Entlassmanagement</span>
+              <span>Pfad-Diagramm</span>
               <span class="panel-header-actions">
               </span>
             </div>
             <div class="panel-body">
-              <div class="discharge-box">Kein aktiver Entlassplan</div>
+              <div class="pathway-meta">
+                <div class="pathway-stat"><div class="k">Status</div><div class="v">in Arbeit</div></div>
+                <div class="pathway-stat"><div class="k">Offene Schritte</div><div class="v">2</div></div>
+                <div class="pathway-stat"><div class="k">Naechster Check</div><div class="v">13:00</div></div>
+              </div>
+              <div class="pathway-diagram">
+                <div class="pathway-node">
+                  <div class="pathway-node-title">Assessment abgeschlossen</div>
+                  <div class="pathway-node-copy">Pflege- und Mobilisationslage wurde validiert und freigegeben.</div>
+                  <div class="pathway-node-status done">erledigt</div>
+                </div>
+                <div class="pathway-node">
+                  <div class="pathway-node-title">Hilfsmittelabklaerung</div>
+                  <div class="pathway-node-copy">Physio-Rueckmeldung liegt vor, Bedarf wird mit Station abgestimmt.</div>
+                  <div class="pathway-node-status active">aktiv</div>
+                </div>
+                <div class="pathway-node">
+                  <div class="pathway-node-title">Transport und Uebergabe</div>
+                  <div class="pathway-node-copy">Terminfenster offen, externe Rueckmeldung bis 13:00 erwartet.</div>
+                  <div class="pathway-node-status pending">wartet</div>
+                </div>
+              </div>
+              <button class="pathway-action clickable" type="button" data-action="open-pathway-diagram">Diagramm im Detailbereich oeffnen</button>
             </div>
           </section>
         </div>
@@ -902,7 +1036,6 @@
       const drawerTitle = document.getElementById('drawerTitle');
       const drawerBody = document.getElementById('drawerBody');
       const pageTitle = document.querySelector('.page-title');
-      const workflowSteps = [...document.querySelectorAll('.workflow-step')];
       const warningCopies = [...document.querySelectorAll('[data-warning-copy]')];
       const metricButtons = [...document.querySelectorAll('[data-metric]')];
       const rangeButtons = [...document.querySelectorAll('[data-range]')];
@@ -1096,7 +1229,6 @@
 
       document.addEventListener('click', (event) => {
         const actionButton = event.target.closest('[data-action]');
-        const workflowButton = event.target.closest('[data-workflow]');
         const signalButton = event.target.closest('[data-signal]');
         const warningButton = event.target.closest('[data-warning]');
         const metricButton = event.target.closest('[data-metric]');
@@ -1108,17 +1240,26 @@
           if (action === 'clear-status') {
             setStatus('Status cleared', 'The response dock remains visible so the prompt can expect on-screen feedback.');
           }
+          if (action === 'open-focus-summary') {
+            openDrawer('Priorisierte Schichtuebersicht', [
+              '10:30 Mobilisation mit Transferkontrolle',
+              '11:15 Atemtraining dokumentieren',
+              '13:00 Entlasspfad mit Sozialdienst abstimmen'
+            ]);
+            setStatus('Schichtfokus geoeffnet', 'Die priorisierte Schichtuebersicht wurde im Detailbereich angezeigt.');
+          }
+          if (action === 'open-pathway-diagram') {
+            openDrawer('Pfad-Diagramm', [
+              'Assessment abgeschlossen',
+              'Hilfsmittelabklaerung aktiv',
+              'Transport und Uebergabe wartet auf Rueckmeldung'
+            ]);
+            setStatus('Diagramm geoeffnet', 'Das Pfad-Diagramm wurde als Detailansicht eingeblendet.');
+          }
           if (action === 'toggle-grid') {
             const compact = document.querySelector('.content-grid').classList.toggle('compact-grid');
             setStatus('Grid view changed', compact ? 'Main modules switched to a denser 2-column layout.' : 'Main modules returned to the default 3-column layout.');
           }
-        }
-
-        if (workflowButton) {
-          workflowSteps.forEach((step) => step.classList.remove('active'));
-          workflowButton.closest('.workflow-step').classList.add('active');
-          pageTitle.textContent = workflowButton.dataset.workflow;
-          setStatus('Workflow changed', 'Active workflow step is now ' + workflowButton.dataset.workflow + '.');
         }
 
         if (signalButton) {

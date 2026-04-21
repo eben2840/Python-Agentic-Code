@@ -47,7 +47,7 @@ $data_context
 
 # Design System
 
-Follow the reference design in `prompts/_design_reference.html` **exactly**. The target is not a modern wellness dashboard. It is a dense hospital station interface modeled on the provided screenshot: teal system chrome, compact patient metadata, rigid white modules, administrative labels, chevron workflow steps, and a persistent left rail. Match that structure closely.
+Follow the reference design in `prompts/_design_reference.html` **exactly**. The target is not a modern wellness dashboard. It is a dense hospital station interface modeled on the provided screenshot: teal system chrome, rigid white modules, and administrative labels. Match that structure closely.
 
 ## CSS Tokens (copy these verbatim into styles.css)
 ```css
@@ -101,30 +101,20 @@ Follow the reference design in `prompts/_design_reference.html` **exactly**. The
 
 ## Global Layout
 Use this exact application pattern:
-- Top of content: small page title plus chevron workflow steps when needed
+- Top of content: small page title
 - Center area: 2-3 column grid of rigid white panels
 
 The screen should feel like one cohesive hospital application, not a collection of floating cards.
-
-## Workflow Bar
-Only render a chevron-style workflow bar if the app truly has multiple main views or sections to switch between.
-- Do not show the default labels `Anamnese`, `Assessment`, `Analyse`, `Planung` unless the generated app actually contains those corresponding sections
-- If the app has only one main view, omit the workflow bar entirely
-- If the app has multiple views, show only the relevant steps for those views
-- Every workflow step must work:
-  - clicking it must switch the visible section or content area
-  - active state must update visibly
-- Keep the chevrons flat and administrative, not playful
 
 ## Main Content Modules
 Use rigid white modules with teal panel titles and minimal border radius.
 
 Preferred modules, depending on request:
-- Information
+- Stationsfokus / Shift Focus / Clinical Summary
 - Risikoübersicht / Risk Overview
 - Signalreiter / Alerts / Task markers
 - Documents / Notes / Forms
-- Discharge Management
+- Pathway Diagram / Care Flow
 - Ward summaries
 - Medication or observation modules
 
@@ -134,13 +124,13 @@ Each module should:
 - avoid large decorative hero sections
 - avoid lifestyle widgets unless the prompt explicitly needs them
 
-## Information Panel
-The information module should resemble the screenshot:
-- patient mini profile block at the top with muted blue background
-- small avatar or silhouette area
-- multiple short metadata lines
-- one secondary band for ward/room
-- below that, compact label/value rows
+## Summary Card
+Use a compact clinical summary card as the lead module when the app benefits from a strong first panel.
+- lead with one clear operational headline
+- include 2-3 compact metrics or counters
+- show a short prioritized task list, next steps, or shift-focus items
+- include at least one meaningful interaction such as opening a detail drawer or expanding the summary
+- keep it administrative and actionable, not promotional
 
 ## Risk Panel
 Use a sparse risk-overview module with:
@@ -155,6 +145,7 @@ This panel can be diagrammatic, but it must still feel like internal hospital so
 - timeframe chips
 - compact KPI stats above the chart
 - a simple rigid Chart.js line graph inside a bordered white module
+- diagram variants can use step nodes, pathway blocks, or care-flow stages instead of a chart when that fits the task better
 
 When the generated app needs a graph, prefer reusing that exact interaction pattern and visual treatment from `prompts/_design_reference.html` instead of inventing a new chart style.
 - If you show chart controls, they must visibly update the chart and/or the KPI stats
@@ -163,6 +154,7 @@ When the generated app needs a graph, prefer reusing that exact interaction patt
   - observation trend line
   - risk trend line
   - ward load trend line
+  - pathway or care-flow diagram
 - If the request does not need a chart, omit it entirely rather than adding a decorative graph
 
 ## Interaction Fidelity
@@ -197,7 +189,7 @@ Use Chart.js only when the request genuinely benefits from it. Charts should sit
 
 
 ## Layout
-- Desktop: page title/workflow + 2-3 column module grid
+- Desktop: page title + 2-3 column module grid
 - Tablet/mobile: stack the modules cleanly while preserving the same visual language
 - Avoid floating dashboard cards with large outer margins. The UI should feel edge-aligned and application-like.
 
