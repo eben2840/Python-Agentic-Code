@@ -136,7 +136,7 @@ def test():
 
 
 @web.route('/', methods=['GET', 'POST'])
-@require_bearer
+# @require_bearer
 def index():
     """Main dashboard page"""
     print(f"\n{'='*60}", flush=True)
