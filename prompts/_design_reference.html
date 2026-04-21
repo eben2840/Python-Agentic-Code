@@ -18,8 +18,6 @@
       --teal:          #0e7897;
       --teal-dark:     #0a647f;
       --teal-soft:     #6fa8bd;
-      --sidebar-teal:  #0f7696;
-      --sidebar-dark:  #0b6580;
       --text:          #17333d;
       --muted:         #6a7f88;
       --subtle:        #95a6ad;
@@ -27,8 +25,6 @@
       --shadow-sm:     0 1px 2px rgba(0, 0, 0, 0.08);
       --radius:        2px;
       --font:          'IBM Plex Sans', sans-serif;
-      --sidebar-w:     380px;
-      --topbar-h:      58px;
     }
 
     * { box-sizing: border-box; }
@@ -57,10 +53,8 @@
     .icon-btn,
     .text-btn,
     .workflow-btn,
-    .shortcut-box,
     .signal-dot,
-    .signal-square,
-    .room-trigger {
+    .signal-square {
       border: none;
       background: transparent;
       color: inherit;
@@ -69,37 +63,6 @@
 
     .station-app {
       min-height: 100vh;
-      display: grid;
-      grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
-      grid-template-rows: auto 1fr auto;
-      grid-template-areas:
-        "sidebar topbar"
-        "sidebar main";
-    }
-
-    .sidebar {
-      grid-area: sidebar;
-      background: var(--sidebar-teal);
-      color: #fff;
-      border-right: 1px solid rgba(0, 0, 0, 0.15);
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-
-    .sidebar-top {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      padding: 18px 24px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.25);
-      font-weight: 700;
-      font-size: 1rem;
-    }
-
-    .sidebar-top .station-title {
-      font-size: 1rem;
-      font-weight: 700;
     }
 
     .icon-btn {
@@ -116,129 +79,14 @@
     .icon-btn:focus-visible,
     .text-btn:hover,
     .text-btn:focus-visible,
-    .shortcut-box:hover,
-    .shortcut-box:focus-visible,
     .signal-dot:hover,
     .signal-dot:focus-visible,
     .signal-square:hover,
     .signal-square:focus-visible,
     .workflow-btn:hover,
-    .workflow-btn:focus-visible,
-    .room-trigger:hover,
-    .room-trigger:focus-visible {
+    .workflow-btn:focus-visible {
       outline: none;
       background: rgba(255,255,255,0.12);
-    }
-
-    .sidebar-group {
-      border-bottom: 1px solid rgba(255,255,255,0.25);
-      padding: 10px 12px;
-      font-size: 0.96rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      font-weight: 500;
-    }
-
-    .sidebar-group.active {
-      background: rgba(0,0,0,0.08);
-    }
-
-    .sidebar-group .label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .sidebar-search {
-      border-bottom: 1px solid rgba(255,255,255,0.25);
-      padding: 10px 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: rgba(255,255,255,0.9);
-    }
-
-    .sidebar-search input {
-      flex: 1;
-      border: none;
-      background: transparent;
-      color: #fff;
-      font: inherit;
-      outline: none;
-    }
-
-    .sidebar-search input::placeholder {
-      color: rgba(255,255,255,0.78);
-    }
-
-    .room-card {
-      background: #dfe5ea;
-      color: #1d2d35;
-      border-top: 1px solid rgba(0,0,0,0.12);
-      border-bottom: 1px solid rgba(0,0,0,0.12);
-    }
-
-    .room-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 11px 12px;
-      font-weight: 700;
-      background: #cfd6dc;
-      border-bottom: 1px solid rgba(0,0,0,0.08);
-    }
-
-    .room-trigger {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: inherit;
-    }
-
-    .patient-card {
-      padding: 12px;
-      background: #eef2f5;
-    }
-
-    .patient-card .name-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-
-    .patient-card .patient-name {
-      font-size: 0.95rem;
-      font-weight: 500;
-    }
-
-    .patient-card .badge-red {
-      background: #ff1f1f;
-      color: #fff;
-      font-size: 0.64rem;
-      font-weight: 700;
-      padding: 2px 5px;
-      border-radius: 1px;
-    }
-
-    .patient-card .meta {
-      color: #2d4854;
-      font-size: 0.82rem;
-      margin-bottom: 8px;
-    }
-
-    .signal-list {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
     }
 
     .signal-dot {
@@ -262,68 +110,7 @@
       font-weight: 700;
     }
 
-    .topbar {
-      grid-area: topbar;
-      background: var(--teal);
-      color: #fff;
-      min-height: var(--topbar-h);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 10px 22px;
-      border-bottom: 1px solid rgba(0,0,0,0.14);
-    }
-
-    .patient-strip {
-      display: flex;
-      align-items: center;
-      gap: 26px;
-      min-width: 0;
-      flex-wrap: wrap;
-    }
-
-    .patient-strip .primary {
-      font-size: 0.98rem;
-      font-weight: 600;
-    }
-
-    .patient-strip .meta-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      font-size: 0.95rem;
-      white-space: nowrap;
-    }
-
-    .shortcut-set {
-      display: flex;
-      gap: 8px;
-    }
-
-    .shortcut-box {
-      width: 30px;
-      height: 30px;
-      border: 2px solid rgba(255,255,255,0.88);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      border-radius: 2px;
-      cursor: pointer;
-    }
-
     .main {
-      grid-area: main;
       display: flex;
       flex-direction: column;
       min-width: 0;
@@ -883,18 +670,6 @@
     }
 
     @media (max-width: 1200px) {
-      .station-app {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-          "topbar"
-          "sidebar"
-          "main";
-      }
-
-      .sidebar {
-        min-height: auto;
-      }
-
       .content-grid,
       .module-grid {
         grid-template-columns: 1fr;
@@ -907,22 +682,11 @@
     }
 
     @media (max-width: 768px) {
-      .topbar,
       .page-title,
       .workflow,
       .content-grid {
         padding-left: 12px;
         padding-right: 12px;
-      }
-
-      .patient-strip,
-      .topbar-right {
-        gap: 10px;
-      }
-
-      .topbar {
-        align-items: flex-start;
-        flex-direction: column;
       }
 
       .workflow {
@@ -934,60 +698,6 @@
 </head>
 <body>
   <div class="station-app">
-   <aside class="sidebar">
-      <div class="sidebar-top">
-        <div class="station-title">Station</div>
-      </div>
-      <div class="sidebar-group active" data-filter-group="ward">
-        <div class="label"><i class="fa-solid fa-house-medical"></i> Chirurgie Ward 3A</div>
-      </div>
-      <div class="sidebar-group" data-filter-group="specialty">
-        <div class="label"><i class="fa-regular fa-folder-open"></i> Alle Fachbereiche</div>
-      </div>
-      <div class="sidebar-search">
-        <input type="text" placeholder="Suchen..." value="">
-      </div>
-      <div class="room-card">
-        <div class="room-header">
-          <button class="room-trigger clickable" type="button" data-action="select-room" aria-label="Select room 301">
-            <span>Room 301</span>
-            <span><i class="fa-solid fa-angle-right"></i></span>
-          </button>
-        </div>
-        <div class="patient-card">
-          <div class="name-row">
-            <div class="patient-name">1.Cage, 1.Johny</div>
-            <div class="badge-red">PPR</div>
-          </div>
-          <div class="meta">
-            <i class="fa-solid fa-venus-mars"></i>
-            Chirurgie Ward 3A, Room 301
-          </div>
-          <div class="signal-list">
-            <button class="signal-dot clickable" type="button" data-signal="1" aria-label="Open signal 1">1</button>
-            <button class="signal-dot clickable" type="button" data-signal="2" aria-label="Open signal 2">2</button>
-            <button class="signal-dot clickable" type="button" data-signal="3" aria-label="Open signal 3">3</button>
-            <button class="signal-dot alert clickable" type="button" data-signal="4" aria-label="Open signal 4">4</button>
-            <button class="signal-dot clickable" type="button" data-signal="5" aria-label="Open signal 5">5</button>
-            <button class="signal-dot clickable" type="button" data-signal="6" aria-label="Open signal 6">6</button>
-            <button class="signal-dot clickable" type="button" data-signal="7" aria-label="Open signal 7">7</button>
-            <button class="signal-dot clickable" type="button" data-signal="8" aria-label="Open signal 8">8</button>
-            <button class="signal-dot clickable" type="button" data-signal="9" aria-label="Open signal 9">9</button>
-            <button class="signal-dot alert clickable" type="button" data-signal="10" aria-label="Open signal 10">10</button>
-          </div>
-        </div>
-      </div>
-    </aside> 
-
-    <header class="topbar">
-      <div class="patient-strip">
-        <div class="primary">1.Cage, 1.Johny</div>
-        <div class="meta-item"><i class="fa-solid fa-venus-mars"></i> *10.04.1996, 30J.</div>
-        <div class="meta-item"><i class="fa-regular fa-clipboard"></i> Fall Nr.: fn-001</div>
-        <div class="meta-item">WVD: 11</div>
-      </div>
-    </header>
-
     <main class="main">
       <div class="page-title">Übersicht</div>
 
@@ -1168,14 +878,14 @@
       </div>
     </main>
   </div>
-  <aside class="drawer" id="detailDrawer" aria-hidden="true">
+  <div class="drawer" id="detailDrawer" aria-hidden="true">
     <div class="drawer-head">
       <span id="drawerTitle">Details</span>
     </div>
     <div class="drawer-body" id="drawerBody">
       <div class="drawer-card">Interaktive Details erscheinen hier.</div>
     </div>
-  </aside>
+  </div>
   <div class="status-dock" id="statusDock" role="status" aria-live="polite">
     <div class="status-dock-head">
       <span>UI Response</span>
@@ -1387,7 +1097,6 @@
       document.addEventListener('click', (event) => {
         const actionButton = event.target.closest('[data-action]');
         const workflowButton = event.target.closest('[data-workflow]');
-        const shortcutButton = event.target.closest('[data-shortcut]');
         const signalButton = event.target.closest('[data-signal]');
         const warningButton = event.target.closest('[data-warning]');
         const metricButton = event.target.closest('[data-metric]');
@@ -1399,21 +1108,10 @@
           if (action === 'clear-status') {
             setStatus('Status cleared', 'The response dock remains visible so the prompt can expect on-screen feedback.');
           }
-          if (action === 'toggle-group') {
-            document.querySelectorAll('.sidebar-group').forEach((group) => group.classList.remove('active'));
-            const target = actionButton.closest('.sidebar-group');
-            target.classList.add('active');
-            setStatus('Selector activated', 'Active sidebar selector changed to ' + actionButton.dataset.group + '.');
-          }
-          if (action === 'select-room') openDrawer('Room 301', ['1 active patient card', '2 active alert markers', 'Signals can be opened from the sidebar dots']);
-          if (action === 'home') setStatus('Home selected', 'The top utility bar responded and kept focus in the clinical shell.');
-          if (action === 'open-list') openDrawer('Patient List', ['Patient list would appear here.', 'Reference behavior: icon-only actions open a visible container.']);
           if (action === 'toggle-grid') {
             const compact = document.querySelector('.content-grid').classList.toggle('compact-grid');
             setStatus('Grid view changed', compact ? 'Main modules switched to a denser 2-column layout.' : 'Main modules returned to the default 3-column layout.');
           }
-          if (action === 'assign-user') setStatus('Assignment opened', 'Assign user action is visibly acknowledged.');
-          if (action === 'doctor-view') openDrawer('Doctor View', ['Primary contact: Dr. Muster', 'Last review: today', 'Visible action confirms the icon is wired']);
         }
 
         if (workflowButton) {
@@ -1423,16 +1121,12 @@
           setStatus('Workflow changed', 'Active workflow step is now ' + workflowButton.dataset.workflow + '.');
         }
 
-        if (shortcutButton) {
-          setStatus('Shortcut opened', 'Top shortcut "' + shortcutButton.textContent + '" is wired to a visible station response.');
-        }
-
         if (signalButton) {
           openDrawer('Signal ' + signalButton.dataset.signal, [
             'Signal marker selected from patient card',
             'Reference pattern: signal icons should open filtered detail or highlight related content'
           ]);
-          setStatus('Signal opened', 'Signal ' + signalButton.dataset.signal + ' opened from the sidebar.');
+          setStatus('Signal opened', 'Signal ' + signalButton.dataset.signal + ' opened in the detail drawer.');
         }
 
         if (warningButton) {

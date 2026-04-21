@@ -93,7 +93,7 @@ Follow the reference design in `prompts/_design_reference.html` **exactly**. The
 - The page must feel like a clinical workstation on desktop first, while still collapsing cleanly on tablet and mobile.
 - Cards/panels: `background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm);`
 - All text uses `font-family: var(--font)` (IBM Plex Sans)
-- **Teal** (`var(--navy)`) is the primary application chrome color and should dominate headers, navigation bars, active tabs, and panel headings.
+- **Teal** (`var(--navy)`) is the primary application chrome color and should dominate navigation bars, active tabs, and panel headings.
 - Use red sparingly for alerts, missing documents, or risk badges.
 - Prefer flat fills, hard dividers, compact spacing, and admin-style clarity over soft gradients or glassmorphism.
 - Keep typography compact and information-dense. This should feel operational, not consumer wellness.
@@ -101,29 +101,10 @@ Follow the reference design in `prompts/_design_reference.html` **exactly**. The
 
 ## Global Layout
 Use this exact application pattern:
-- Far left: fixed teal sidebar
-- Top of main area: teal patient metadata strip
-- Under top strip: small page title plus chevron workflow steps
+- Top of content: small page title plus chevron workflow steps when needed
 - Center area: 2-3 column grid of rigid white panels
 
 The screen should feel like one cohesive hospital application, not a collection of floating cards.
-
-
-Sidebar styling rules:
-- teal background throughout
-- white text
-- stronger separators between rows
-- no rounded “app shell” framing
-- patient cards can be light gray inside the teal rail, like the screenshot
-
-## Top Patient Strip
-Use a compact teal header bar with:
-- patient name
-- sex/age metadata
-- case number
-- stay/day metadata
-
-This bar should be dense and short in height, similar to hospital software chrome.
 
 ## Workflow Bar
 Only render a chevron-style workflow bar if the app truly has multiple main views or sections to switch between.
@@ -136,7 +117,7 @@ Only render a chevron-style workflow bar if the app truly has multiple main view
 - Keep the chevrons flat and administrative, not playful
 
 ## Main Content Modules
-Use rigid white modules with teal headers and minimal border radius.
+Use rigid white modules with teal panel titles and minimal border radius.
 
 Preferred modules, depending on request:
 - Information
@@ -148,7 +129,7 @@ Preferred modules, depending on request:
 - Medication or observation modules
 
 Each module should:
-- have a teal title bar
+- have a compact teal panel title treatment
 - use dense label/value rows or compact task-like structures
 - avoid large decorative hero sections
 - avoid lifestyle widgets unless the prompt explicitly needs them
@@ -207,23 +188,23 @@ Every visible UI control must work. No decorative or dead controls are allowed.
 - Prefer a small number of well-implemented interactions over many fake controls, but any control you do render must work properly
 
 ## Medication List
-Medication should appear as a clinical module rather than a lifestyle card. Use dense rows, short labels, clear status markers, and edit/view affordances in the panel header if appropriate.
+Medication should appear as a clinical module rather than a lifestyle card. Use dense rows, short labels, clear status markers, and compact module controls if appropriate.
 
 
 
 ## Charts
-Use Chart.js only when the request genuinely benefits from it. Charts should sit inside rigid white modules with teal headers and minimal decoration. Axes use IBM Plex Sans `10px`, `var(--text-muted)` color.
+Use Chart.js only when the request genuinely benefits from it. Charts should sit inside rigid white modules with teal panel titles and minimal decoration. Axes use IBM Plex Sans `10px`, `var(--text-muted)` color.
 
 
 ## Layout
-- Desktop:  top strip + workflow + 2-3 column module grid 
-- Tablet/mobile: stack the sidebar content above the main modules if needed, but preserve the same visual language
+- Desktop: page title/workflow + 2-3 column module grid
+- Tablet/mobile: stack the modules cleanly while preserving the same visual language
 - Avoid floating dashboard cards with large outer margins. The UI should feel edge-aligned and application-like.
 
 ## Surface Styling
 - Panels should feel like enterprise hospital software: flat, crisp, bordered, and compact.
 - Rounded corners should be minimal.
-- Use strong teal panel headers, compact section labels, and small but clear titles.
+- Use strong teal panel titles, compact section labels, and small but clear titles.
 
 ## Empty States
 Empty states should feel like hospital software too:
