@@ -25,6 +25,7 @@ def _load_prompt(filename: str, **kwargs) -> str:
 def _build_extraction_system() -> str:
     prompt_files = [
         "extraction/extraction_base.md",
+        "extraction/extraction_progress.md",
         "extraction/extraction_vitals.md",
         "extraction/extraction_medications.md",
         "extraction/extraction_interventions.md",
