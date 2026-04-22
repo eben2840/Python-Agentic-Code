@@ -54,17 +54,19 @@ def _session_data(fhir_base_url: str, access_token: str, patient_id: str) -> dic
 
 def _execute_all_patient_retrieval(plan, fhir_base_url: str, access_token: str) -> dict:
     client = DirectFHIRClient(_session_data(fhir_base_url, access_token, 'all'))
-    resources = [query.resource for query in plan.queries]
-    print(f"[RETRIEVAL-EXECUTOR] Fetching selected all-patient resources: {resources}", flush=True)
-    sections = {resource.lower(): client.entry(client.fetch_all_resource(resource)) for resource in resources}
+    encounters = client._bundle(client._get('Encounter', params={'status': 'in-progress', '_count': 50}))
+    active_ids = {e.get('subject', {}).get('reference', '').split('/')[-1] for e in encounters if e.get('subject', {}).get('reference')}
+    print(f"[RETRIEVAL-EXECUTOR] Active encounters: {len(encounters)}", flush=True)
+    sections = {'encounter': client.entry(encounters)}
+    for resource in [q.resource for q in plan.queries if q.resource != 'Patient']:
+        sections[resource.lower()] = client.entry(client.fetch_all_resource(resource))
     patients = _group_patients(client, sections)
-    payload = {
+    patients = [p for p in patients if p['id'] in active_ids]
+    print(f"[RETRIEVAL-EXECUTOR] Active patients: {len(patients)}", flush=True)
+    return {
         'patient': {'id': 'all', 'name': 'All Patients', 'count': len(patients)},
         'patients': patients,
-        **sections,
     }
-    print(f"[RETRIEVAL-EXECUTOR] All-patient data keys: {list(payload.keys())}", flush=True)
-    return payload
 
 
 def _group_patients(client: DirectFHIRClient, sections: dict) -> list[dict]:

@@ -49,6 +49,7 @@ def _handle_flutter_init():
             patient_id=patient_id,
             fhir_base_url=fhir_base_url,
             access_token=access_token,
+            refresh=True
         )
         patient_session = context.session
         patient_data = context.patient_data
