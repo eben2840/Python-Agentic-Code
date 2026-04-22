@@ -3,7 +3,9 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from direct_fhir import get_all_patients_data_direct, get_patient_data_direct
+from direct_fhir import get_patient_data_direct
+from services.retrieval_executor import execute_retrieval
+from services.retrieval_planner import RetrievalPlan, RetrievalQuery
 from models import db, PatientSession
 
 
@@ -29,7 +31,8 @@ def _latest_session(patient_id: str, fhir_base_url: str):
 def _fetch_patient_data(session_data: dict):
     patient_id = session_data['patient_id']
     if patient_id == 'all':
-        return get_all_patients_data_direct(session_data)
+        plan = RetrievalPlan(patient_scope='all', queries=[RetrievalQuery(resource='Patient')], rationale='Session init')
+        return execute_retrieval(plan, session_data['fhir_base_url'], session_data['auth_token'], 'all')
     return get_patient_data_direct(session_data)
 
 
