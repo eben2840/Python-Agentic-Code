@@ -136,8 +136,8 @@ def test():
     return "<h1>Test Page Works!</h1>"
 
 
-@web.route('/dashboard', methods=['GET', 'POST'])
-@require_bearer
+@web.route('/', methods=['GET', 'POST'])
+# @require_bearer
 def index():
     """Main dashboard page"""
     print(f"\n{'='*60}", flush=True)
@@ -151,7 +151,7 @@ def index():
     return _render_dashboard()
 
 
-@web.route('/')
+@web.route('/generate')
 # @require_bearer
 def generate():
     return render_template('generate.html')
