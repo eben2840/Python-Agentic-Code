@@ -1,271 +1,120 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SMART on FHIR Applications | careIT Vibe</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow-x: hidden;
-    }
-    .mini-apps-page {
-      min-height: 100vh;
-      width: 100%;
-      background: #ffffff;
-      padding: 2rem;
-    }
-    .page-header {
-      max-width: 1400px;
-      margin: 0 auto 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .page-title {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin: 0;
-    }
-    .btn {
-      padding: 0.625rem 1.25rem;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 0.875rem;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.2s;
-      border: none;
-      cursor: pointer;
-    }
-    .btn-secondary {
-      background: #f3f4f6;
-      color: #374151;
-    }
-    .btn-secondary:hover {
-      background: #e5e7eb;
-    }
-    .btn-primary {
-      background: #6366f1;
-      color: white;
-    }
-    .btn-primary:hover {
-      background: #4f46e5;
-    }
-    .btn-sm {
-      padding: 0.5rem 1rem;
-      font-size: 0.8125rem;
-    }
-    .mini-apps-grid {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 1.5rem;
-    }
-    .mini-app-card {
-      background: #ffffff;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid #e5e7eb;
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-    .mini-app-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    }
-    .mini-app-card-preview {
-      position: relative;
-      width: 100%;
-      height: 200px;
-      background: #f9fafb;
-      overflow: hidden;
-    }
-    .mini-app-card-preview iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      transform: scale(0.5);
-      transform-origin: top left;
-      width: 200%;
-      height: 200%;
-    }
-    .preview-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .mini-app-card:hover .preview-overlay {
-      opacity: 1;
-    }
-    .badge {
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-    .badge-accent {
-      background: rgba(255, 255, 255, 0.9);
-      color: #6366f1;
-    }
-    .mini-app-card-body {
-      padding: 1.5rem;
-    }
-    .mini-app-card-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin: 0 0 0.5rem 0;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .mini-app-card-desc {
-      color: #6b7280;
-      margin: 0 0 1rem 0;
-      font-size: 0.875rem;
-      line-height: 1.5;
-    }
-    .mini-app-card-meta {
-      display: flex;
-      gap: 1rem;
-      font-size: 0.875rem;
-      color: #9ca3af;
-    }
-    .mini-app-card-score {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      color: #f59e0b;
-    }
-    .mini-app-card-actions {
-      padding: 1rem 1.5rem;
-      border-top: 1px solid #e5e7eb;
-      display: flex;
-      gap: 0.5rem;
-    }
-    .empty-state {
-      max-width: 1400px;
-      margin: 4rem auto;
-      text-align: center;
-      padding: 4rem 2rem;
-    }
-    .empty-state-icon {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 1.5rem;
-      color: #9ca3af;
-    }
-    .empty-state-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin: 0 0 0.5rem;
-    }
-    .empty-state-description {
-      color: #6b7280;
-      margin: 0;
-    }
-  </style>
-</head>
-<body>
-  <div class="mini-apps-page">
-    <div class="page-header">
-      <h1 class="page-title">SMART on FHIR Applications</h1>
-      <a href="/" class="btn btn-secondary">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
-        Back to Dashboard
-      </a>
-    </div>
+{% extends 'base.html' %}
 
-    {% if tasks %}
-    <div class="mini-apps-grid">
-      {% for task in tasks %}
-      <div class="mini-app-card" onclick="window.location.href='/mini-apps/{{ task.id }}'">
-        <div class="mini-app-card-preview">
-          <iframe src="/mini-apps/{{ task.id }}/raw" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
-          <div class="preview-overlay">
-            <span class="badge badge-accent">Click to Preview</span>
-          </div>
-        </div>
-        <div class="mini-app-card-body">
-          <h3 class="mini-app-card-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
-            {{ task.title }}
-          </h3>
-          <p class="mini-app-card-desc">{{ task.description or 'No description' }}</p>
-          <div class="mini-app-card-meta">
-            {% if task.final_score is not none %}
-            <span class="mini-app-card-score">
-              <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-              </svg>
-              {{ task.final_score }}/10
-            </span>
-            {% endif %}
-            <span>{{ task.generated_files|length if task.generated_files else 0 }} files</span>
-            <span>{{ task.completed_at.strftime('%b %d, %Y') if task.completed_at else 'In progress' }}</span>
-          </div>
-        </div>
-        <div class="mini-app-card-actions">
-          <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); window.location.href='/mini-apps/{{ task.id }}'">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-            Preview
-          </button>
-          <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); window.open('/mini-apps/{{ task.id }}', '_blank')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-              <polyline points="15 3 21 3 21 9"/>
-              <line x1="10" y1="14" x2="21" y2="3"/>
-            </svg>
-            Open
-          </button>
+{% block title %}SMART on FHIR Applications | careIT Vibe{% endblock %}
+
+{% block extra_head %}
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow-x: hidden; }
+  .mini-apps-page { min-height: 100vh; width: 100%; background: #ffffff; padding: 2rem; }
+  .page-header { max-width: 1400px; margin: 0 auto 2rem; display: flex; justify-content: space-between; align-items: center; }
+  .page-title { font-size: 2rem; font-weight: 700; color: #1a1a1a; margin: 0; }
+  .btn { padding: 0.625rem 1.25rem; border-radius: 8px; text-decoration: none; font-size: 0.875rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s; border: none; cursor: pointer; }
+  .btn-secondary { background: #f3f4f6; color: #374151; }
+  .btn-secondary:hover { background: #e5e7eb; }
+  .btn-primary { background: #6366f1; color: white; }
+  .btn-primary:hover { background: #4f46e5; }
+  .btn-sm { padding: 0.5rem 1rem; font-size: 0.8125rem; }
+  .mini-apps-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
+  .mini-app-card { background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
+  .mini-app-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); }
+  .mini-app-card-preview { position: relative; width: 100%; height: 200px; background: #f9fafb; overflow: hidden; }
+  .mini-app-card-preview iframe { width: 100%; height: 100%; border: none; transform: scale(0.5); transform-origin: top left; width: 200%; height: 200%; }
+  .preview-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+  .mini-app-card:hover .preview-overlay { opacity: 1; }
+  .badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500; }
+  .badge-accent { background: rgba(255, 255, 255, 0.9); color: #6366f1; }
+  .mini-app-card-body { padding: 1.5rem; }
+  .mini-app-card-title { font-size: 1.25rem; font-weight: 600; color: #1a1a1a; margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.5rem; }
+  .mini-app-card-desc { color: #6b7280; margin: 0 0 1rem 0; font-size: 0.875rem; line-height: 1.5; }
+  .mini-app-card-meta { display: flex; gap: 1rem; font-size: 0.875rem; color: #9ca3af; }
+  .mini-app-card-score { display: flex; align-items: center; gap: 0.25rem; color: #f59e0b; }
+  .mini-app-card-actions { padding: 1rem 1.5rem; border-top: 1px solid #e5e7eb; display: flex; gap: 0.5rem; }
+  .empty-state { max-width: 1400px; margin: 4rem auto; text-align: center; padding: 4rem 2rem; }
+  .empty-state-icon { width: 80px; height: 80px; margin: 0 auto 1.5rem; color: #9ca3af; }
+  .empty-state-title { font-size: 1.5rem; font-weight: 600; color: #1a1a1a; margin: 0 0 0.5rem; }
+  .empty-state-description { color: #6b7280; margin: 0; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="mini-apps-page">
+  <div class="page-header">
+    <h1 class="page-title">SMART on FHIR Applications</h1>
+    <a href="/" class="btn btn-secondary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+      Back to Dashboard
+    </a>
+  </div>
+
+  {% if tasks %}
+  <div class="mini-apps-grid">
+    {% for task in tasks %}
+    <div class="mini-app-card" onclick="window.location.href='/mini-apps/{{ task.id }}'">
+      <div class="mini-app-card-preview">
+        <iframe src="/mini-apps/{{ task.id }}/raw" loading="lazy" sandbox="allow-scripts allow-same-origin"></iframe>
+        <div class="preview-overlay">
+          <span class="badge badge-accent">Click to Preview</span>
         </div>
       </div>
-      {% endfor %}
+      <div class="mini-app-card-body">
+        <h3 class="mini-app-card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          {{ task.title }}
+        </h3>
+        <p class="mini-app-card-desc">{{ task.description or 'No description' }}</p>
+        <div class="mini-app-card-meta">
+          {% if task.final_score is not none %}
+          <span class="mini-app-card-score">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            {{ task.final_score }}/10
+          </span>
+          {% endif %}
+          <span>{{ task.generated_files|length if task.generated_files else 0 }} files</span>
+          <span>{{ task.completed_at.strftime('%b %d, %Y') if task.completed_at else 'In progress' }}</span>
+        </div>
+      </div>
+      <div class="mini-app-card-actions">
+        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); window.location.href='/mini-apps/{{ task.id }}'">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          Preview
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation(); window.open('/mini-apps/{{ task.id }}', '_blank')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/>
+            <line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          Open
+        </button>
+      </div>
     </div>
-    {% else %}
-    <div class="empty-state">
-      <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <rect x="3" y="3" width="7" height="7" rx="1"/>
-        <rect x="14" y="3" width="7" height="7" rx="1"/>
-        <rect x="3" y="14" width="7" height="7" rx="1"/>
-        <rect x="14" y="14" width="7" height="7" rx="1"/>
-      </svg>
-      <h2 class="empty-state-title">No SMART on FHIR Apps Yet</h2>
-      <p class="empty-state-description">Completed tasks will appear here as SMART on FHIR applications. Create a task to get started!</p>
-      <a href="/" class="btn btn-primary" style="margin-top: 1.5rem;">
-        Create Your First Task
-      </a>
-    </div>
-    {% endif %}
+    {% endfor %}
   </div>
-</body>
-</html>
+  {% else %}
+  <div class="empty-state">
+    <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="3" y="3" width="7" height="7" rx="1"/>
+      <rect x="14" y="3" width="7" height="7" rx="1"/>
+      <rect x="3" y="14" width="7" height="7" rx="1"/>
+      <rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
+    <h2 class="empty-state-title">No SMART on FHIR Apps Yet</h2>
+    <p class="empty-state-description">Completed tasks will appear here as SMART on FHIR applications. Create a task to get started!</p>
+    <a href="/" class="btn btn-primary" style="margin-top: 1.5rem;">
+      Create Your First Task
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
