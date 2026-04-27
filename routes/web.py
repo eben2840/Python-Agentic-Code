@@ -137,7 +137,7 @@ def test():
 
 
 @web.route('/', methods=['GET', 'POST'])
-# @require_bearer
+@require_bearer
 def index():
     """Main dashboard page"""
     print(f"\n{'='*60}", flush=True)
@@ -152,19 +152,19 @@ def index():
 
 
 @web.route('/generate')
-# @require_bearer
+@require_bearer
 def generate():
     return render_template('generate.html')
 
 
 @web.route('/vibe-apps')
-# @require_bearer
+@require_bearer
 def vibe_apps():
     return render_template('vibe_apps.html')
 
 
 @web.route('/automation')
-# @require_bearer
+@require_bearer
 def automation():
     return render_template('automation.html')
 

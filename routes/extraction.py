@@ -110,3 +110,22 @@ def rename_skill_page():
     except ValueError:
         flash('Invalid filename', 'error')
         return _redirect()
+
+
+@extraction.get('/skills/delete/<name>')
+def delete_skill_page(name):
+    try:
+        path = _file_path(name)
+        manifest = _read_manifest()
+
+        if name not in manifest:
+            flash("Skill not found", "error")
+            return _redirect()
+    
+        path.unlink()
+        _write_manifest([f for f in manifest if f != name])
+
+        flash("Skill deleted", "success")
+    except ValueError:
+        flash('Invalid filename', 'error')
+    return _redirect()
