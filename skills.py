@@ -15,21 +15,17 @@ from llm_service import _PROMPTS_DIR, ClaudeLLMService
 
 logger = logging.getLogger(__name__)
 
-quick_generate = Blueprint('quick_generate', __name__, url_prefix='/api/quick')
+skills = Blueprint('skills', __name__, url_prefix='/api/skills')
 
 
 def _load_prompt(filename: str, **kwargs) -> str:
     raw = (_PROMPTS_DIR / filename).read_text(encoding="utf-8")
     return Template(raw).safe_substitute(**kwargs)
 
+
 def _build_extraction_system() -> str:
-    prompt_files = [
-        "extraction/extraction_base.md",
-        "extraction/extraction_vitals.md",
-        "extraction/extraction_medications.md",
-        "extraction/extraction_interventions.md",
-        "extraction/extraction_observations.md",
-    ]
+    manifest = json.loads((_PROMPTS_DIR / "extraction" / "index.json").read_text(encoding="utf-8"))
+    prompt_files = [f"extraction/{name}" for name in manifest.get("files", [])]
     return "\n\n".join(_load_prompt(filename).strip() for filename in prompt_files)
 
 
@@ -46,41 +42,41 @@ def _parse_json_response(raw: str):
 
 
 
-@quick_generate.route('/questionnaire/v1', methods=['POST'])
-@require_bearer_or_basic
-def extract_questionnaire():
-    data          = request.get_json()
-    transcript    = (data.get('transcript') or '').strip()
-    questionnaire = (data.get('questionnaire') or '').strip()
+# @skills.route('/questionnaire/v1', methods=['POST'])
+# @require_bearer_or_basic
+# def extract_questionnaire():
+#     data          = request.get_json()
+#     transcript    = (data.get('transcript') or '').strip()
+#     questionnaire = (data.get('questionnaire') or '').strip()
 
-    if not transcript:
-        return jsonify({'status': 'error', 'error': 'transcript is required'}), 400
-    if not questionnaire:
-        return jsonify({'status': 'error', 'error': 'questionnaire is required'}), 400
+#     if not transcript:
+#         return jsonify({'status': 'error', 'error': 'transcript is required'}), 400
+#     if not questionnaire:
+#         return jsonify({'status': 'error', 'error': 'questionnaire is required'}), 400
 
-    system = _load_prompt(
-        'extraction/extraction_questionnaire.md',
-        transcription=transcript,
-        itemsDescription=questionnaire,
-    )
+#     system = _load_prompt(
+#         'extraction/extraction_questionnaire.md',
+#         transcription=transcript,
+#         itemsDescription=questionnaire,
+#     )
   
-    llm      = ClaudeLLMService()
-    response = llm.client.messages.create(
-        model=llm.model,
-        max_tokens=1024,
-        system=system,
-        messages=[{"role": "user", "content": transcript}]
-    )
+#     llm      = ClaudeLLMService()
+#     response = llm.client.messages.create(
+#         model=llm.model,
+#         max_tokens=1024,
+#         system=system,
+#         messages=[{"role": "user", "content": transcript}]
+#     )
 
-    questionnaire = _parse_json_response(response.content[0].text)
+#     questionnaire = _parse_json_response(response.content[0].text)
     
-    return jsonify({'status': 'ok', 'questionnaire': questionnaire, 'transcript': transcript,'code': 200, 'message': 'Questionnaire extracted'})
+#     return jsonify({'status': 'ok', 'questionnaire': questionnaire, 'transcript': transcript,'code': 200, 'message': 'Questionnaire extracted'})
 
 
 # cristian extraction model for backend testing,
-@quick_generate.route('/v1/extract/', methods=['POST'])
+@skills.route('/v1/extract/', methods=['POST'])
 @require_bearer_or_basic
-def extract_transcript_careit_voice():
+def extract_transcript_skills():
     data       = request.get_json()
     transcript = (data.get('transcript') or '').strip()
 
@@ -114,6 +110,3 @@ def extract_transcript_careit_voice():
 
 
 # 
-
-
-

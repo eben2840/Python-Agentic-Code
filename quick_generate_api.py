@@ -22,15 +22,10 @@ def _load_prompt(filename: str, **kwargs) -> str:
     raw = (_PROMPTS_DIR / filename).read_text(encoding="utf-8")
     return Template(raw).safe_substitute(**kwargs)
 
+
 def _build_extraction_system() -> str:
-    prompt_files = [
-        "extraction/extraction_base.md",
-        "extraction/extraction_progress.md",
-        "extraction/extraction_vitals.md",
-        "extraction/extraction_medications.md",
-        "extraction/extraction_interventions.md",
-        "extraction/extraction_observations.md",
-    ]
+    manifest = json.loads((_PROMPTS_DIR / "extraction" / "index.json").read_text(encoding="utf-8"))
+    prompt_files = [f"extraction/{name}" for name in manifest.get("files", [])]
     return "\n\n".join(_load_prompt(filename).strip() for filename in prompt_files)
 
 
@@ -92,7 +87,7 @@ def extract_transcript():
 
 
 
-
+# cristian extraction model for backend testing,
 @quick_generate.route('/questionnaire/v1', methods=['POST'])
 @require_bearer_or_basic
 def extract_questionnaire():
@@ -129,7 +124,7 @@ def extract_questionnaire():
     return jsonify({'status': 'ok', 'questionnaire': questionnaire, 'transcript': transcript,'code': 200, 'message': 'Questionnaire extracted'})
 
 
-# cristian extraction model for backend testing,
+
 @quick_generate.route('/v1/extract/', methods=['POST'])
 @require_bearer_or_basic
 def extract_transcript_careit_voice():

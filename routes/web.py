@@ -136,7 +136,7 @@ def test():
     return "<h1>Test Page Works!</h1>"
 
 
-@web.route('/', methods=['GET', 'POST'])
+@web.route('/dashboard', methods=['GET', 'POST'])
 # @require_bearer
 def index():
     """Main dashboard page"""
@@ -149,6 +149,24 @@ def index():
     if request.method == 'POST':
         return _handle_flutter_init()
     return _render_dashboard()
+
+
+@web.route('/')
+# @require_bearer
+def generate():
+    return render_template('generate.html')
+
+
+@web.route('/vibe-apps')
+# @require_bearer
+def vibe_apps():
+    return render_template('vibe_apps.html')
+
+
+@web.route('/automation')
+# @require_bearer
+def automation():
+    return render_template('automation.html')
 
 
 @web.route('/task-action', methods=['POST'])

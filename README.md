@@ -17,7 +17,6 @@ A Flask application that generates SMART on FHIR mini applications using Claude 
 CareIT_Vibe_Miniapp/
 ├── app.py              # Main Flask application
 ├── models.py           # SQLAlchemy database models
-├── fhir_service.py     # FHIR API integration service
 ├── llm_service.py      # Claude AI integration service
 ├── requirements.txt    # Python dependencies
 ├── .env.example        # Example environment variables
@@ -162,3 +161,4 @@ Body: { "prompt": "your idea description" }
 ## License
 
 MIT
+├── fhir_service.py     # FHIR API integration service
