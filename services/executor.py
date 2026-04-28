@@ -6,6 +6,9 @@ from flask import request
 from models import db, Task, TaskStatus, Generation
 from llm_service import ClaudeLLMService
 from fhir_service import get_patient_data_for_llm
+from services.context_formatter import format_context
+from services.retrieval_executor import execute_retrieval, get_supported_resources
+from services.retrieval_planner import plan_retrieval
 from utils.helpers import add_task_log, save_generated_files, check_cancellation, OUTPUT_FOLDER
 
 logger = logging.getLogger(__name__)
@@ -346,59 +349,17 @@ def execute_miniapp_task(task_id: str):
         add_task_log(task_id, f"Task failed: {str(e)}", 'error')
 
 
-def run_generation(app, task_id: str, prompt: str, patient_data: dict, patient_name: str):
+def run_generation(app, task_id: str, prompt: str, patient_id: str, fhir_base_url: str, access_token: str):
     """Background thread executor used by quick-generate blueprint."""
     with app.app_context():
         task = Task.query.get(task_id)
         if not task:
             return
         try:
-            add_task_log(task_id, "Analyzing patient data and requirements...")
-            task.plan = f"""## Generation Plan
-**Prompt:** {prompt}
-**Patient:** {patient_name}
-**Steps:**
-1. Analyze patient FHIR data
-2. Design UI layout for healthcare app
-3. Generate HTML structure
-4. Create CSS styles
-5. Write JavaScript logic
-6. Integrate patient data
-7. AI Review and scoring
-"""
-            
-            db.session.commit()
-            add_task_log(task_id, "Plan created")
-
-            task.status = TaskStatus.executing
-            db.session.commit()
-            add_task_log(task_id, "Calling AI to generate code...")
-
-            llm = ClaudeLLMService()
-            html, css, js, _ = llm.generate_mini_app(prompt, patient_data)
-            add_task_log(task_id, f"Code generated: HTML ({len(html)} chars), CSS ({len(css or '')} chars), JS ({len(js or '')} chars)")
-
-            task.html_content = html
-            task.css_content  = css
-            task.js_content   = js
-            db.session.commit()
-
-            save_generated_files(task_id, html, css, js)
-            add_task_log(task_id, "Files saved to disk")
-
-            task.status = TaskStatus.reviewing
-            db.session.commit()
-            add_task_log(task_id, "AI reviewing generated code...")
-
-            score, feedback = llm.review_generated_code(html, css or '', js or '', prompt)
-            add_task_log(task_id, f"Review complete. Score: {score}/10")
-
-            task.final_score  = score
-            task.status       = TaskStatus.completed
-            task.completed_at = datetime.now(timezone.utc)
-            task.plan        += f"\n\n## Review Feedback\n{feedback}"
-            db.session.commit()
-            add_task_log(task_id, "Task completed successfully")
+            patient_name = _quick_patient_name(task, patient_id)
+            patient_data = _prepare_quick_task(task, task_id, prompt, patient_name, patient_id, fhir_base_url, access_token)
+            html, css, js, llm = _generate_quick_app(task, task_id, prompt, patient_data)
+            _review_quick_app(task, task_id, prompt, html, css, js, llm)
 
         except Exception as e:
             logger.error(f"[QUICK-GENERATE] Error: {e}", exc_info=True)
@@ -406,3 +367,91 @@ def run_generation(app, task_id: str, prompt: str, patient_data: dict, patient_n
             task.error_message = str(e)
             db.session.commit()
             add_task_log(task_id, f"Error: {str(e)}", 'error')
+
+
+def _build_generation_context(prompt: str, patient_id: str, fhir_base_url: str, access_token: str):
+    print(f"[QUICK-GENERATE] Building generation context for patient={patient_id}", flush=True)
+    print(f"[DEBUG] fhir_base_url={fhir_base_url} | token={'NONE' if not access_token else access_token[:30] + '...'}", flush=True)
+    resources = get_supported_resources(fhir_base_url, access_token, patient_id)
+    plan = plan_retrieval(prompt, patient_id, resources)
+    raw_data = execute_retrieval(plan, fhir_base_url, access_token, patient_id)
+    context = format_context(raw_data, plan)
+    print(f"[QUICK-GENERATE] Final context keys: {list(context.keys())}", flush=True)
+    return plan, context
+
+
+def _generation_plan_text(prompt: str, patient_name: str, plan) -> str:
+    plan_json = plan.to_dict()
+    queries = "\n".join(
+        f"{index}. {query['resource']}"
+        for index, query in enumerate(plan_json['queries'], start=1)
+    )
+    return f"""## Generation Plan
+**Prompt:** {prompt}
+**Patient:** {patient_name}
+**Rationale:** {plan_json['rationale'] or 'Dynamic retrieval from prompt'}
+**Queries:**
+{queries}
+"""
+
+def _direct_fetch_plan(patient_data: dict):
+    queries = [{'resource': key} for key in patient_data if key != 'patient']
+    return type('DirectFetchPlan', (), {'queries': queries, 'to_dict': lambda self: {
+        'patient_scope': 'all' if patient_data.get('patient', {}).get('id') == 'all' else 'single',
+        'queries': queries,
+        'rationale': 'Direct patient context fetch',
+    }})()
+
+
+def _prepare_quick_task(task, task_id: str, prompt: str, patient_name: str, patient_id: str, fhir_base_url: str, access_token: str):
+    add_task_log(task_id, "Preparing direct patient context..." if task.patient_data else "Planning retrieval from prompt...")
+    plan, patient_data = _existing_patient_context(task) or _build_generation_context(prompt, patient_id, fhir_base_url, access_token)
+    print(f"[QUICK-GENERATE] Retrieval plan for task={task_id}: {plan.to_dict()}", flush=True)
+    task.plan = _generation_plan_text(prompt, patient_name, plan)
+    task.patient_data = patient_data
+    db.session.commit()
+    add_task_log(task_id, f"Retrieval plan ready with {len(plan.queries)} query(s)")
+    return patient_data
+
+
+def _existing_patient_context(task):
+    if not task.patient_data:
+        return None
+    print(f"[QUICK-GENERATE] Using preloaded patient context for task={task.id}", flush=True)
+    print(f"[QUICK-GENERATE] Final context keys: {list(task.patient_data.keys())}", flush=True)
+    return _direct_fetch_plan(task.patient_data), task.patient_data
+
+
+def _quick_patient_name(task, patient_id: str) -> str:
+    if task.patient_data:
+        return task.patient_data.get('patient', {}).get('name') or f"Patient {patient_id}"
+    return 'All Patients' if patient_id == 'all' else f"Patient {patient_id}"
+
+
+def _generate_quick_app(task, task_id: str, prompt: str, patient_data: dict):
+    task.status = TaskStatus.executing
+    db.session.commit()
+    add_task_log(task_id, "Calling AI to generate code...")
+    print(f"[QUICK-GENERATE] Generating app for task={task_id} with context keys={list(patient_data.keys())}", flush=True)
+    llm = ClaudeLLMService()
+    html, css, js, _ = llm.generate_mini_app(prompt, patient_data)
+    task.html_content, task.css_content, task.js_content = html, css, js
+    db.session.commit()
+    save_generated_files(task_id, html, css, js)
+    add_task_log(task_id, f"Code generated: HTML ({len(html)} chars), CSS ({len(css or '')} chars), JS ({len(js or '')} chars)")
+    add_task_log(task_id, "Files saved to disk")
+    return html, css, js, llm
+
+
+def _review_quick_app(task, task_id: str, prompt: str, html: str, css: str, js: str, llm: ClaudeLLMService):
+    task.status = TaskStatus.reviewing
+    db.session.commit()
+    add_task_log(task_id, "AI reviewing generated code...")
+    score, feedback = llm.review_generated_code(html, css or '', js or '', prompt)
+    task.final_score = score
+    task.status = TaskStatus.completed
+    task.completed_at = datetime.now(timezone.utc)
+    task.plan += f"\n\n## Review Feedback\n{feedback}"
+    db.session.commit()
+    add_task_log(task_id, f"Review complete. Score: {score}/10")
+    add_task_log(task_id, "Task completed successfully")

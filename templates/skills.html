@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% set active_nav = 'skills' %}
+
+{% block title %}CareIT Vibe | Skills{% endblock %}
+
+{% block content %}
+<div class="view-container active" id="view-Skills">
+  <div class="content-header">
+    <h1>Create Skill</h1>
+    <div class="header-actions">
+      <form method="POST" action="{{ url_for('extraction.new_skill_page') }}" style="display:inline;">
+        <button class="btn btn-secondary" type="submit">
+          <svg class="nav-item-icon bg-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          New Skill
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="content-body">
+    <form class="skills-workspace" id="skills-form" method="POST">
+      <input type="hidden" name="current_file" value="{{ skills_current_file or '' }}">
+
+      <aside class="skills-sidebar">
+        <div class="skills-sidebar-header">
+          <h2 class="skills-sidebar-title">Extraction Files</h2>
+          <p class="skills-sidebar-subtitle">Manage extraction prompt modules.</p>
+        </div>
+
+        <div class="skills-filename-group">
+          <label class="input-label" for="skills-filename">Filename</label>
+          <div class="skills-filename-row">
+            <input type="text" id="skills-filename" name="filename" class="input" placeholder="extraction_new_rules" value="{{ skills_current_stem or '' }}">
+            <span class="skills-fixed-ext">.md</span>
+          </div>
+        </div>
+
+        <div class="skills-actions">
+          <button class="btn btn-secondary" type="submit" formaction="{{ url_for('extraction.rename_skill_page') }}" formmethod="POST">Rename</button>
+          <button class="btn btn-primary" type="submit" formaction="{{ url_for('extraction.save_skill_page') }}" formmethod="POST">Save</button>
+        </div>
+
+        <div class="skills-file-list">
+          {% for file in skills_files %}
+          <div class="skills-file-item {% if skills_current_file == file %}active{% endif %}" style="display:flex;align-items:center;justify-content:space-between;">
+            <a href="{{ url_for('extraction.skills_page', file=file) }}" class="skills-file-name">{{ file }}</a>
+            <a href="{{ url_for('extraction.delete_skill_page', name=file) }}" class="btn btn-ghost btn-icon btn-sm" style="background:rgba(239,68,68,0.1);color:#ef4444;border-radius:6px;" title="Delete">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6M14 11v6"/>
+                <path d="M9 6V4h6v2"/>
+              </svg>  
+            </a>
+          </div>
+          {% endfor %}
+        </div>
+      </aside>
+
+      <section class="skills-editor-panel">
+        <div class="skills-editor-header">
+          <div>
+            <h2 class="skills-editor-title">{{ skills_current_file or 'No file selected' }}</h2>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% for category, message in messages %}
+                <p class="skills-editor-subtitle {% if category == 'error' %}text-error{% else %}text-success{% endif %}">{{ message }}</p>
+              {% endfor %}
+            {% endwith %}
+          </div>
+        </div>
+        <textarea id="skills-editor" name="content" class="skills-editor" placeholder="Select a skill file to edit its extraction prompt...">{{ skills_editor_content or '' }}</textarea>
+      </section>
+    </form>
+  </div>
+</div>
+{% endblock %}

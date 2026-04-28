@@ -41,6 +41,8 @@ from routes.misc_api     import misc_api
 from routes.organization import organization
 from routes.location     import location
 from routes.bookmarks    import bookmarks
+from routes.extraction   import extraction
+from skills        import skills
 from backend_service     import backend_service
 from quick_generate_api  import quick_generate
 
@@ -51,6 +53,8 @@ app.register_blueprint(misc_api)
 app.register_blueprint(organization)
 app.register_blueprint(location)
 app.register_blueprint(bookmarks)
+app.register_blueprint(extraction)
+app.register_blueprint(skills)
 app.register_blueprint(backend_service)
 app.register_blueprint(quick_generate)
 
@@ -94,4 +98,4 @@ if __name__ == '__main__':
     port  = int(os.getenv('PORT', 2000))
     debug = os.getenv('FLASK_DEBUG', 'true').lower() == 'true'
     app.run(host='0.0.0.0', port=port, debug=debug)
-
+    # app.run(host='0.0.0.0', port=port, debug=debug,  use_reloader=False)

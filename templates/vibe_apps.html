@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% set active_nav = 'mini' %}
+
+{% block title %}CareIT Vibe | Vibe Apps{% endblock %}
+
+{% block content %}
+<div class="content-header">
+  <h1>Vibe Apps</h1>
+  <div class="header-actions">
+    <button class="btn btn-secondary" id="refresh-mini-apps-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M23 4v6h-6M1 20v-6h6"/>
+        <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+      </svg>
+      Refresh
+    </button>
+  </div>
+</div>
+<div class="content-body">
+  <div class="mini-apps-grid" id="mini-apps-grid">
+    <div class="empty-state" id="mini-apps-empty">
+      <svg class="empty-state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/>
+        <rect x="14" y="14" width="7" height="7" rx="1"/>
+      </svg>
+      <h2 class="empty-state-title">No SMART on FHIR Apps Yet</h2>
+      <p class="empty-state-description">Completed tasks will appear here as SMART on FHIR applications. Create a task to get started!</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    loadMiniApps();
+  });
+</script>
+{% endblock %}

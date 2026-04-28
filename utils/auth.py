@@ -1,6 +1,9 @@
+import logging
 from functools import wraps
-from flask import request, render_template, jsonify
+from flask import make_response, request, render_template, jsonify
 import requests as http_requests
+
+logger = logging.getLogger(__name__)
 
 
 def _deny_access():
@@ -9,12 +12,28 @@ def _deny_access():
     return render_template('unauthorized.html'), 403
 
 
+def _init_patient_session(access_token):
+    patient_id    = request.headers.get('X-Patient-Id', '')
+    fhir_base_url = request.headers.get('X-FHIR-Base', '')
+    if not (patient_id and fhir_base_url):
+        return
+    try:
+        from services.patient_context_service import load_patient_context
+        load_patient_context(patient_id=patient_id, fhir_base_url=fhir_base_url, access_token=access_token, refresh=True)
+    except Exception as e:
+        logger.error(f"Flutter init error: {e}")
+
+
 def require_bearer(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get('Authorization', '')
         if token.startswith('Bearer '):
-            return f(*args, **kwargs)
+            access_token = token[7:]
+            _init_patient_session(access_token)
+            response = make_response(f(*args, **kwargs))
+            response.set_cookie('fhir_token', access_token, samesite='Lax')
+            return response
         if request.cookies.get('fhir_token'):
             return f(*args, **kwargs)
         return _deny_access()

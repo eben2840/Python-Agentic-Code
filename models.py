@@ -212,8 +212,8 @@ class PatientSession(db.Model):
 
 class CIWTransfer:
     status  = [('active', 'Active'), ('not_active', 'Not Active')]
-    roles   = [('nurse', 'Nurse'), ('doctor', 'Doctor'), ('admin', 'Admin')]
-    show_at = [('ward_overview', 'Ward Overview'), ('medboard', 'Med Board'), ('curve', 'Curve')]
+    roles   = [('nurse', 'Pflege'), ('physician', 'Mediziner'),('therapist', 'Therapeuten'), ('admin', 'Admin')]
+    show_at = [('ward_overview', 'Stationsübersicht'), ('medboard', 'MedBoard'), ('curve', 'Kurve'),  ('nursing_overview', 'Pflege-Übersicht')]
 
 
 class Bookmark(db.Model):

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% set active_nav = 'automation' %}
+
+{% block title %}CareIT Vibe | Automation{% endblock %}
+
+{% block content %}
+<div class="content-header">
+  <h1>Automation</h1>
+  <div class="header-actions">
+    <button class="btn btn-secondary">
+      <svg class="nav-item-icon bg-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      New Automation
+    </button>
+  </div>
+</div>
+<div class="content-body">
+  <div class="automation-view" id="automation-grid">
+    <section class="automation-hero-card">
+      <div class="automation-hero-copy">
+        <span class="automation-eyebrow">CareIT Vibe Automations</span>
+        <h2 class="automation-title">Design hospital-ready mini apps from repeatable workflows.</h2>
+        <p class="automation-description">Create lightweight clinical tools for intake, discharge, coordination, medication follow-up, and patient communication. Each automation can become a focused mini app your care teams can reuse across units.</p>
+        <div class="automation-pill-row">
+          <span class="automation-pill">Forms</span>
+          <span class="automation-pill">Care Paths</span>
+          <span class="automation-pill">Patient Tasks</span>
+          <span class="automation-pill">SMART on FHIR</span>
+        </div>
+      </div>
+      <div class="automation-hero-visual" aria-hidden="true">
+        <div class="automation-orbit">
+          <div class="automation-orbit-node automation-node-center">CareIT</div>
+          <div class="automation-orbit-node automation-node-top">Intake</div>
+          <div class="automation-orbit-node automation-node-right">Rounds</div>
+          <div class="automation-orbit-node automation-node-bottom">Discharge</div>
+          <div class="automation-orbit-node automation-node-left">Follow-up</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="automation-template-section">
+      <div class="automation-template-header">
+        <h3>Suggested hospital mini app automations</h3>
+        <p>Start from a practical workflow instead of a blank page.</p>
+      </div>
+      <div class="automation-template-grid">
+        <article class="automation-template-card">
+          <span class="automation-template-kicker">Nursing</span>
+          <h4>Admission Intake Assistant</h4>
+          <p>Generate a bedside intake app that pulls patient demographics, allergies, and admission notes into a guided workflow.</p>
+        </article>
+        <article class="automation-template-card">
+          <span class="automation-template-kicker">Case Management</span>
+          <h4>Discharge Checklist Builder</h4>
+          <p>Assemble tasks, medication review, transportation planning, and follow-up reminders into one discharge mini app.</p>
+        </article>
+        <article class="automation-template-card">
+          <span class="automation-template-kicker">Clinician Ops</span>
+          <h4>Ward Rounds Snapshot</h4>
+          <p>Bundle labs, active problems, tasks, and escalation flags into a compact rounds dashboard for daily use.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="automation-footer-note">
+      <p>No automations created yet. Use <strong>New Automation</strong> to start a hospital mini app workflow.</p>
+    </section>
+  </div>
+</div>
+{% endblock %}
