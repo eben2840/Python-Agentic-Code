@@ -131,7 +131,6 @@ def get_careit_web():
 
     if patient_id:
         query = query.filter(Task.patient_id == patient_id)
-        
     if show_at:
         query = query.filter(Task.transfer_show_at.contains(show_at))
     if roles:

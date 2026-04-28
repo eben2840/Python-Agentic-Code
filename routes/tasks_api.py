@@ -24,7 +24,7 @@ def _run_in_context(app, fn, *args):
 
 @tasks_api.route('/api/tasks', methods=['GET'])
 def get_tasks():
-    # """Get all tasks"""
+    """Get all tasks"""
     print(f"[DEBUG] GET /api/tasks - fetching all tasks")
     tasks = Task.query.order_by(Task.updated_at.desc()).all()
     print(f"[DEBUG] GET /api/tasks - found {len(tasks)} tasks")
@@ -33,7 +33,7 @@ def get_tasks():
 
 @tasks_api.route('/api/tasks/<task_id>', methods=['GET'])
 def get_task(task_id):
-    # """Get a specific task"""
+    """Get a specific task"""
     task = Task.query.get(task_id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -42,7 +42,7 @@ def get_task(task_id):
 
 @tasks_api.route('/api/tasks/<task_id>', methods=['PATCH', 'PUT'])
 def update_task(task_id):
-    # """Update a task"""
+    """Update a task"""
     task = Task.query.get(task_id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -66,7 +66,7 @@ def update_task(task_id):
 
 @tasks_api.route('/api/tasks/<task_id>', methods=['DELETE'])
 def delete_task(task_id):
-    # """Delete a task"""
+    """Delete a task"""
     task = Task.query.get(task_id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -78,7 +78,7 @@ def delete_task(task_id):
 
 @tasks_api.route('/api/tasks/<task_id>/run', methods=['POST'])
 def run_task(task_id):
-    # """Run/restart a task"""
+    """Run/restart a task"""
     task = Task.query.get(task_id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -96,7 +96,7 @@ def run_task(task_id):
 
 @tasks_api.route('/api/tasks/<task_id>/cancel', methods=['POST'])
 def cancel_task(task_id):
-    # """Cancel a running task — move to pending"""
+    """Cancel a running task — move to pending"""
     task = Task.query.get(task_id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -115,7 +115,7 @@ def cancel_task(task_id):
 
 @tasks_api.route('/api/tasks/<task_id>/continue', methods=['POST'])
 def continue_task(task_id):
-    # """Continue a completed task with incremental changes"""
+    """Continue a completed task with incremental changes"""
     task = Task.query.get(task_id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -145,54 +145,6 @@ def continue_task(task_id):
     threading.Thread(target=lambda: _run_in_context(app, execute_continuation_task, task_id, changes), daemon=True).start()
     return jsonify({'message': 'Applying changes...', 'task': task.to_dict()})
 
-
-@tasks_api.route('/create-task', methods=['POST'])
-def create_task_form():
-    """Create task from form submission"""
-    print("[CREATE-TASK] Form submitted", flush=True)
-    title         = request.form.get('title')
-    description   = request.form.get('description', '')
-    specification = request.form.get('specification', '')
-    complexity    = request.form.get('complexity', 'standard')
-    print(f"[CREATE-TASK] title={title}", flush=True)
-
-    if not title:
-        print("[CREATE-TASK] No title provided, redirecting", flush=True)
-        return redirect(url_for('web.index'))
-
-    auth_header = request.headers.get('Authorization', '')
-    access_token = auth_header.replace('Bearer ', '', 1) if auth_header.startswith('Bearer ') else request.cookies.get('fhir_token')
-    patient_session = load_latest_patient_session(
-        patient_id=request.headers.get('X-Patient-Id') or request.form.get('patient_id') or request.cookies.get('patient_id'),
-        fhir_base_url=request.headers.get('X-FHIR-Base') or request.form.get('fhir_base_url') or request.cookies.get('fhir_base_url'),
-        access_token=access_token,
-    )
-    print(f"[CREATE-TASK] Patient session: {patient_session.patient_name if patient_session else 'None'}", flush=True)
-
-    task_id = str(uuid.uuid4())
-    print(f"[CREATE-TASK] Creating task {task_id}", flush=True)
-    task = Task(
-        id=task_id,
-        title=title,
-        description=description,
-        specification=specification,
-        complexity=TaskComplexity[complexity] if complexity in TaskComplexity.__members__ else TaskComplexity.standard,
-        status=TaskStatus.pending,
-        patient_id=patient_session.patient_id if patient_session else None,
-        fhir_base_url=patient_session.fhir_base_url if patient_session else None,
-        patient_data=patient_session.patient_data if patient_session else None
-    )
-    db.session.add(task)
-    db.session.commit()
-    print(f"[CREATE-TASK] Task {task_id} saved to database", flush=True)
-    add_task_log(task_id, f"Task created: {title}", 'info')
-
-    print(f"[CREATE-TASK] Starting execution for task {task_id}", flush=True)
-    app = current_app._get_current_object()
-    threading.Thread(target=lambda: execute_task_in_context(app, task_id), daemon=True).start()
-
-    print("[CREATE-TASK] Redirecting to index", flush=True)
-    return redirect(url_for('web.index'))
 
 
 @tasks_api.route('/api/tasks/<task_id>/logs', methods=['GET'])
