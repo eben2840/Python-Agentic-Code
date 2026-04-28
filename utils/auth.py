@@ -28,14 +28,20 @@ def require_bearer(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.headers.get('Authorization', '')
+        fhir_cookie = request.cookies.get('fhir_token', '')
+        all_headers = dict(request.headers)
+        print(f"[AUTH] {request.method} {request.path} — ALL HEADERS: {all_headers}", flush=True)
+        print(f"[AUTH] cookies: {dict(request.cookies)}", flush=True)
         if token.startswith('Bearer '):
             access_token = token[7:]
             _init_patient_session(access_token)
             response = make_response(f(*args, **kwargs))
             response.set_cookie('fhir_token', access_token, samesite='Lax')
             return response
-        if request.cookies.get('fhir_token'):
+        if fhir_cookie:
             return f(*args, **kwargs)
+        reason = "Authorization header is 'Bearer' with no token" if token == 'Bearer' else "no Bearer token and no fhir_token cookie"
+        print(f"[AUTH] DENIED {request.path} — {reason}", flush=True)
         return _deny_access()
     return decorated
 
