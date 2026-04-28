@@ -134,7 +134,7 @@ def get_dashboard_data():
 
 
 @backend_service.route('/generate-idea', methods=['POST'])
-@require_bearer
+# @require_bearer
 def generate_idea():
     """Generate idea using LLM with patient data context"""
     try:
