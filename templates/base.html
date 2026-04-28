@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CareIT Vibe{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  {% block body %}
+  <div class="app" id="app">
+    <header class="app-header">
+      <div class="header-brand">
+        <span class="brand-text">CareIT Vibe</span>
+      </div>
+    </header>
+
+    <div class="app-body">
+      {% block sidebar %}
+      <aside class="sidebar expanded" id="sidebar">
+        <nav class="sidebar-nav">
+          <div class="sidebar-section">
+            <span class="sidebar-section-title">Navigation</span>
+
+           
+
+            <a href="{{ url_for('web.generate') }}" class="nav-item {% if active_nav == 'generate' %}active{% endif %}" title="Generate Idea">
+              <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              <span class="nav-item-label">New</span>
+            </a>
+
+            <a href="{{ url_for('web.index') }}" class="nav-item {% if active_nav == 'dashboard' %}active{% endif %}" title="Dashboard">
+              <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/>
+                <path d="M3 9h18"/>
+              </svg>
+              <span class="nav-item-label">Project</span>
+            </a>
+
+            <!-- <a href="{{ url_for('web.vibe_apps') }}" class="nav-item {% if active_nav == 'mini' %}active{% endif %}" title="Mini Apps">
+              <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 3 14 8 19 8"/>
+                <path d="M9 13h6"/>
+                <path d="M9 17h4"/>
+                <circle cx="10" cy="9.5" r="1.5"/>
+              </svg>
+              <span class="nav-item-label">Mini Apps</span>
+            </a> -->
+
+            <a href="{{ url_for('web.automation') }}" class="nav-item {% if active_nav == 'automation' %}active{% endif %}" title="Automation">
+              <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="9" rx="1"/>
+                <rect x="14" y="3" width="7" height="5" rx="1"/>
+                <rect x="14" y="12" width="7" height="9" rx="1"/>
+                <rect x="3" y="16" width="7" height="5" rx="1"/>
+              </svg>
+              <span class="nav-item-label">Automation</span>
+            </a>
+
+            <a href="{{ url_for('extraction.skills_page') }}" class="nav-item {% if active_nav == 'skills' %}active{% endif %}" title="Skills">
+              <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="4" y="7" width="6" height="10" rx="2"/>
+                <rect x="14" y="7" width="6" height="10" rx="2"/>
+                <path d="M10 12h4"/>
+                <path d="M7 7V5"/>
+                <path d="M7 19v-2"/>
+                <path d="M17 7V5"/>
+                <path d="M17 19v-2"/>
+              </svg>
+              <span class="nav-item-label">Skills Prompt</span>
+            </a>
+          </div>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <button class="nav-item" id="new-task-btn" title="New Task">
+            <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="16"/>
+              <line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+            <span class="nav-item-label">New Mini Apps</span>
+          </button>
+        </div>
+        <div class="sidebar-bottom">
+          <button class="nav-item" title="Settings">
+            <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            <span class="nav-item-label">Settings</span>
+          </button>
+        </div>
+      </aside>
+      {% endblock %}
+
+      <main class="main-content">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+  <!-- Create Task Modal -->
+  <div class="modal-overlay" id="create-task-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Create New Task</h2>
+        <button class="modal-close" data-close-modal>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="create-task-form" method="POST" action="/api/tasks">
+          <div class="input-group">
+            <label class="input-label" for="task-title">Task Title *</label>
+            <input type="text" id="task-title" name="title" class="input" placeholder="e.g., Build a todo app with React" required>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="task-description">Description</label>
+            <textarea id="task-description" name="description" class="input textarea" placeholder="Describe what you want to build in detail..."></textarea>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="task-specification">Technical Specification (Optional)</label>
+            <textarea id="task-specification" name="specification" class="input textarea" placeholder="Any specific requirements, technologies, or constraints..."></textarea>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="task-complexity">Complexity</label>
+            <select id="task-complexity" name="complexity" class="input select">
+              <option value="simple">Simple</option>
+              <option value="standard" selected>Standard</option>
+              <option value="complex">Complex</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button class="btn btn-primary" id="submit-task-btn">Create Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden form for restart action -->
+  <form id="restart-task-form" method="POST" action="/" style="display: none;">
+    <input type="hidden" name="action" value="restart">
+    <input type="hidden" name="task_id" id="restart-task-id">
+  </form>
+
+  <!-- Hidden form for delete action -->
+  <form id="delete-task-form" method="POST" action="/" style="display: none;">
+    <input type="hidden" name="action" value="delete">
+    <input type="hidden" name="task_id" id="delete-task-id">
+  </form>
+
+  <!-- Task Detail Modal -->
+  <div class="modal-overlay" id="task-detail-modal">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <div>
+          <span class="task-status-badge" id="detail-task-status">Pending</span>
+          <h2 class="modal-title" id="detail-task-title">Task Title</h2>
+        </div>
+        <button class="modal-close" data-close-modal>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="task-detail-grid">
+          <div class="task-info-section">
+            <h3>Description</h3>
+            <p id="detail-task-description">Task description...</p>
+            <h3>Plan</h3>
+            <div id="detail-task-plan" class="plan-section">
+              <p class="text-muted">No plan generated yet</p>
+            </div>
+            <h3>Generated Files</h3>
+            <div id="detail-task-files" class="files-section">
+              <p class="text-muted">No files generated yet</p>
+            </div>
+          </div>
+          <div class="task-logs-section">
+            <h3>Agent Activity</h3>
+            <div id="detail-task-logs" class="task-logs">
+              <p class="text-muted">No activity yet</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-destructive" id="delete-task-btn">Delete</button>
+        <div class="modal-footer-actions">
+          <button class="btn btn-success" id="start-task-btn" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Start Task
+          </button>
+          <button class="btn btn-warning" id="stop-task-detail-btn" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="6" y="6" width="12" height="12" rx="2"/>
+            </svg>
+            Stop Execution
+          </button>
+          <button class="btn btn-primary" id="restart-task-btn" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 4v6h-6M1 20v-6h6"/>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+            </svg>
+            Restart
+          </button>
+          <button class="btn btn-secondary" id="preview-task-btn" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            Preview App
+          </button>
+          <button class="btn btn-secondary" id="edit-prompt-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Edit &amp; Regenerate
+          </button>
+          <button class="btn btn-accent" id="continue-prompt-btn" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Continue &amp; Add Changes
+          </button>
+          <button class="btn btn-secondary" data-close-modal>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Prompt Modal -->
+  <div class="modal-overlay" id="edit-prompt-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Edit Prompt &amp; Restart</h2>
+        <button class="modal-close" data-close-modal>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-prompt-form">
+          <div class="input-group">
+            <label class="input-label" for="edit-task-title">Task Title *</label>
+            <input type="text" id="edit-task-title" name="title" class="input" placeholder="e.g., Build a todo app with React" required>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="edit-task-description">Description</label>
+            <textarea id="edit-task-description" name="description" class="input textarea" placeholder="Describe what you want to build in detail..."></textarea>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="edit-task-specification">Technical Specification (Optional)</label>
+            <textarea id="edit-task-specification" name="specification" class="input textarea" placeholder="Any specific requirements, technologies, or constraints..."></textarea>
+          </div>
+        </form>
+        <div class="edit-warning">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span>Changes will be saved and the task will restart from the beginning.</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button class="btn btn-primary" id="save-restart-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6M1 20v-6h6"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+          Save &amp; Restart
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Continue Prompt Modal -->
+  <div class="modal-overlay" id="continue-prompt-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Continue &amp; Add Changes</h2>
+        <button class="modal-close" data-close-modal>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="continue-info">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4M12 8h.01"/>
+          </svg>
+          <span>The existing app will be preserved. Only your changes will be applied.</span>
+        </div>
+        <form id="continue-prompt-form">
+          <div class="input-group">
+            <label class="input-label" for="continue-changes">What changes would you like to make?</label>
+            <textarea id="continue-changes" name="changes" class="input textarea" rows="6" placeholder="Describe the changes you want to add..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button class="btn btn-primary" id="apply-changes-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          Apply Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- File Viewer Modal -->
+  <div class="modal-overlay" id="file-viewer-modal">
+    <div class="modal modal-large">
+      <div class="modal-header">
+        <h2 class="modal-title">View Generated Files</h2>
+        <button class="modal-close" data-close-modal>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 0;">
+        <div class="file-tabs">
+          <button class="file-tab active" data-file="html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            index.html
+          </button>
+          <button class="file-tab" data-file="css">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            styles.css
+          </button>
+          <button class="file-tab" data-file="js">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            app.js
+          </button>
+        </div>
+        <div class="file-content-container">
+          <pre class="file-content" id="file-content-display"><code></code></pre>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="copy-file-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+          </svg>
+          Copy Code
+        </button>
+        <button class="btn btn-secondary" data-close-modal>Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Idea Modal -->
+  <div class="modal-overlay" id="edit-idea-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Edit Generated Idea</h2>
+        <button class="modal-close" data-close-modal>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-idea-form">
+          <div class="input-group">
+            <label class="input-label" for="edit-idea-title">App Title *</label>
+            <input type="text" id="edit-idea-title" name="title" class="input" placeholder="e.g., Patient Vital Signs Tracker" required>
+          </div>
+          <div class="input-group">
+            <label class="input-label" for="edit-idea-content">App Description &amp; Features</label>
+            <textarea id="edit-idea-content" name="content" class="input textarea" rows="12" placeholder="Describe your SMART on FHIR application idea..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button class="btn btn-secondary" id="save-idea-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          Save Changes
+        </button>
+        <button class="btn btn-primary" id="create-from-idea-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Create Task
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mini App Preview Modal -->
+  <div class="modal-overlay" id="mini-app-preview-modal">
+    <div class="modal modal-fullscreen">
+      <div class="modal-header">
+        <div class="modal-header-info">
+          <span class="badge badge-success" id="preview-app-score"></span>
+        </div>
+        <div class="modal-header-actions">
+          <button class="btn btn-secondary" id="preview-new-tab-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+            Open in New Tab
+          </button>
+          <button class="modal-close" data-close-modal>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body preview-body">
+        <iframe id="mini-app-iframe" class="mini-app-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  {% block modals %}{% endblock %}
+  {% endblock %}
+
+  <script>
+    window.PATIENT_DATA = null;
+    window.FHIR_CONFIG = {
+      fhirBaseUrl: '{{ fhir_base_url or "" }}',
+      patientId: '{{ patient_id or "" }}',
+      accessToken: '{{ auth_token or "" }}'
+    };
+
+    function getCookie(name) {
+      var value = '; ' + document.cookie;
+      var parts = value.split(';' + name + '=');
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return '';
+    }
+
+    async function parsePatientData() {
+      var fhirBaseUrl = getCookie('fhir_base_url');
+      var patientId   = getCookie('patient_id');
+      var patientName = getCookie('patient_name');
+      try {
+        const response = await fetch('/api/backend/session-status', {
+          headers: { 'Authorization': `Bearer ${window.FHIR_CONFIG.accessToken}` }
+        });
+        const sessionData = await response.json();
+        if (sessionData.authenticated && sessionData.session_data) {
+          const session = sessionData.session_data;
+          window.PATIENT_DATA = {
+            fhir_base_url: session.fhir_base_url || fhirBaseUrl,
+            patient_id:    session.patient_id    || patientId,
+            patient_name:  session.patient_name  || patientName,
+            patient_data_summary: session.patient_data
+          };
+        } else {
+          window.PATIENT_DATA = { fhir_base_url: fhirBaseUrl, patient_id: patientId, patient_name: patientName };
+        }
+      } catch (e) {
+        window.PATIENT_DATA = { fhir_base_url: fhirBaseUrl, patient_id: patientId, patient_name: patientName };
+      }
+      window.FHIR_CONFIG.fhirBaseUrl  = window.PATIENT_DATA.fhir_base_url;
+      window.FHIR_CONFIG.patientId    = window.PATIENT_DATA.patient_id;
+      window.FHIR_CONFIG.accessToken  = getCookie('fhir_token') || window.FHIR_CONFIG.accessToken;
+    }
+
+    parsePatientData();
+
+    window.onerror = function(message, source, lineno, colno, error) {
+      console.error('[Global Error]', { message, source, lineno, colno, error });
+      return true;
+    };
+  </script>
+
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/store.js"></script>
+  <script src="/static/js/components.js"></script>
+  <script src="/static/js/app.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

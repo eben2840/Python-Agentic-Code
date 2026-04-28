@@ -4,9 +4,10 @@ import threading
 
 from flask import Blueprint, request, jsonify, redirect, url_for, current_app
 
-from models import db, Task, TaskStatus, TaskComplexity, PatientSession
+from models import db, Task, TaskStatus, TaskComplexity
 from utils.helpers import add_task_log
 from services.executor import execute_task, execute_continuation_task
+from services.patient_context_service import load_latest_patient_session
 
 logger = logging.getLogger(__name__)
 tasks_api = Blueprint('tasks_api', __name__)
@@ -159,7 +160,13 @@ def create_task_form():
         print("[CREATE-TASK] No title provided, redirecting", flush=True)
         return redirect(url_for('web.index'))
 
-    patient_session = PatientSession.query.order_by(PatientSession.last_accessed.desc()).first()
+    auth_header = request.headers.get('Authorization', '')
+    access_token = auth_header.replace('Bearer ', '', 1) if auth_header.startswith('Bearer ') else request.cookies.get('fhir_token')
+    patient_session = load_latest_patient_session(
+        patient_id=request.headers.get('X-Patient-Id') or request.form.get('patient_id') or request.cookies.get('patient_id'),
+        fhir_base_url=request.headers.get('X-FHIR-Base') or request.form.get('fhir_base_url') or request.cookies.get('fhir_base_url'),
+        access_token=access_token,
+    )
     print(f"[CREATE-TASK] Patient session: {patient_session.patient_name if patient_session else 'None'}", flush=True)
 
     task_id = str(uuid.uuid4())

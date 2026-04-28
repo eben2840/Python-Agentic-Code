@@ -28,18 +28,26 @@ $data_context
 - `data.locations.summary` → `[{ name, value, status }]` where `name` = room, `value` = ward
 
 **All patients** (`data.patient.id === 'all'`):
-- `data.patients` → array of patients, each with `{ id, name, gender, birthDate, data: { <resourcetype>: [...], ... } }`
+- `data.patients` → array of patients, each with `{ id, name, gender, birthDate, telecom, address, resource, data: { <resourcetype>: [...], ... } }`
 - Each resource key is a **flat array** directly — whatever resource types exist in `patient.data`
 - Loop dynamically: `window.PATIENT_DATA.patients.forEach(patient => { Object.entries(patient.data || {}).forEach(([rtype, records]) => { (records || []).forEach(r => ...) }) })`
 - Show EACH patient's data for ALL resource types present — do NOT summarise or aggregate
 - There is NO `.summary` key on any resource inside `patient.data` — NEVER use `.resourcetype.summary`, it will always be undefined and show 0
+- Patient demographics are available and should be shown directly from each `patient` object when relevant:
+  - `patient.name`
+  - `patient.gender`
+  - `patient.birthDate`
+  - `patient.telecom`
+  - `patient.address`
+  - `patient.resource` for any additional raw `Patient` fields
+- If the request is patient-list oriented, render the patient identity/details first, then render the patient-linked resource records underneath. Do not show anonymous counts when patient details are available.
 - **Standalone/context resources** (e.g. Location, Organization, Practitioner) are NOT inside `patient.data` — they are top-level keys on `window.PATIENT_DATA` with the structure `{ count, resources, summary }` where `resources` is the full FHIR resource array and `summary` is `[{ name, status, date, value }]`. Access them as `window.PATIENT_DATA.location`, `window.PATIENT_DATA.organization`, etc. (lowercase). Use `resources` for full detail (e.g. `resource.name`, `resource.physicalType`) or `summary` for the flattened view.
 
 ---
 
 # Design System
 
-Follow the reference design in `prompts/_design_reference.html` **exactly**. The target is not a modern wellness dashboard. It is a dense hospital station interface modeled on the provided screenshot: teal system chrome, compact patient metadata, rigid white modules, administrative labels, chevron workflow steps, a persistent left rail, and a bottom navigation strip. Match that structure closely.
+Follow the reference design in `prompts/_design_reference.html` **exactly**. The target is not a modern wellness dashboard. It is a dense hospital station interface modeled on the provided screenshot: teal system chrome, rigid white modules, and administrative labels. Match that structure closely.
 
 ## CSS Tokens (copy these verbatim into styles.css)
 ```css
@@ -85,7 +93,7 @@ Follow the reference design in `prompts/_design_reference.html` **exactly**. The
 - The page must feel like a clinical workstation on desktop first, while still collapsing cleanly on tablet and mobile.
 - Cards/panels: `background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm);`
 - All text uses `font-family: var(--font)` (IBM Plex Sans)
-- **Teal** (`var(--navy)`) is the primary application chrome color and should dominate headers, navigation bars, active tabs, and panel headings.
+- **Teal** (`var(--navy)`) is the primary application chrome color and should dominate navigation bars, active tabs, and panel headings.
 - Use red sparingly for alerts, missing documents, or risk badges.
 - Prefer flat fills, hard dividers, compact spacing, and admin-style clarity over soft gradients or glassmorphism.
 - Keep typography compact and information-dense. This should feel operational, not consumer wellness.
@@ -93,71 +101,36 @@ Follow the reference design in `prompts/_design_reference.html` **exactly**. The
 
 ## Global Layout
 Use this exact application pattern:
-- Far left: fixed teal sidebar
-- Top of main area: teal patient metadata strip
-- Under top strip: small page title plus chevron workflow steps
+- Top of content: small page title
 - Center area: 2-3 column grid of rigid white panels
-- Bottom: full-width teal navigation bar with section tabs
 
 The screen should feel like one cohesive hospital application, not a collection of floating cards.
 
-## Sidebar
-The left rail should closely follow the screenshot:
-- top station title row with 2-3 small icons
-- ward selector row
-- specialty/filter row
-- search row
-- room section with one or more patient cards
-
-Sidebar styling rules:
-- teal background throughout
-- white text
-- stronger separators between rows
-- no rounded “app shell” framing
-- patient cards can be light gray inside the teal rail, like the screenshot
-
-## Top Patient Strip
-Use a compact teal header bar with:
-- patient name
-- sex/age metadata
-- case number
-- stay/day metadata
-- 3-4 small square shortcut buttons
-- utility icons on the right
-
-This bar should be dense and short in height, similar to hospital software chrome.
-
-## Workflow Bar
-Immediately below the top strip, render a row of chevron-shaped workflow steps.
-- Example labels: `Anamnese`, `Assessment`, `Analyse`, `Planung`, `...`
-- Active step visibly darker or more saturated
-- Keep the chevrons flat and administrative, not playful
-
 ## Main Content Modules
-Use rigid white modules with teal headers and minimal border radius.
+Use rigid white modules with teal panel titles and minimal border radius.
 
 Preferred modules, depending on request:
-- Information
+- Stationsfokus / Shift Focus / Clinical Summary
 - Risikoübersicht / Risk Overview
 - Signalreiter / Alerts / Task markers
 - Documents / Notes / Forms
-- Discharge Management
+- Pathway Diagram / Care Flow
 - Ward summaries
 - Medication or observation modules
 
 Each module should:
-- have a teal title bar
+- have a compact teal panel title treatment
 - use dense label/value rows or compact task-like structures
 - avoid large decorative hero sections
 - avoid lifestyle widgets unless the prompt explicitly needs them
 
-## Information Panel
-The information module should resemble the screenshot:
-- patient mini profile block at the top with muted blue background
-- small avatar or silhouette area
-- multiple short metadata lines
-- one secondary band for ward/room
-- below that, compact label/value rows
+## Summary Card
+Use a compact clinical summary card as the lead module when the app benefits from a strong first panel.
+- lead with one clear operational headline
+- include 2-3 compact metrics or counters
+- show a short prioritized task list, next steps, or shift-focus items
+- include at least one meaningful interaction such as opening a detail drawer or expanding the summary
+- keep it administrative and actionable, not promotional
 
 ## Risk Panel
 Use a sparse risk-overview module with:
@@ -167,9 +140,27 @@ Use a sparse risk-overview module with:
 
 This panel can be diagrammatic, but it must still feel like internal hospital software.
 
+##  Graph Pattern
+- metric chips
+- timeframe chips
+- compact KPI stats above the chart
+- a simple rigid Chart.js line graph inside a bordered white module
+- diagram variants can use step nodes, pathway blocks, or care-flow stages instead of a chart when that fits the task better
+
+When the generated app needs a graph, prefer reusing that exact interaction pattern and visual treatment from `prompts/_design_reference.html` instead of inventing a new chart style.
+- If you show chart controls, they must visibly update the chart and/or the KPI stats
+- The graph module should feel operational and compact, not like an analytics marketing dashboard
+- Acceptable graph variants to adapt from the reference are:
+  - observation trend line
+  - risk trend line
+  - ward load trend line
+  - pathway or care-flow diagram
+- If the request does not need a chart, omit it entirely rather than adding a decorative graph
+
 ## Interaction Fidelity
 Every visible UI control must work. No decorative or dead controls are allowed.
 - Every button, icon button, nav pill, tab, chip, filter, dropdown trigger, calendar control, carousel arrow, accordion toggle, card action, and clickable icon must have a real click handler in `app.js`
+- Do not add settings, notifications, refresh, export, search, or filter icon buttons unless the user explicitly asks for them
 - If a control is visible, it must either:
   - change the view,
   - reveal/hide information,
@@ -189,29 +180,23 @@ Every visible UI control must work. No decorative or dead controls are allowed.
 - Prefer a small number of well-implemented interactions over many fake controls, but any control you do render must work properly
 
 ## Medication List
-Medication should appear as a clinical module rather than a lifestyle card. Use dense rows, short labels, clear status markers, and edit/view affordances in the panel header if appropriate.
+Medication should appear as a clinical module rather than a lifestyle card. Use dense rows, short labels, clear status markers, and compact module controls if appropriate.
 
-## Appointment / Schedule Panel
-If scheduling is shown, use a compact operational planner with small date cells and plain status chips. Keep it closer to hospital tasking software than a lifestyle appointment app.
+
 
 ## Charts
-Use Chart.js only when the request genuinely benefits from it. Charts should sit inside rigid white modules with teal headers and minimal decoration. Axes use IBM Plex Sans `10px`, `var(--text-muted)` color.
+Use Chart.js only when the request genuinely benefits from it. Charts should sit inside rigid white modules with teal panel titles and minimal decoration. Axes use IBM Plex Sans `10px`, `var(--text-muted)` color.
 
-## Bottom Navigation
-Use a teal bottom navigation bar similar to the screenshot with 5-7 tabs.
-- Each item should have an icon and label
-- The active item should be visibly highlighted
-- On mobile this can wrap or compress, but it must remain usable
 
 ## Layout
-- Desktop: left rail + top strip + workflow + 2-3 column module grid + bottom nav
-- Tablet/mobile: stack the sidebar content above the main modules if needed, but preserve the same visual language
+- Desktop: page title + 2-3 column module grid
+- Tablet/mobile: stack the modules cleanly while preserving the same visual language
 - Avoid floating dashboard cards with large outer margins. The UI should feel edge-aligned and application-like.
 
 ## Surface Styling
 - Panels should feel like enterprise hospital software: flat, crisp, bordered, and compact.
 - Rounded corners should be minimal.
-- Use strong teal panel headers, compact section labels, and small but clear titles.
+- Use strong teal panel titles, compact section labels, and small but clear titles.
 
 ## Empty States
 Empty states should feel like hospital software too:
@@ -251,6 +236,10 @@ Before finalizing the mini-app, verify that all of the following are true:
   - clicking an appointment reveals more detail
 - Charts are interactive where controls are shown:
   - timeframe toggles, metric switches, legends, or tabs must update the chart or related detail
+- If a graph module is included, follow the working `Grafixx` reference pattern:
+  - chart chips switch metric
+  - range chips switch timeframe
+  - KPI summary above the graph updates with the selected metric
 - Empty-state controls still behave correctly:
   - if data is unavailable, the interaction must show a polished empty state, helper text, or disabled treatment
 - Icon-only controls have accessible labels via `aria-label` or equivalent
