@@ -43,19 +43,19 @@ def _render_dashboard():
 # -----------------------------------------------------------------------------
 
 @web.route('/', methods=['GET', 'POST'])
-# @require_bearer
+@require_bearer
 def index():
     return _render_dashboard()
 
 
 @web.route('/generate')
-# @require_bearer
+@require_bearer
 def generate():
     return render_template('generate.html')
 
 
 @web.route('/vibe-apps')
-# @require_bearer
+@require_bearer
 def vibe_apps():
     return render_template('vibe_apps.html')
 
