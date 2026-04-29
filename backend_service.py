@@ -73,8 +73,9 @@ def _status_page(status_label: str) -> str:
 
 def _request_access_token() -> str:
     auth_header = request.headers.get('Authorization', '')
-    if auth_header.startswith('Bearer '):
-        return auth_header.replace('Bearer ', '', 1)
+    parts = auth_header.split(None, 1)
+    if len(parts) == 2 and parts[0].lower() == 'bearer':
+        return parts[1].strip()
     return request.cookies.get('fhir_token', '')
 
 
@@ -104,14 +105,15 @@ def _get_request_patient_session():
 def get_dashboard_data():
     """Get all dashboard data for frontend"""
     try:
+        from routes.web import _load_tasks
         patient_session = _get_request_patient_session()
-        tasks = Task.query.all()
+        tasks = _load_tasks()
         task_data = {
-            'pending':   [t.to_dict() for t in tasks if t.status == TaskStatus.pending],
-            'running':   [t.to_dict() for t in tasks if t.status in [TaskStatus.planning, TaskStatus.executing, TaskStatus.fixing]],
-            'reviewing': [t.to_dict() for t in tasks if t.status == TaskStatus.reviewing],
-            'completed': [t.to_dict() for t in tasks if t.status == TaskStatus.completed],
-            'failed':    [t.to_dict() for t in tasks if t.status == TaskStatus.failed],
+            'pending':   [t.to_dict() for t in tasks['pending']],
+            'running':   [t.to_dict() for t in tasks['running']],
+            'reviewing': [t.to_dict() for t in tasks['reviewing']],
+            'completed': [t.to_dict() for t in tasks['completed']],
+            'failed':    [t.to_dict() for t in tasks['failed']],
         }
         return jsonify({
             'authenticated': bool(patient_session),
@@ -122,7 +124,7 @@ def get_dashboard_data():
             } if patient_session else None,
             'tasks': task_data,
             'stats': {
-                'total':     len(tasks),
+                'total':     sum(len(items) for items in task_data.values()),
                 'completed': len(task_data['completed']),
                 'failed':    len(task_data['failed']),
                 'running':   len(task_data['running']),

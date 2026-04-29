@@ -24,10 +24,15 @@ def _load_prompt(filename: str, **kwargs) -> str:
 
 
 def _build_extraction_system() -> str:
-    manifest = json.loads((_PROMPTS_DIR / "extraction" / "index.json").read_text(encoding="utf-8"))
-    prompt_files = [f"extraction/{name}" for name in manifest.get("files", [])]
+    prompt_files = [
+        "extraction/extraction_base.md",
+        "extraction/extraction_progress.md",
+        "extraction/extraction_vitals.md",
+        "extraction/extraction_medications.md",
+        "extraction/extraction_interventions.md",
+        "extraction/extraction_observations.md",
+    ]
     return "\n\n".join(_load_prompt(filename).strip() for filename in prompt_files)
-
 
 def _parse_json_response(raw: str):
     text = raw.strip()
@@ -173,7 +178,7 @@ def generate_miniapp():
             f"patient_id={patient_id!r} "
             f"type={type(patient_id).__name__} "
             f"fhir_base_url={fhir_base_url!r} "
-            f"access_token={access_token}",
+            f"access_token_present={bool(access_token)}",
             flush=True,
         )
 

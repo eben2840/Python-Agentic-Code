@@ -1,9 +1,66 @@
-import logging
 from functools import wraps
 from flask import make_response, request, render_template, jsonify
 import requests as http_requests
+from services.patient_context_service import load_latest_patient_session
+from services.patient_context_service import load_patient_context
 
-logger = logging.getLogger(__name__)
+def _bearer_token() -> str:
+    auth_header = request.headers.get('Authorization', '')
+    parts = auth_header.split(None, 1)
+    print(f"[AUTH:_bearer_token] raw header={auth_header[:30]!r} parts_count={len(parts)}", flush=True)
+    if len(parts) == 2 and parts[0].lower() == 'bearer':
+        token = parts[1].strip()
+        print(f"[AUTH:_bearer_token] extracted token present={bool(token)} len={len(token)}", flush=True)
+        return token
+    print(f"[AUTH:_bearer_token] no bearer token found", flush=True)
+    return ''
+
+
+def _request_access_token() -> str:
+    bearer = _bearer_token()
+    cookie = request.cookies.get('fhir_token', '')
+    qparam = request.args.get('fhir_token', '')
+    result = bearer or cookie or qparam
+    source = 'bearer' if bearer else 'cookie' if cookie else 'qparam' if qparam else 'NONE'
+    print(f"[AUTH:_request_access_token] bearer={bool(bearer)} cookie={bool(cookie)} qparam={bool(qparam)} using={source}", flush=True)
+    return result
+
+
+def _request_session_scope() -> dict:
+    patient_id   = request.headers.get('X-Patient-Id')   or request.args.get('patient_id')   or request.cookies.get('patient_id')
+    fhir_base    = request.headers.get('X-FHIR-Base')    or request.args.get('fhir_base_url') or request.cookies.get('fhir_base_url')
+    access_token = _request_access_token()
+    print(f"[AUTH:_request_session_scope] patient_id={patient_id!r} fhir_base={fhir_base!r} token_present={bool(access_token)}", flush=True)
+    return {'patient_id': patient_id, 'fhir_base_url': fhir_base, 'access_token': access_token}
+
+
+def get_request_patient_session():
+    scope = _request_session_scope()
+    print(f"[AUTH:get_request_patient_session] looking up DB session for patient_id={scope['patient_id']!r} fhir_base={scope['fhir_base_url']!r}", flush=True)
+    session = load_latest_patient_session(
+        patient_id=scope['patient_id'] or None,
+        fhir_base_url=scope['fhir_base_url'] or None,
+        access_token=scope['access_token'] or None,
+    )
+    print(f"[AUTH:get_request_patient_session] DB result={'FOUND patient=' + str(session.patient_id) if session else 'NOT FOUND'}", flush=True)
+    return session
+
+
+def _init_patient_session(access_token: str) -> None:
+    scope = _request_session_scope()
+    patient_id = scope['patient_id']
+    fhir_base_url = scope['fhir_base_url']
+    print(f"[AUTH:_init_patient_session] patient_id={patient_id!r} fhir_base={fhir_base_url!r} token_present={bool(access_token)}", flush=True)
+    if not (patient_id and fhir_base_url and access_token):
+        print(f"[AUTH:_init_patient_session] SKIPPED — missing patient_id={bool(patient_id)} fhir_base={bool(fhir_base_url)} token={bool(access_token)}", flush=True)
+        return
+    print(f"[AUTH:_init_patient_session] calling load_patient_context refresh=False", flush=True)
+    result = load_patient_context(
+        patient_id=patient_id,
+        fhir_base_url=fhir_base_url,
+        access_token=access_token,
+    )
+    print(f"[AUTH:_init_patient_session] done — reused={result.reused if result else 'N/A'} patient_name={result.patient_name if result else 'N/A'}", flush=True)
 
 
 def _deny_access():
@@ -12,35 +69,38 @@ def _deny_access():
     return render_template('unauthorized.html'), 403
 
 
-def _init_patient_session(access_token):
-    patient_id    = request.headers.get('X-Patient-Id', '')
-    fhir_base_url = request.headers.get('X-FHIR-Base', '')
-    if not (patient_id and fhir_base_url):
-        return
-    try:
-        from services.patient_context_service import load_patient_context
-        load_patient_context(patient_id=patient_id, fhir_base_url=fhir_base_url, access_token=access_token, refresh=True)
-    except Exception as e:
-        logger.error(f"Flutter init error: {e}")
-
-
 def require_bearer(f):
     @wraps(f)
     def decorated(*args, **kwargs):
+        access_token = _request_access_token()
         token = request.headers.get('Authorization', '')
-        fhir_cookie = request.cookies.get('fhir_token', '')
-        all_headers = dict(request.headers)
-        print(f"[AUTH] {request.method} {request.path} — ALL HEADERS: {all_headers}", flush=True)
-        print(f"[AUTH] cookies: {dict(request.cookies)}", flush=True)
-        if token.startswith('Bearer '):
-            access_token = token[7:]
+        headers = dict(request.headers)
+        if 'Authorization' in headers:
+            headers['Authorization'] = 'Bearer ***' if _bearer_token() else '***'
+        print(f"[AUTH] {request.method} {request.path} — headers: {headers}", flush=True)
+        print(f"[AUTH] cookies present: {list(request.cookies.keys())}", flush=True)
+        print(f"[AUTH] access_token_present={bool(access_token)} bearer_present={bool(_bearer_token())}", flush=True)
+        if _bearer_token():
+            print(f"[AUTH] path=BEARER — calling _init_patient_session", flush=True)
             _init_patient_session(access_token)
             response = make_response(f(*args, **kwargs))
+            patient_id = request.headers.get('X-Patient-Id', '')
+            fhir_base_url = request.headers.get('X-FHIR-Base', '')
             response.set_cookie('fhir_token', access_token, samesite='Lax')
+            if patient_id:
+                response.set_cookie('patient_id', patient_id, samesite='Lax')
+            if fhir_base_url:
+                response.set_cookie('fhir_base_url', fhir_base_url, samesite='Lax')
+            print(f"[AUTH] cookies SET on response: fhir_token=True patient_id={bool(patient_id)} fhir_base_url={bool(fhir_base_url)}", flush=True)
             return response
-        if fhir_cookie:
+        if access_token:
+            print(f"[AUTH] path=COOKIE — token from cookie, skipping init", flush=True)
             return f(*args, **kwargs)
-        reason = "Authorization header is 'Bearer' with no token" if token == 'Bearer' else "no Bearer token and no fhir_token cookie"
+        existing_session = load_latest_patient_session()
+        if existing_session:     
+            print(f"[AUTH] path=EXISTING_SESSION — found existing session for patient_id={existing_session.patient_id}, skipping init", flush=True)                                                                                                                                  
+            return f(*args, **kwargs)
+        reason = "Authorization header is Bearer with no token" if token.lower().startswith('bearer') else "no Bearer token and no fhir_token cookie"
         print(f"[AUTH] DENIED {request.path} — {reason}", flush=True)
         return _deny_access()
     return decorated
@@ -71,7 +131,7 @@ def require_bearer_or_basic(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.headers.get('Authorization', '')
-        if auth.startswith('Bearer '):
+        if _bearer_token():
             return f(*args, **kwargs)
         if request.cookies.get('fhir_token'):
             return f(*args, **kwargs)
