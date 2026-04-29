@@ -1,79 +1,737 @@
-{% extends 'base.html' %}
-{% set active_nav = 'skills' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareIT Vibe · Skills</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-{% block title %}CareIT Vibe | Skills{% endblock %}
+    :root {
+      --bg:          #ffffff;
+      --bg2:         #f5f5f5;
+      --bg3:         #efefef;
+      --bg4:         #e8e8e8;
+      --border:      #e0e0e0;
+      --border2:     #d0d0d0;
+      --text:        #111111;
+      --text-dim:    #666666;
+      --text-faint:  #bbbbbb;
+      --accent:      #111111;
+      --accent-glow: rgba(0,0,0,0.06);
+      --accent-dim:  rgba(0,0,0,0.05);
+      --danger:      #e53e3e;
+      --danger-dim:  rgba(229,62,62,0.08);
+      --success-fg:  #111111;
+      --error-fg:    #e53e3e;
+      --font:        'Martian Mono', monospace;
+    }
 
-{% block content %}
-<div class="view-container active" id="view-Skills">
-  <div class="content-header">
-    <h1>Create Skill</h1>
-    <div class="header-actions">
-      <form method="POST" action="{{ url_for('extraction.new_skill_page') }}" style="display:inline;">
-        <button class="btn btn-secondary" type="submit">
-          <svg class="nav-item-icon bg-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 12px;
+      line-height: 1.6;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Top bar ─────────────────────────────────────────── */
+    .topbar {
+      height: 42px;
+      min-height: 42px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      gap: 14px;
+    }
+
+    .topbar-logo {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .topbar-sep {
+      width: 1px;
+      height: 16px;
+      background: var(--border2);
+    }
+
+    .topbar-crumb {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+    }
+    .topbar-crumb span { color: var(--text); }
+
+    .topbar-right { margin-left: auto; }
+
+    /* ── Flash messages ──────────────────────────────────── */
+    .flash {
+      padding: 7px 18px;
+      font-size: 10px;
+      letter-spacing: 0.07em;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .flash.success {
+      background: rgba(45,255,196,0.04);
+      border-color: rgba(45,255,196,0.18);
+      color: var(--success-fg);
+    }
+    .flash.error {
+      background: rgba(255,77,109,0.04);
+      border-color: rgba(255,77,109,0.18);
+      color: var(--error-fg);
+    }
+
+    /* ── Main form / workspace ───────────────────────────── */
+    #skills-form {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .workspace {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ─────────────────────────────────────────── */
+    .sidebar {
+      width: 265px;
+      min-width: 265px;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+
+    .sidebar-top {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+
+    .filename-row {
+      display: flex;
+      align-items: center;
+      background: var(--bg3);
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .filename-row:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .filename-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 8px 10px;
+      font-family: var(--font);
+      font-size: 11px;
+      color: var(--text);
+      min-width: 0;
+    }
+    .filename-input::placeholder { color: var(--text-faint); }
+
+    .filename-ext {
+      padding: 8px 10px 8px 2px;
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .btn {
+      font-family: var(--font);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 7px 10px;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--border2);
+      color: var(--text-dim);
+    }
+    .btn-outline:hover {
+      border-color: var(--text-dim);
+      color: var(--text);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+    }
+    .btn-accent:hover {
+      background: #e0e0e0;
+    }
+
+    .btn-ghost-accent {
+      background: transparent;
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .btn-ghost-accent:hover { background: var(--accent-dim); }
+
+    /* ── File list ───────────────────────────────────────── */
+    .file-list-head {
+      padding: 12px 16px 6px;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    /* ── Folder ──────────────────────────────────────────── */
+    .folder {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .folder::-webkit-scrollbar { width: 3px; }
+    .folder::-webkit-scrollbar-track { background: transparent; }
+    .folder::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+    .folder-head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      cursor: pointer;
+      user-select: none;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.12s, color 0.12s;
+    }
+    .folder-head:hover { background: var(--bg3); color: var(--text); }
+
+    .folder-chevron {
+      transition: transform 0.18s;
+      flex-shrink: 0;
+    }
+    .folder.closed .folder-chevron { transform: rotate(-90deg); }
+    .folder.closed .folder-body { display: none; }
+
+    .folder-body {
+      padding: 4px 8px 12px;
+    }
+
+    .file-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      border-radius: 3px;
+      margin-bottom: 2px;
+      border: 1px solid transparent;
+      transition: background 0.12s, border-color 0.12s;
+      overflow: hidden;
+    }
+    .file-item:hover { background: var(--bg3); border-color: var(--border); }
+    .file-item.active {
+      background: var(--accent-dim);
+      border-color: rgba(45,255,196,0.2);
+    }
+    .file-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2px;
+      height: 14px;
+      background: var(--accent);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .file-link {
+      flex: 1;
+      padding: 8px 8px 8px 12px;
+      font-size: 10px;
+      color: var(--text-dim);
+      text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 0.03em;
+      transition: color 0.12s;
+    }
+    .file-link:hover { color: var(--text); }
+    .file-item.active .file-link { color: var(--accent); }
+
+    .file-del {
+      padding: 5px 8px;
+      color: var(--text-faint);
+      transition: color 0.12s, background 0.12s;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      flex-shrink: 0;
+      margin-right: 4px;
+    }
+    .file-del:hover { color: var(--danger); background: var(--danger-dim); }
+
+    .file-list-empty {
+      padding: 24px 10px;
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-faint);
+      line-height: 1.9;
+    }
+
+    /* ── Editor panel ────────────────────────────────────── */
+    .editor-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg);
+      position: relative;
+    }
+
+    .editor-tabbar {
+      height: 38px;
+      min-height: 38px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+    }
+
+    .editor-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 18px;
+      font-size: 10px;
+      border-right: 1px solid var(--border);
+      max-width: 220px;
+    }
+    .editor-tab.has-file {
+      background: var(--bg);
+      border-bottom: 1px solid var(--bg);
+      margin-bottom: -1px;
+      color: var(--text);
+    }
+    .editor-tab.no-file { color: var(--text-dim); }
+
+    .tab-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .tab-dot.live { background: var(--accent); }
+    .tab-dot.idle { background: var(--text-faint); }
+
+    .tab-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tab-type {
+      margin-left: auto;
+      font-size: 9px;
+      color: var(--text-faint);
+      letter-spacing: 0.08em;
+      flex-shrink: 0;
+      padding-left: 12px;
+    }
+
+    .editor-textarea {
+      flex: 1;
+      width: 100%;
+      background: var(--bg);
+      border: none;
+      outline: none;
+      resize: none;
+      padding: 28px 36px;
+      font-family: var(--font);
+      font-size: 12px;
+      line-height: 2;
+      color: var(--text);
+      tab-size: 2;
+      caret-color: var(--accent);
+    }
+    .editor-textarea::placeholder { color: var(--text-faint); font-style: italic; }
+    .editor-textarea:focus { background: var(--bg); }
+
+    /* ── Status bar ──────────────────────────────────────── */
+    .statusbar {
+      height: 22px;
+      min-height: 22px;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      gap: 18px;
+    }
+
+    .status-item {
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .status-item.on { color: var(--accent); }
+
+    .status-pip {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .status-right {
+      margin-left: auto;
+      font-size: 9px;
+      color: var(--text-faint);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── Responsive ─────────────────────────────────────── */
+
+    /* Tablet: collapse sidebar width */
+    @media (max-width: 900px) {
+      .sidebar { width: 210px; min-width: 210px; }
+      .editor-textarea { padding: 20px 20px; }
+    }
+
+    /* Mobile: sidebar slides over editor as a drawer */
+    @media (max-width: 640px) {
+      html, body { overflow: auto; }
+
+      .workspace { flex-direction: column; overflow: visible; }
+
+      #skills-form { overflow: visible; }
+
+      .sidebar {
+        width: 100%;
+        min-width: unset;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        overflow: visible;
+      }
+
+      .folder-list { max-height: 240px; overflow-y: auto; }
+
+      .editor-panel { min-height: 60vh; }
+
+      .editor-textarea {
+        padding: 16px;
+        font-size: 13px;
+        min-height: 50vh;
+      }
+
+      .topbar-crumb { display: none; }
+      .topbar-sep   { display: none; }
+
+      .modal { width: calc(100vw - 32px); }
+    }
+
+    /* ── Delete modal ────────────────────────────────────── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: var(--bg);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 24px;
+      width: 320px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    }
+
+    .modal-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .modal-body {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      line-height: 1.7;
+      word-break: break-all;
+    }
+
+    .modal-body strong { color: var(--text); }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      border-color: var(--danger);
+      color: #fff;
+      font-weight: 700;
+    }
+    .btn-danger:hover { background: #c53030; border-color: #c53030; }
+
+  </style>
+</head>
+<body>
+
+  <!-- Top bar (outside form — has its own form for new skill) -->
+  <div class="topbar">
+    <span class="topbar-logo">CareIT Vibe</span>
+    <div class="topbar-sep"></div>
+    <span class="topbar-crumb">prompts <span>/ skills</span></span>
+    <div class="topbar-right">
+      <form method="POST" action="{{ url_for('extraction.new_skill_page') }}">
+        <button class="btn btn-ghost-accent" type="submit">
+          <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
             <line x1="12" y1="5" x2="12" y2="19"/>
             <line x1="5" y1="12" x2="19" y2="12"/>
           </svg>
-          New Skill
+          New File
         </button>
       </form>
     </div>
   </div>
 
-  <div class="content-body">
-    <form class="skills-workspace" id="skills-form" method="POST">
-      <input type="hidden" name="current_file" value="{{ skills_current_file or '' }}">
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+    <div class="flash {{ 'success' if category != 'error' else 'error' }}">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        {% if category != 'error' %}
+        <polyline points="20 6 9 17 4 12"/>
+        {% else %}
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        {% endif %}
+      </svg>
+      {{ message }}
+    </div>
+    {% endfor %}
+  {% endwith %}
 
-      <aside class="skills-sidebar">
-        <div class="skills-sidebar-header">
-          <h2 class="skills-sidebar-title">Extraction Files</h2>
-          <p class="skills-sidebar-subtitle">Manage extraction prompt modules.</p>
-        </div>
+  <!-- Workspace form -->
+  <form id="skills-form" method="POST">
+    <input type="hidden" name="current_file" value="{{ skills_current_file or '' }}">
 
-        <div class="skills-filename-group">
-          <label class="input-label" for="skills-filename">Filename</label>
-          <div class="skills-filename-row">
-            <input type="text" id="skills-filename" name="filename" class="input" placeholder="extraction_new_rules" value="{{ skills_current_stem or '' }}">
-            <span class="skills-fixed-ext">.md</span>
+    <div class="workspace">
+
+      <!-- ── Sidebar ── -->
+      <aside class="sidebar">
+        <div class="sidebar-top">
+          <div class="sidebar-label">Filename</div>
+          <div class="filename-row">
+            <input
+              type="text"
+              id="skills-filename"
+              name="filename"
+              class="filename-input"
+              placeholder="my_skill_rules"
+              value="{{ skills_current_stem or '' }}">
+            <span class="filename-ext">.md</span>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-outline" type="submit"
+              formaction="{{ url_for('extraction.rename_skill_page') }}"
+              formmethod="POST">Rename</button>
+            <button class="btn btn-accent" type="submit"
+              formaction="{{ url_for('extraction.save_skill_page') }}"
+              formmethod="POST">Save</button>
           </div>
         </div>
 
-        <div class="skills-actions">
-          <button class="btn btn-secondary" type="submit" formaction="{{ url_for('extraction.rename_skill_page') }}" formmethod="POST">Rename</button>
-          <button class="btn btn-primary" type="submit" formaction="{{ url_for('extraction.save_skill_page') }}" formmethod="POST">Save</button>
+        <div class="folder-list">
+
+          <div class="folder">
+            <div class="folder-head" onclick="this.parentElement.classList.toggle('closed')">
+              <svg class="folder-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
+              Extraction Files
+            </div>
+            <div class="folder-body">
+              {% for file in skills_files %}
+              <div class="file-item {% if skills_current_file == file %}active{% endif %}">
+                <a href="{{ url_for('extraction.skills_page', file=file) }}" class="file-link">{{ file }}</a>
+                <a href="#" class="file-del" title="Delete"
+                   data-name="{{ file }}"
+                   data-url="{{ url_for('extraction.delete_skill_page', name=file) }}">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                    <path d="M10 11v6M14 11v6"/>
+                    <path d="M9 6V4h6v2"/>
+                  </svg>
+                </a>
+              </div>
+              {% endfor %}
+              {% if not skills_files %}
+              <div class="file-list-empty">
+                No extraction files yet.<br>
+                Click New File to start.
+              </div>
+              {% endif %}
+            </div>
+          </div>
+           <div class="folder">
+            <div class="folder-head" onclick="this.parentElement.classList.toggle('closed')">
+              <svg class="folder-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+              </svg>
+              Generation MiniApps
+            </div>
+            <div class="folder-body">
+              <div class="file-list-empty">No mini-app files yet.</div>
+            </div>
+          </div>
+          
+
+         
         </div>
 
-        <div class="skills-file-list">
-          {% for file in skills_files %}
-          <div class="skills-file-item {% if skills_current_file == file %}active{% endif %}" style="display:flex;align-items:center;justify-content:space-between;">
-            <a href="{{ url_for('extraction.skills_page', file=file) }}" class="skills-file-name">{{ file }}</a>
-            <a href="{{ url_for('extraction.delete_skill_page', name=file) }}" class="btn btn-ghost btn-icon btn-sm" style="background:rgba(239,68,68,0.1);color:#ef4444;border-radius:6px;" title="Delete">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                <path d="M10 11v6M14 11v6"/>
-                <path d="M9 6V4h6v2"/>
-              </svg>  
-            </a>
-          </div>
-          {% endfor %}
-        </div>
+        
       </aside>
 
-      <section class="skills-editor-panel">
-        <div class="skills-editor-header">
-          <div>
-            <h2 class="skills-editor-title">{{ skills_current_file or 'No file selected' }}</h2>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-              {% for category, message in messages %}
-                <p class="skills-editor-subtitle {% if category == 'error' %}text-error{% else %}text-success{% endif %}">{{ message }}</p>
-              {% endfor %}
-            {% endwith %}
+      <!-- ── Editor ── -->
+      <section class="editor-panel">
+        <div class="editor-tabbar">
+          <div class="editor-tab {% if skills_current_file %}has-file{% else %}no-file{% endif %}">
+            <div class="tab-dot {% if skills_current_file %}live{% else %}idle{% endif %}"></div>
+            <span class="tab-name">{{ skills_current_file or 'no file open' }}</span>
+            {% if skills_current_file %}
+            <span class="tab-type">md</span>
+            {% endif %}
           </div>
         </div>
-        <textarea id="skills-editor" name="content" class="skills-editor" placeholder="Select a skill file to edit its extraction prompt...">{{ skills_editor_content or '' }}</textarea>
+
+        <textarea
+          id="skills-editor"
+          name="content"
+          class="editor-textarea"
+          spellcheck="false"
+          placeholder="Select a file from the sidebar or create a new one to begin editing the extraction prompt...">{{ skills_editor_content or '' }}</textarea>
+
+        <div class="statusbar">
+          <div class="status-item {% if skills_current_file %}on{% endif %}">
+            <div class="status-pip"></div>
+            {{ 'editing' if skills_current_file else 'idle' }}
+          </div>
+          <div class="status-item">markdown</div>
+          <div class="status-right">careit vibe · skills</div>
+        </div>
       </section>
-    </form>
+
+    </div>
+  </form>
+
+  <!-- Delete confirmation modal -->
+  <div class="modal-backdrop" id="delete-modal">
+    <div class="modal">
+      <div class="modal-title">Delete file</div>
+      <div class="modal-body">Are you sure you want to delete <strong id="modal-filename"></strong>? This cannot be undone.</div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeDeleteModal()">Cancel</button>
+        <a id="modal-confirm-btn" href="#" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
   </div>
-</div>
-{% endblock %}
+
+  <script>
+    document.querySelectorAll('.file-del').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('modal-filename').textContent = btn.dataset.name;
+        document.getElementById('modal-confirm-btn').href = btn.dataset.url;
+        document.getElementById('delete-modal').classList.add('open');
+      });
+    });
+    function closeDeleteModal() {
+      document.getElementById('delete-modal').classList.remove('open');
+    }
+    document.getElementById('delete-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeDeleteModal();
+    });
+  </script>
+
+</body>
+</html>
