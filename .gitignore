@@ -19,4 +19,6 @@ instance/
 instance/careit_vibe.db
 generated_apps/
 
-generated_apps/
+# Extraction prompts (managed per-environment via skills UI)
+prompts/extraction/
+prompts/extraction copy/
