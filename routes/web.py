@@ -1,15 +1,22 @@
 import logging
+import threading
+import uuid
 from datetime import datetime
 
-from flask import Blueprint, render_template, request, flash, redirect, url_for, send_from_directory
-from models import db, Task, TaskStatus
+from flask import Blueprint, render_template, request, flash, redirect, url_for, send_from_directory, current_app
+from models import db, Task, TaskStatus, TaskComplexity
 from llm_service import ClaudeLLMService
-from services.patient_context_service import load_latest_patient_session
-from utils.auth import require_bearer
-from utils.helpers import OUTPUT_FOLDER
+from services.executor import execute_task
+from utils.auth import require_bearer, get_request_patient_session
+from utils.helpers import OUTPUT_FOLDER, add_task_log
 
 logger = logging.getLogger(__name__)
 web = Blueprint('web', __name__)
+
+
+def _execute_task_in_context(app, task_id):
+    with app.app_context():
+        execute_task(task_id)
 
 
 def _load_tasks() -> dict:
@@ -23,7 +30,7 @@ def _load_tasks() -> dict:
 
 
 def _render_dashboard():
-    session = load_latest_patient_session()
+    session = get_request_patient_session()
     if session:
         session.last_accessed = datetime.utcnow()
         db.session.commit()
@@ -67,6 +74,7 @@ def automation():
 
 
 @web.route('/generate-idea', methods=['POST'])
+@require_bearer
 def generate_idea_form():
     prompt = request.form.get('prompt', '').strip()
     if not prompt:
@@ -78,6 +86,45 @@ def generate_idea_form():
     except Exception as e:
         logger.error(f"Error generating idea: {e}")
         return render_template('generate.html', error=str(e))
+
+
+@web.route('/create-miniapp', methods=['POST'])
+@require_bearer
+def create_miniapp_form():
+    title = (request.form.get('title') or request.form.get('prompt') or 'SMART on FHIR Mini App').strip()
+    description = (request.form.get('description') or request.form.get('prompt') or '').strip()
+    specification = (request.form.get('specification') or '').strip()
+    complexity_str = request.form.get('complexity', 'standard')
+    complexity = TaskComplexity[complexity_str] if complexity_str in TaskComplexity.__members__ else TaskComplexity.standard
+
+    if not title:
+        flash('Task title is required', 'error')
+        return redirect(request.referrer or url_for('web.generate'))
+
+    patient_session = get_request_patient_session()
+    if not patient_session:
+        flash('No patient session found. Please connect to FHIR server and load patient data first.', 'error')
+        return redirect(request.referrer or url_for('web.generate'))
+
+    task_id = str(uuid.uuid4())
+    task = Task(
+        id=task_id,
+        title=title[:500],
+        description=description,
+        specification=specification,
+        complexity=complexity,
+        status=TaskStatus.pending,
+        patient_id=patient_session.patient_id,
+        fhir_base_url=patient_session.fhir_base_url,
+        patient_data=patient_session.patient_data,
+    )
+    db.session.add(task)
+    db.session.commit()
+    add_task_log(task_id, f"Task created: {title}. Starting generation.", 'info')
+
+    app = current_app._get_current_object()
+    threading.Thread(target=lambda: _execute_task_in_context(app, task_id), daemon=True).start()
+    return redirect(url_for('web.index'))
 
 
 @web.route('/generated_apps/<path:filename>')

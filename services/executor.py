@@ -3,9 +3,9 @@ import logging
 from datetime import datetime, timezone
 
 from flask import request
+from direct_fhir import get_patient_data_direct
 from models import db, Task, TaskStatus, Generation
 from llm_service import ClaudeLLMService
-from fhir_service import get_patient_data_for_llm
 from services.context_formatter import format_context
 from services.retrieval_executor import execute_retrieval, get_supported_resources
 from services.retrieval_planner import plan_retrieval
@@ -74,7 +74,7 @@ def execute_task(task_id: str):
             fhir_token = request.cookies.get('fhir_token', '') if request else ''
             if fhir_token:
                 try:
-                    patient_data = get_patient_data_for_llm(task.fhir_base_url, fhir_token, task.patient_id)
+                    patient_data = get_patient_data_direct({'fhir_base_url': task.fhir_base_url, 'auth_token': fhir_token, 'patient_id': task.patient_id})
                     task.patient_data = patient_data
                     db.session.commit()
                     print(f"[EXECUTE-TASK] Patient data fetched from FHIR")
@@ -371,7 +371,7 @@ def run_generation(app, task_id: str, prompt: str, patient_id: str, fhir_base_ur
 
 def _build_generation_context(prompt: str, patient_id: str, fhir_base_url: str, access_token: str):
     print(f"[QUICK-GENERATE] Building generation context for patient={patient_id}", flush=True)
-    print(f"[DEBUG] fhir_base_url={fhir_base_url} | token={'NONE' if not access_token else access_token[:30] + '...'}", flush=True)
+    print(f"[DEBUG] fhir_base_url={fhir_base_url} | token_present={bool(access_token)}", flush=True)
     resources = get_supported_resources(fhir_base_url, access_token, patient_id)
     plan = plan_retrieval(prompt, patient_id, resources)
     raw_data = execute_retrieval(plan, fhir_base_url, access_token, patient_id)

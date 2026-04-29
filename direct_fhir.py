@@ -29,7 +29,7 @@ class DirectFHIRClient:
             "[DIRECT-FHIR][INIT] "
             f"patient_id={self.patient_id!r} "
             f"base_url={self.base_url!r} "
-            f"auth_prefix={self.headers['Authorization'][:40]}...",
+            f"auth_present={bool(self.auth_token)}",
             flush=True,
         )
 
@@ -39,9 +39,7 @@ class DirectFHIRClient:
                 "[DIRECT-FHIR][GET] "
                 f"url={self.base_url}/{endpoint} "
                 f"params={params} "
-                f"auth_prefix={self.headers['Authorization'][:40]}... "
-                f"token_start={self.auth_token[:24]} "
-                f"token_end={self.auth_token[-24:]}",
+                f"auth_present={bool(self.auth_token)}",
                 flush=True,
             )
             r = requests.get(f"{self.base_url}/{endpoint}", headers=self.headers, params=params, timeout=30)
@@ -222,12 +220,12 @@ class DirectFHIRClient:
         result = {'patient': self._patient_info(self._get(f'Patient/{self.patient_id}'))}
 
         for rtype, param in self._supported_resource_types():
-            result[rtype.lower()] = self._as_entry(self._fetch(rtype, param))
-            logger.info(f"  {rtype}: {result[rtype.lower()]['count']} records")
+            result[rtype] = self._as_entry(self._fetch(rtype, param))
+            logger.info(f"  {rtype}: {result[rtype]['count']} records")
 
         result['vital_signs'] = self._as_entry(self._fetch('Observation', 'patient', {'category': 'vital-signs'}))
 
-        encounters = result.get('encounter', {}).get('resources', [])
+        encounters = result.get('Encounter', {}).get('resources', [])
         location_records = self._fetch_locations(encounters)
         result['locations'] = {'count': len(location_records), 'resources': location_records, 'summary': location_records}
 
@@ -251,11 +249,10 @@ class DirectFHIRClient:
             for record in all_records:
                 pid = self._patient_ref(record)
                 if pid in patients_by_id:
-                    patients_by_id[pid]['data'].setdefault(rtype.lower(), []).append(self._flatten(record))
+                    patients_by_id[pid]['data'].setdefault(rtype, []).append(self._flatten(record))
                     matched += 1
             if all_records and matched == 0:
-                # No patient references found — treat as standalone context (e.g. Location)
-                context[rtype.lower()] = self._as_entry(all_records)
+                context[rtype] = self._as_entry(all_records)
 
         all_vs = self._fetch_all('Observation?category=vital-signs')
         print(f"[ALL-PATIENTS] vital_signs: fetched {len(all_vs)} records", flush=True)
@@ -279,7 +276,7 @@ class DirectFHIRClient:
                     records = self._fetch_all(rtype)
                     print(f"[ALL-PATIENTS] {rtype}: fetched {len(records)} records", flush=True)
                     if records:
-                        context[rtype.lower()] = self._as_entry(records)
+                        context[rtype] = self._as_entry(records)
 
         return {
             'patient': {'id': 'all', 'name': 'All Patients', 'count': len(patients)},
@@ -304,10 +301,10 @@ class DirectFHIRClient:
             for record in all_records:
                 pid = self._patient_ref(record)
                 if pid in patients_by_id:
-                    patients_by_id[pid]['data'].setdefault(rtype.lower(), []).append(self._flatten(record))
+                    patients_by_id[pid]['data'].setdefault(rtype, []).append(self._flatten(record))
                     matched += 1
             if all_records and matched == 0:
-                context[rtype.lower()] = self._as_entry(all_records)
+                context[rtype] = self._as_entry(all_records)
 
         return {
             'patient': {'id': 'all', 'name': 'All Patients', 'count': len(patients)},

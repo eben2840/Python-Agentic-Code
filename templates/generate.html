@@ -111,10 +111,6 @@
 
 {% block scripts %}
 <script>
-  // Page flow is active — disable JS fetch handlers for this page
-  document.getElementById('generate-idea-btn')?.removeEventListener('click', window.generateIdea);
-  document.getElementById('regenerate-idea-btn')?.removeEventListener('click', window.generateIdea);
-
   {% if generated_idea %}
   window.app.currentIdea = {
     prompt:  {{ idea_prompt | tojson }},

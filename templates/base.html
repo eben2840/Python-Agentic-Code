@@ -117,7 +117,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="create-task-form" method="POST" action="/api/tasks">
+        <form id="create-task-form" method="POST" action="{{ url_for('web.create_miniapp_form') }}">
           <div class="input-group">
             <label class="input-label" for="task-title">Task Title *</label>
             <input type="text" id="task-title" name="title" class="input" placeholder="e.g., Build a todo app with React" required>
@@ -142,7 +142,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" data-close-modal>Cancel</button>
-        <button class="btn btn-primary" id="submit-task-btn">Create Task</button>
+        <button class="btn btn-primary" id="submit-task-btn" type="submit" form="create-task-form">Create Task</button>
       </div>
     </div>
   </div>
@@ -461,50 +461,6 @@
   {% endblock %}
 
   <script>
-    window.PATIENT_DATA = null;
-    window.FHIR_CONFIG = {
-      fhirBaseUrl: '{{ fhir_base_url or "" }}',
-      patientId: '{{ patient_id or "" }}',
-      accessToken: '{{ auth_token or "" }}'
-    };
-
-    function getCookie(name) {
-      var value = '; ' + document.cookie;
-      var parts = value.split(';' + name + '=');
-      if (parts.length === 2) return parts.pop().split(';').shift();
-      return '';
-    }
-
-    async function parsePatientData() {
-      var fhirBaseUrl = getCookie('fhir_base_url');
-      var patientId   = getCookie('patient_id');
-      var patientName = getCookie('patient_name');
-      try {
-        const response = await fetch('/api/backend/session-status', {
-          headers: { 'Authorization': `Bearer ${window.FHIR_CONFIG.accessToken}` }
-        });
-        const sessionData = await response.json();
-        if (sessionData.authenticated && sessionData.session_data) {
-          const session = sessionData.session_data;
-          window.PATIENT_DATA = {
-            fhir_base_url: session.fhir_base_url || fhirBaseUrl,
-            patient_id:    session.patient_id    || patientId,
-            patient_name:  session.patient_name  || patientName,
-            patient_data_summary: session.patient_data
-          };
-        } else {
-          window.PATIENT_DATA = { fhir_base_url: fhirBaseUrl, patient_id: patientId, patient_name: patientName };
-        }
-      } catch (e) {
-        window.PATIENT_DATA = { fhir_base_url: fhirBaseUrl, patient_id: patientId, patient_name: patientName };
-      }
-      window.FHIR_CONFIG.fhirBaseUrl  = window.PATIENT_DATA.fhir_base_url;
-      window.FHIR_CONFIG.patientId    = window.PATIENT_DATA.patient_id;
-      window.FHIR_CONFIG.accessToken  = getCookie('fhir_token') || window.FHIR_CONFIG.accessToken;
-    }
-
-    parsePatientData();
-
     window.onerror = function(message, source, lineno, colno, error) {
       console.error('[Global Error]', { message, source, lineno, colno, error });
       return true;
