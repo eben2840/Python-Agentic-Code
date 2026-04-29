@@ -2,7 +2,7 @@ import json
 import re
 from pathlib import Path
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from utils.auth import require_bearer
+from utils.auth import require_bearer, require_bearer_or_basic
 
 
 extraction = Blueprint('extraction', __name__)
@@ -43,7 +43,7 @@ def _redirect(file=None):
 
 
 @extraction.get('/skills')
-@require_bearer
+# @require_bearer_or_basic
 def skills_page():
     files = _read_manifest()
     current = request.args.get('file') or (files[0] if files else '')
@@ -62,7 +62,7 @@ def skills_page():
 
 
 @extraction.post('/skills/new')
-@require_bearer
+# @require_bearer_or_basic
 def new_skill_page():
     files = _read_manifest()
     stem, counter, candidate = 'new_skill', 1, 'new_skill.md'
@@ -77,7 +77,7 @@ def new_skill_page():
 
 
 @extraction.post('/skills/save')
-@require_bearer
+# @require_bearer_or_basic
 def save_skill_page():
     try:
         name = request.form.get('current_file', '')
@@ -94,7 +94,7 @@ def save_skill_page():
 
 
 @extraction.post('/skills/rename')
-@require_bearer
+# @require_bearer_or_basic
 def rename_skill_page():
     try:
         old_name = request.form.get('current_file', '')
@@ -117,7 +117,7 @@ def rename_skill_page():
 
 
 @extraction.get('/skills/delete/<name>')
-@require_bearer
+# @require_bearer_or_basic
 def delete_skill_page(name):
     try:
         path = _file_path(name)

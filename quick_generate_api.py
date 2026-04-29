@@ -90,76 +90,36 @@ def extract_transcript():
 
 
 
+# @quick_generate.route('/v1/extract/', methods=['POST'])
+# @require_bearer_or_basic
+# def extract_transcript_careit_voice():
+#     data       = request.get_json()
+#     transcript = (data.get('transcript') or '').strip()
 
-
-# cristian extraction model for backend testing,
-@quick_generate.route('/questionnaire/v1', methods=['POST'])
-@require_bearer_or_basic
-def extract_questionnaire():
-    data          = request.get_json()
-    transcript    = (data.get('transcript') or '').strip()
-    questionnaire = (data.get('questionnaire') or '').strip()
-
-    if not transcript:
-        return jsonify({'status': 'error', 'error': 'transcript is required'}), 400
-    if not questionnaire:
-        return jsonify({'status': 'error', 'error': 'questionnaire is required'}), 400
-
-    system = _load_prompt(
-        'extraction/extraction_questionnaire.md',
-        transcription=transcript,
-        itemsDescription=questionnaire,
-    )
-  
-    llm      = ClaudeLLMService()
-    response = llm.client.messages.create(
-        model=llm.model,
-        max_tokens=1024,
-        system=system,
-        messages=[{"role": "user", "content": transcript}]
-    )
-
-    raw = response.content[0].text.strip()
-    if raw.startswith("```"):
-        raw = raw.split("```", 2)[1]
-        if raw.startswith("json"):
-            raw = raw[4:]
-        raw = raw.rstrip("`").strip()
-    questionnaire = json.loads(raw)
-    return jsonify({'status': 'ok', 'questionnaire': questionnaire, 'transcript': transcript,'code': 200, 'message': 'Questionnaire extracted'})
-
-
-
-@quick_generate.route('/v1/extract/', methods=['POST'])
-@require_bearer_or_basic
-def extract_transcript_careit_voice():
-    data       = request.get_json()
-    transcript = (data.get('transcript') or '').strip()
-
-    if not transcript:
-        return jsonify({'status': 'error', 'error': 'transcript is required'}), 400
+#     if not transcript:
+#         return jsonify({'status': 'error', 'error': 'transcript is required'}), 400
     
-    _EXTRACTION_SYSTEM = _build_extraction_system()
+#     _EXTRACTION_SYSTEM = _build_extraction_system()
 
-    llm      = ClaudeLLMService()
-    response = llm.client.messages.create(
-        model=llm.model,
-        max_tokens=1024,
-        system=_EXTRACTION_SYSTEM,
-        messages=[{"role": "user", "content": transcript}]
-    )
-    extracted = _parse_json_response(response.content[0].text)
-    print("Extracted data:===============================", extracted)
-    print("Extracted data:", extracted)
-    payload = {
-    'extracted': extracted,
-    'empty': not any(extracted.values()),
-    'transcript': transcript,
-    'code': 200,
-    'message': 'Data extracted'
-        }
-    print("extract response payload:", payload)
-    return jsonify(payload)
+#     llm      = ClaudeLLMService()
+#     response = llm.client.messages.create(
+#         model=llm.model,
+#         max_tokens=1024,
+#         system=_EXTRACTION_SYSTEM,
+#         messages=[{"role": "user", "content": transcript}]
+#     )
+#     extracted = _parse_json_response(response.content[0].text)
+#     print("Extracted data:===============================", extracted)
+#     print("Extracted data:", extracted)
+#     payload = {
+#     'extracted': extracted,
+#     'empty': not any(extracted.values()),
+#     'transcript': transcript,
+#     'code': 200,
+#     'message': 'Data extracted'
+#         }
+#     print("extract response payload:", payload)
+#     return jsonify(payload)
 
 
 

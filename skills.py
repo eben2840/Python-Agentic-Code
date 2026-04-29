@@ -3,7 +3,7 @@ import uuid
 import json
 import logging
 import threading
-
+import re
 from flask import Blueprint, request, jsonify, url_for, current_app
 
 from models import db, Task, TaskStatus, TaskComplexity, TaskLog
@@ -40,41 +40,47 @@ def _parse_json_response(raw: str):
 
 
 
-
-
-# @skills.route('/questionnaire/v1', methods=['POST'])
-# @require_bearer_or_basic
-# def extract_questionnaire():
-#     data          = request.get_json()
-#     transcript    = (data.get('transcript') or '').strip()
-#     questionnaire = (data.get('questionnaire') or '').strip()
-
-#     if not transcript:
-#         return jsonify({'status': 'error', 'error': 'transcript is required'}), 400
-#     if not questionnaire:
-#         return jsonify({'status': 'error', 'error': 'questionnaire is required'}), 400
-
-#     system = _load_prompt(
-#         'extraction/extraction_questionnaire.md',
-#         transcription=transcript,
-#         itemsDescription=questionnaire,
-#     )
-  
-#     llm      = ClaudeLLMService()
-#     response = llm.client.messages.create(
-#         model=llm.model,
-#         max_tokens=1024,
-#         system=system,
-#         messages=[{"role": "user", "content": transcript}]
-#     )
-
-#     questionnaire = _parse_json_response(response.content[0].text)
-    
-#     return jsonify({'status': 'ok', 'questionnaire': questionnaire, 'transcript': transcript,'code': 200, 'message': 'Questionnaire extracted'})
-
-
 # cristian extraction model for backend testing,
-@skills.route('/v1/extract/', methods=['POST'])
+@skills.route('/questionnaire/v1/', methods=['POST'])
+@require_bearer_or_basic
+def extract_questionnaire():
+    data          = request.get_json()
+    transcript    = (data.get('transcript') or '').strip()
+    questionnaire = (data.get('questionnaire') or '').strip()
+
+    if not transcript:
+        return jsonify({'status': 'error', 'error': 'transcript is required'}), 400
+    if not questionnaire:
+        return jsonify({'status': 'error', 'error': 'questionnaire is required'}), 400
+
+    system = _load_prompt(
+        'extraction/extraction_questionnaire.md',
+        transcription=transcript,
+        itemsDescription=questionnaire,
+    )
+  
+    llm      = ClaudeLLMService()
+    response = llm.client.messages.create(
+        model=llm.model,
+        max_tokens=1024,
+        system=system,
+        messages=[{"role": "user", "content": transcript}]
+    )
+
+    
+    raw = response.content[0].text.strip()
+    match = re.search(r'```(?:json)?\s*([\s\S]*?)```', raw)
+    if match:
+        raw = match.group(1).strip()
+    if not raw:
+        return jsonify({'status': 'error', 'error': 'LLM returned no JSON'}), 500
+    questionnaire = json.loads(raw)
+    return jsonify({'status': 'ok', 'questionnaire': questionnaire, 'transcript': transcript, 'code': 200, 'message': 'Questionnaire extracted'})
+
+
+
+
+@skills.route('/extraction/v1/', methods=['POST'])
 @require_bearer_or_basic
 def extract_transcript_skills():
     data       = request.get_json()
