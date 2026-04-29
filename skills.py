@@ -57,7 +57,7 @@ def extract_questionnaire():
         'extraction/extraction_questionnaire.md',
         transcription=transcript,
         itemsDescription=questionnaire,
-    )
+    )   
   
     llm      = ClaudeLLMService()
     response = llm.client.messages.create(
