@@ -1,4 +1,5 @@
 from functools import wraps
+import os
 from flask import make_response, request, render_template, jsonify
 import requests as http_requests
 from models import PatientSession
@@ -120,13 +121,7 @@ def require_bearer(f):
 def _validate_basic_with_cdr(auth_header: str) -> bool:
     """Forward the Basic Auth header to Smile CDR /metadata to validate credentials."""
     try:
-        from models import PatientSession
-        session = PatientSession.query.order_by(
-            PatientSession.last_accessed.desc()
-        ).first()
-        if not session or not session.fhir_base_url:
-            return False
-        cdr_url = session.fhir_base_url.rstrip('/')
+        cdr_url = (os.getenv('CAREIT_BASE_URL') or '').rstrip('/')
         resp = http_requests.get(
             f"{cdr_url}/metadata",
             headers={'Authorization': auth_header},
@@ -137,15 +132,22 @@ def _validate_basic_with_cdr(auth_header: str) -> bool:
         return False
 
 
+def validate_careit_admin_login(username: str, password: str) -> bool:
+    return username == os.getenv('CAREIT_USERNAME') and password == os.getenv('CAREIT_PASSWORD')
+
+
 def require_bearer_or_basic(f):
     """Accept Bearer token, fhir_token cookie, OR Smile CDR basic auth."""
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.headers.get('Authorization', '')
         if _bearer_token():
+            _init_patient_session(_bearer_token())
             return f(*args, **kwargs)
         session_id = request.cookies.get('careit_session_id')
-        if session_id and PatientSession.query.get(session_id):
+        session = PatientSession.query.get(session_id) if session_id else None
+        scope = _request_session_scope()
+        if session and session.patient_id == scope['patient_id'] and session.fhir_base_url == scope['fhir_base_url']:
             return f(*args, **kwargs)
         if auth.startswith('Basic ') and _validate_basic_with_cdr(auth):
             return f(*args, **kwargs)

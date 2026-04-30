@@ -43,6 +43,7 @@ from routes.location     import location
 from routes.bookmarks    import bookmarks
 from routes.extraction   import extraction
 from skills        import skills
+from admin         import admin
 from backend_service     import backend_service
 from quick_generate_api  import quick_generate
 
@@ -55,6 +56,7 @@ app.register_blueprint(location)
 app.register_blueprint(bookmarks)
 app.register_blueprint(extraction)
 app.register_blueprint(skills)
+app.register_blueprint(admin)
 app.register_blueprint(backend_service)
 app.register_blueprint(quick_generate)
 
