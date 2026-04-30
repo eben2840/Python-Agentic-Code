@@ -5,6 +5,7 @@ import threading
 from flask import Blueprint, request, jsonify, redirect, url_for, current_app
 
 from models import db, Task, TaskStatus, TaskComplexity
+from utils.auth import require_bearer
 from utils.helpers import add_task_log
 from services.executor import execute_task, execute_continuation_task
 from services.patient_context_service import load_latest_patient_session
@@ -23,6 +24,7 @@ def _run_in_context(app, fn, *args):
 
 
 @tasks_api.route('/api/tasks', methods=['GET'])
+@require_bearer
 def get_tasks():
     """Get all tasks"""
     print(f"[DEBUG] GET /api/tasks - fetching all tasks")
@@ -32,6 +34,7 @@ def get_tasks():
 
 
 @tasks_api.route('/api/tasks/<task_id>', methods=['GET'])
+@require_bearer
 def get_task(task_id):
     """Get a specific task"""
     task = Task.query.get(task_id)
@@ -41,6 +44,7 @@ def get_task(task_id):
 
 
 @tasks_api.route('/api/tasks/<task_id>', methods=['PATCH', 'PUT'])
+@require_bearer
 def update_task(task_id):
     """Update a task"""
     task = Task.query.get(task_id)
@@ -65,6 +69,7 @@ def update_task(task_id):
 
 
 @tasks_api.route('/api/tasks/<task_id>', methods=['DELETE'])
+@require_bearer
 def delete_task(task_id):
     """Delete a task"""
     task = Task.query.get(task_id)
@@ -77,6 +82,7 @@ def delete_task(task_id):
 
 
 @tasks_api.route('/api/tasks/<task_id>/run', methods=['POST'])
+@require_bearer
 def run_task(task_id):
     """Run/restart a task"""
     task = Task.query.get(task_id)
@@ -95,6 +101,7 @@ def run_task(task_id):
 
 
 @tasks_api.route('/api/tasks/<task_id>/cancel', methods=['POST'])
+@require_bearer
 def cancel_task(task_id):
     """Cancel a running task — move to pending"""
     task = Task.query.get(task_id)
@@ -114,6 +121,7 @@ def cancel_task(task_id):
 
 
 @tasks_api.route('/api/tasks/<task_id>/continue', methods=['POST'])
+@require_bearer
 def continue_task(task_id):
     """Continue a completed task with incremental changes"""
     task = Task.query.get(task_id)
@@ -148,6 +156,7 @@ def continue_task(task_id):
 
 
 @tasks_api.route('/api/tasks/<task_id>/logs', methods=['GET'])
+@require_bearer
 def get_task_logs(task_id):
     """Get logs for a task"""
     from models import TaskLog

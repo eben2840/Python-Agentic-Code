@@ -1,8 +1,13 @@
 from functools import wraps
 from flask import make_response, request, render_template, jsonify
 import requests as http_requests
+from models import PatientSession
 from services.patient_context_service import load_latest_patient_session
 from services.patient_context_service import load_patient_context
+
+
+
+SESSION_COOKIE_MAX_AGE = 8 * 60 * 60
 
 def _bearer_token() -> str:
     auth_header = request.headers.get('Authorization', '')
@@ -18,11 +23,9 @@ def _bearer_token() -> str:
 
 def _request_access_token() -> str:
     bearer = _bearer_token()
-    cookie = request.cookies.get('fhir_token', '')
-    qparam = request.args.get('fhir_token', '')
-    result = bearer or cookie or qparam
-    source = 'bearer' if bearer else 'cookie' if cookie else 'qparam' if qparam else 'NONE'
-    print(f"[AUTH:_request_access_token] bearer={bool(bearer)} cookie={bool(cookie)} qparam={bool(qparam)} using={source}", flush=True)
+    result = bearer
+    source = 'bearer' if bearer else 'NONE'
+    print(f"[AUTH:_request_access_token] bearer={bool(bearer)} cookie={bool(request.cookies.get('careit_session_id'))} using={source}", flush=True)
     return result
 
 
@@ -37,9 +40,12 @@ def _request_session_scope() -> dict:
 def get_request_patient_session():
     scope = _request_session_scope()
     print(f"[AUTH:get_request_patient_session] looking up DB session for patient_id={scope['patient_id']!r} fhir_base={scope['fhir_base_url']!r}", flush=True)
+    if not (scope['patient_id'] and scope['fhir_base_url']):
+        print(f"[AUTH:get_request_patient_session] DB result=NOT FOUND — missing patient_id or fhir_base", flush=True)
+        return None
     session = load_latest_patient_session(
-        patient_id=scope['patient_id'] or None,
-        fhir_base_url=scope['fhir_base_url'] or None,
+        patient_id=scope['patient_id'],
+        fhir_base_url=scope['fhir_base_url'],
         access_token=scope['access_token'] or None,
     )
     print(f"[AUTH:get_request_patient_session] DB result={'FOUND patient=' + str(session.patient_id) if session else 'NOT FOUND'}", flush=True)
@@ -61,6 +67,7 @@ def _init_patient_session(access_token: str) -> None:
         access_token=access_token,
     )
     print(f"[AUTH:_init_patient_session] done — reused={result.reused if result else 'N/A'} patient_name={result.patient_name if result else 'N/A'}", flush=True)
+    return result.session if result else None
 
 
 def _deny_access():
@@ -82,28 +89,32 @@ def require_bearer(f):
         print(f"[AUTH] access_token_present={bool(access_token)} bearer_present={bool(_bearer_token())}", flush=True)
         if _bearer_token():
             print(f"[AUTH] path=BEARER — calling _init_patient_session", flush=True)
-            _init_patient_session(access_token)
+            session = _init_patient_session(access_token)
             response = make_response(f(*args, **kwargs))
             patient_id = request.headers.get('X-Patient-Id', '')
             fhir_base_url = request.headers.get('X-FHIR-Base', '')
-            response.set_cookie('fhir_token', access_token, samesite='Lax')
+            if session:
+                response.set_cookie('careit_session_id', session.id, httponly=True, secure=request.is_secure, samesite='Lax', max_age=SESSION_COOKIE_MAX_AGE,)  # 8 hours
             if patient_id:
-                response.set_cookie('patient_id', patient_id, samesite='Lax')
+                response.set_cookie('patient_id', patient_id, httponly=True, secure=request.is_secure, samesite='Lax',max_age=SESSION_COOKIE_MAX_AGE,)
             if fhir_base_url:
-                response.set_cookie('fhir_base_url', fhir_base_url, samesite='Lax')
-            print(f"[AUTH] cookies SET on response: fhir_token=True patient_id={bool(patient_id)} fhir_base_url={bool(fhir_base_url)}", flush=True)
+                response.set_cookie('fhir_base_url', fhir_base_url, httponly=True, secure=request.is_secure, samesite='Lax', max_age=SESSION_COOKIE_MAX_AGE,)
+            print(f"[AUTH] cookies SET on response: careit_session_id={bool(session)} patient_id={bool(patient_id)} fhir_base_url={bool(fhir_base_url)}", flush=True)
             return response
-        if access_token:
-            print(f"[AUTH] path=COOKIE — token from cookie, skipping init", flush=True)
-            return f(*args, **kwargs)
-        existing_session = load_latest_patient_session()
-        if existing_session:     
-            print(f"[AUTH] path=EXISTING_SESSION — found existing session for patient_id={existing_session.patient_id}, skipping init", flush=True)                                                                                                                                  
-            return f(*args, **kwargs)
-        reason = "Authorization header is Bearer with no token" if token.lower().startswith('bearer') else "no Bearer token and no fhir_token cookie"
+        session_id = request.cookies.get('careit_session_id')
+        if session_id:
+            scope = _request_session_scope()
+            existing_session = PatientSession.query.get(session_id)
+            if existing_session and existing_session.patient_id == scope['patient_id'] and existing_session.fhir_base_url == scope['fhir_base_url']:
+                print(f"[AUTH] path=COOKIE — matching session found for patient_id={existing_session.patient_id}, skipping init", flush=True)
+                return f(*args, **kwargs)
+            print(f"[AUTH] DENIED {request.path} — careit_session_id cookie did not match a scoped session", flush=True)
+            return _deny_access()
+        reason = "Authorization header is Bearer with no token" if token.lower().startswith('bearer') else "no Bearer token and no careit_session_id cookie"
         print(f"[AUTH] DENIED {request.path} — {reason}", flush=True)
         return _deny_access()
     return decorated
+
 
 
 def _validate_basic_with_cdr(auth_header: str) -> bool:
@@ -133,7 +144,8 @@ def require_bearer_or_basic(f):
         auth = request.headers.get('Authorization', '')
         if _bearer_token():
             return f(*args, **kwargs)
-        if request.cookies.get('fhir_token'):
+        session_id = request.cookies.get('careit_session_id')
+        if session_id and PatientSession.query.get(session_id):
             return f(*args, **kwargs)
         if auth.startswith('Basic ') and _validate_basic_with_cdr(auth):
             return f(*args, **kwargs)
