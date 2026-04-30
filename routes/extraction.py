@@ -2,7 +2,6 @@ import json
 import re
 from pathlib import Path
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from utils.auth import require_bearer, require_bearer_or_basic
 
 
 extraction = Blueprint('extraction', __name__)
@@ -69,7 +68,7 @@ def new_skill_page():
     while candidate in files:
         candidate = f'{stem}_{counter}.md'
         counter += 1
-    _file_path(candidate).write_text('')
+    _file_path(candidate).write_text('', encoding='utf-8')
     _write_manifest(files + [candidate])
     flash('New skill created', 'success')
     return _redirect(candidate)
@@ -85,7 +84,7 @@ def save_skill_page():
         if not path.exists():
             flash('File not found', 'error')
             return _redirect()
-        path.write_text(request.form.get('content', ''))
+        path.write_text(request.form.get('content', ''), encoding='utf-8')
         flash('Saved', 'success')
         return _redirect(name)
     except ValueError:
