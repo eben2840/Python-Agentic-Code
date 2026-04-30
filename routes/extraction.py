@@ -14,7 +14,7 @@ NAME_RE = re.compile(r'^[A-Za-z0-9_-]+$')
 def _read_manifest():
     if not INDEX_FILE.exists():
         return []
-    return json.loads(INDEX_FILE.read_text()).get('files', [])
+    return json.loads(INDEX_FILE.read_text(encoding='utf-8')).get('files', [])
 
 
 def _write_manifest(files):
