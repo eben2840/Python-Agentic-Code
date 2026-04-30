@@ -90,37 +90,6 @@ def extract_transcript():
 
 
 
-# @quick_generate.route('/v1/extract/', methods=['POST'])
-# @require_bearer_or_basic
-# def extract_transcript_careit_voice():
-#     data       = request.get_json()
-#     transcript = (data.get('transcript') or '').strip()
-
-#     if not transcript:
-#         return jsonify({'status': 'error', 'error': 'transcript is required'}), 400
-    
-#     _EXTRACTION_SYSTEM = _build_extraction_system()
-
-#     llm      = ClaudeLLMService()
-#     response = llm.client.messages.create(
-#         model=llm.model,
-#         max_tokens=1024,
-#         system=_EXTRACTION_SYSTEM,
-#         messages=[{"role": "user", "content": transcript}]
-#     )
-#     extracted = _parse_json_response(response.content[0].text)
-#     print("Extracted data:===============================", extracted)
-#     print("Extracted data:", extracted)
-#     payload = {
-#     'extracted': extracted,
-#     'empty': not any(extracted.values()),
-#     'transcript': transcript,
-#     'code': 200,
-#     'message': 'Data extracted'
-#         }
-#     print("extract response payload:", payload)
-#     return jsonify(payload)
-
 
 
 @quick_generate.route('/generate', methods=['POST'])

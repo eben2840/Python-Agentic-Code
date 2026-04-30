@@ -31,6 +31,7 @@ def mini_apps_page():
 
 
 @mini_apps.route('/mini-apps/<task_id>')
+@require_bearer
 def mini_app_preview(task_id):
     """Preview a mini app"""
     print(f"[MINI-APP-PREVIEW] Loading preview for task {task_id}")
@@ -227,6 +228,7 @@ def delete_from_careit_web(task_id):
 
 
 @mini_apps.route('/mini-apps/<task_id>/raw')
+@require_bearer
 def mini_app_raw(task_id):
     """Get raw HTML content for iframe embedding"""
     task = Task.query.get(task_id)
