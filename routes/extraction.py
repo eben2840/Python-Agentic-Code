@@ -2,6 +2,8 @@ import json
 import re
 from pathlib import Path
 from flask import Blueprint, flash, redirect, render_template, request, url_for
+from admin import require_admin
+from utils.auth import require_bearer_or_basic
 
 
 extraction = Blueprint('extraction', __name__)
@@ -18,7 +20,7 @@ def _read_manifest():
 
 
 def _write_manifest(files):
-    INDEX_FILE.write_text(json.dumps({'files': files}, indent=2))
+    INDEX_FILE.write_text(json.dumps({'files': files}, indent=2), encoding='utf-8')
 
 
 def _filename(stem):
@@ -42,12 +44,12 @@ def _redirect(file=None):
 
 
 @extraction.get('/skills')
-# @require_bearer_or_basic
+@require_admin
 def skills_page():
     files = _read_manifest()
     current = request.args.get('file') or (files[0] if files else '')
     try:
-        content = _file_path(current).read_text() if current else ''
+        content = _file_path(current).read_text(encoding='utf-8') if current else ''
     except (ValueError, FileNotFoundError):
         current, content = '', ''
     return render_template(
@@ -61,7 +63,7 @@ def skills_page():
 
 
 @extraction.post('/skills/new')
-# @require_bearer_or_basic
+@require_admin
 def new_skill_page():
     files = _read_manifest()
     stem, counter, candidate = 'new_skill', 1, 'new_skill.md'
@@ -76,7 +78,7 @@ def new_skill_page():
 
 
 @extraction.post('/skills/save')
-# @require_bearer_or_basic
+@require_admin
 def save_skill_page():
     try:
         name = request.form.get('current_file', '')
@@ -93,7 +95,7 @@ def save_skill_page():
 
 
 @extraction.post('/skills/rename')
-# @require_bearer_or_basic
+@require_admin
 def rename_skill_page():
     try:
         old_name = request.form.get('current_file', '')
@@ -116,7 +118,7 @@ def rename_skill_page():
 
 
 @extraction.get('/skills/delete/<name>')
-# @require_bearer_or_basic
+@require_admin
 def delete_skill_page(name):
     try:
         path = _file_path(name)
