@@ -5,12 +5,7 @@ import logging
 import threading
 import re
 from flask import Blueprint, request, jsonify, url_for, current_app
-
-from models import db, Task, TaskStatus, TaskComplexity, TaskLog
-from direct_fhir import get_patient_data_direct
-from utils.helpers import add_task_log
 from utils.auth import require_bearer, require_bearer_or_basic
-from services.executor import run_generation
 from llm_service import _PROMPTS_DIR, ClaudeLLMService
 
 logger = logging.getLogger(__name__)
