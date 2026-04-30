@@ -133,7 +133,7 @@ def _validate_basic_with_cdr(auth_header: str) -> bool:
 
 
 def validate_careit_admin_login(username: str, password: str) -> bool:
-    return username == os.getenv('CAREIT_USERNAME') and password == os.getenv('CAREIT_PASSWORD')
+    return username == os.getenv('PROMPT_USERNAME') and password == os.getenv('PROMPT_PASSWORD')
 
 
 def require_bearer_or_basic(f):
