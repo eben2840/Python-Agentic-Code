@@ -8,7 +8,7 @@ from services.patient_context_service import load_patient_context
 
 
 
-SESSION_COOKIE_MAX_AGE = 8 * 60 * 60
+# SESSION_COOKIE_MAX_AGE = 8 * 60 * 60
 
 def _bearer_token() -> str:
     auth_header = request.headers.get('Authorization', '')
@@ -95,11 +95,15 @@ def require_bearer(f):
             patient_id = request.headers.get('X-Patient-Id', '')
             fhir_base_url = request.headers.get('X-FHIR-Base', '')
             if session:
-                response.set_cookie('careit_session_id', session.id, httponly=True, secure=request.is_secure, samesite='Lax', max_age=SESSION_COOKIE_MAX_AGE,)  # 8 hours
+                response.set_cookie('careit_session_id', session.id, httponly=True, secure=request.is_secure, samesite='Lax', 
+                )  # 8 hours
+                # max_age=SESSION_COOKIE_MAX_AGE,
             if patient_id:
-                response.set_cookie('patient_id', patient_id, httponly=True, secure=request.is_secure, samesite='Lax',max_age=SESSION_COOKIE_MAX_AGE,)
+                response.set_cookie('patient_id', patient_id, httponly=True, secure=request.is_secure, samesite='Lax'
+                )
             if fhir_base_url:
-                response.set_cookie('fhir_base_url', fhir_base_url, httponly=True, secure=request.is_secure, samesite='Lax', max_age=SESSION_COOKIE_MAX_AGE,)
+                response.set_cookie('fhir_base_url', fhir_base_url, httponly=True, secure=request.is_secure, samesite='Lax'
+                )
             print(f"[AUTH] cookies SET on response: careit_session_id={bool(session)} patient_id={bool(patient_id)} fhir_base_url={bool(fhir_base_url)}", flush=True)
             return response
         session_id = request.cookies.get('careit_session_id')
