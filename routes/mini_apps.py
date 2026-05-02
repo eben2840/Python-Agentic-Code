@@ -31,7 +31,7 @@ def mini_apps_page():
 
 
 @mini_apps.route('/mini-apps/<task_id>')
-@require_bearer
+# @require_bearer
 def mini_app_preview(task_id):
     """Preview a mini app"""
     print(f"[MINI-APP-PREVIEW] Loading preview for task {task_id}")
