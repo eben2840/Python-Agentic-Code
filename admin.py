@@ -26,7 +26,7 @@ def login():
     return render_template('login.html')
 
 
-@admin.route('/logout')
+@admin.route('/logout', methods=['GET', 'POST'])
 def logout():
     session.clear()
     return redirect(url_for('admin.login'))
