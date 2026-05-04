@@ -48,7 +48,6 @@ def _planner_system(patient_id: str, supported_resources: list[str]) -> str:
     scope = 'all' if patient_id == 'all' else 'single'
     resources = ", ".join(sorted(set(supported_resources)))
     rules = [
-        CLINICAL_SYSTEM_PROMPT,
         "Plan FHIR retrieval for a hospital mini-app request.",
         f"Patient scope must be '{scope}'.",
         f"Allowed resources: {resources}.",

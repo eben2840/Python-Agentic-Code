@@ -22,7 +22,7 @@ class DirectFHIRClient:
         self.patient_id = session_data['patient_id']
         self.auth_token = session_data["auth_token"]
         self.headers = {
-            'Authorization': f'Bearer {self.auth_token}',
+            'Authorization': f'Bearer {self.auth_token  }',
             'Accept': 'application/fhir+json',
         }
         print(

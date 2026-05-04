@@ -63,9 +63,11 @@ def _execute_all_patient_retrieval(plan, fhir_base_url: str, access_token: str) 
     patients = _group_patients(client, sections)
     patients = [p for p in patients if p['id'] in active_ids]
     print(f"[RETRIEVAL-EXECUTOR] Active patients: {len(patients)}", flush=True)
+    location_records = client._fetch_locations(encounters)
     return {
         'patient': {'id': 'all', 'name': 'All Patients', 'count': len(patients)},
         'patients': patients,
+        'location': client.entry(location_records),
     }
 
 
