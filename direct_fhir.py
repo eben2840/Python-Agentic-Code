@@ -33,20 +33,62 @@ class DirectFHIRClient:
             flush=True,
         )
 
+    # def _get(self, endpoint, params=None):
+    #     try:
+    #         print(
+    #             "[DIRECT-FHIR][GET] "
+    #             f"url={self.base_url}/{endpoint} "
+    #             f"params={params} "
+    #             f"auth_present={bool(self.auth_token)}",
+    #             flush=True,
+    #         )
+    #         r = requests.get(f"{self.base_url}/{endpoint}", headers=self.headers, params=params, timeout=30)
+    #         r.raise_for_status()
+    #         return r.json()
+    #     except Exception as e:
+    #         logger.error(f"FHIR request failed [{endpoint}]: {e}")
+    #         return {}
     def _get(self, endpoint, params=None):
+        url = f"{self.base_url}/{endpoint}"
         try:
             print(
                 "[DIRECT-FHIR][GET] "
-                f"url={self.base_url}/{endpoint} "
+                f"url={url} "
                 f"params={params} "
                 f"auth_present={bool(self.auth_token)}",
                 flush=True,
             )
-            r = requests.get(f"{self.base_url}/{endpoint}", headers=self.headers, params=params, timeout=30)
+            r = requests.get(url, headers=self.headers, params=params, timeout=30)
+            if endpoint == 'metadata':
+                print(
+                    "[DIRECT-FHIR][METADATA][RESPONSE] "
+                    f"status={r.status_code} "
+                    f"content_type={r.headers.get('content-type', '')!r} "
+                    f"body_preview={r.text[:500]!r}",
+                    flush=True,
+                )
             r.raise_for_status()
-            return r.json()
+            data = r.json()
+            if endpoint == 'metadata':
+                rest = data.get('rest', []) if isinstance(data, dict) else []
+                resource_count = sum(len(item.get('resource', [])) for item in rest if isinstance(item, dict))
+                resource_types = [
+                    resource.get('type')
+                    for item in rest if isinstance(item, dict)
+                    for resource in item.get('resource', []) if isinstance(resource, dict)
+                    if resource.get('type')
+                ]
+                print(
+                    "[DIRECT-FHIR][METADATA][PARSED] "
+                    f"resourceType={data.get('resourceType') if isinstance(data, dict) else type(data).__name__!r} "
+                    f"rest_count={len(rest)} "
+                    f"resource_count={resource_count} "
+                    f"resource_types_preview={resource_types[:40]}",
+                    flush=True,
+                )
+            return data
         except Exception as e:
-            logger.error(f"FHIR request failed [{endpoint}]: {e}")
+            logger.error(f"FHIR request failed [{endpoint}] url={url}: {e}", exc_info=True)
             return {}
 
     def _bundle(self, data):

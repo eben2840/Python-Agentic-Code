@@ -63,7 +63,7 @@ def _parse_plan(raw: str) -> RetrievalPlan:
     payload = _parse_json_payload(raw)
     queries = [_parse_query(query) for query in payload.get('queries', [])]
     if not queries:
-        raise ValueError("Retrieval planner returned no queries")
+        raise ValueError("Rephrase the request with more specific details about the needs and context.")
     return RetrievalPlan(
         patient_scope=payload.get('patient_scope', 'single'),
         queries=queries,

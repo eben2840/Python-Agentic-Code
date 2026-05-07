@@ -1,4 +1,5 @@
 from direct_fhir import DirectFHIRClient
+from services.fhir_resource_allowlist import ALL_PATIENT_RESOURCES
 
 
 def execute_retrieval(plan, fhir_base_url: str, access_token: str, patient_id: str) -> dict:
@@ -14,10 +15,21 @@ def execute_retrieval(plan, fhir_base_url: str, access_token: str, patient_id: s
 
 
 def get_supported_resources(fhir_base_url: str, access_token: str, patient_id: str) -> list[str]:
+    if patient_id == 'all':
+        resources = ALL_PATIENT_RESOURCES
+        print(f"[RETRIEVAL-EXECUTOR] Supported resources for patient=all from allowlist: {resources}", flush=True)
+        return resources
+
     client = DirectFHIRClient(_session_data(fhir_base_url, access_token, patient_id))
-    resources = client.server_resources() if patient_id == 'all' else client.supported_resources()
+    resources = client.supported_resources()
     print(f"[RETRIEVAL-EXECUTOR] Supported resources for patient={patient_id}: {resources}", flush=True)
     return resources
+
+# def get_supported_resources(fhir_base_url: str, access_token: str, patient_id: str) -> list[str]:
+#     client = DirectFHIRClient(_session_data(fhir_base_url, access_token, patient_id))
+#     resources = client.server_resources() if patient_id == 'all' else client.supported_resources()
+#     print(f"[RETRIEVAL-EXECUTOR] Supported resources for patient={patient_id}: {resources}", flush=True)
+#     return resources
 
 
 def _fetch_section(client: DirectFHIRClient, query, patient_id: str) -> dict:
