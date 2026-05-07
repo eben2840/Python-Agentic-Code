@@ -237,25 +237,55 @@ class DirectFHIRClient:
     def entry(self, resources):
         return self._as_entry(resources)
 
+    # def _fetch_locations(self, encounters):
+    #     locations = []
+    #     seen = set()
+    #     for encounter in encounters:
+    #         for loc in encounter.get('location', []):
+    #             ref = loc.get('location', {}).get('reference', '')
+    #             if not ref or ref in seen:
+    #                 continue
+    #             seen.add(ref)
+    #             room = self._get(ref)
+    #             ward_ref = (room.get('partOf') or {}).get('reference', '')
+    #             ward_name = self._get(ward_ref).get('name', '') if ward_ref else ''
+    #             locations.append({
+    #                 'name': room.get('name', ''),
+    #                 'status': room.get('status', ''),
+    #                 'date': '',
+    #                 'value': ward_name,
+    #             })
+    #     return locations
     def _fetch_locations(self, encounters):
         locations = []
         seen = set()
+
         for encounter in encounters:
+            patient_id = ((encounter.get('subject') or {}).get('reference') or '').split('/')[-1]
+
             for loc in encounter.get('location', []):
-                ref = loc.get('location', {}).get('reference', '')
-                if not ref or ref in seen:
+                ref = ((loc.get('location') or {}).get('reference') or '')
+                if not ref:
                     continue
-                seen.add(ref)
+
+                key = (patient_id, ref)
+                if key in seen:
+                    continue
+                seen.add(key)
+
                 room = self._get(ref)
-                ward_ref = (room.get('partOf') or {}).get('reference', '')
+                ward_ref = ((room.get('partOf') or {}).get('reference') or '')
                 ward_name = self._get(ward_ref).get('name', '') if ward_ref else ''
+
                 locations.append({
+                    'patient_id': patient_id,
                     'name': room.get('name', ''),
                     'status': room.get('status', ''),
                     'date': '',
                     'value': ward_name,
                 })
         return locations
+
 
     def get_patient_data(self):
         logger.info(f"Fetching data for patient {self.patient_id}")
