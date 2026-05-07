@@ -1,7 +1,6 @@
 ALL_PATIENT_RESOURCES = [
     'Patient',
     'Encounter',
-    'Location',
     'Organization',
     'Practitioner',
     'PractitionerRole',

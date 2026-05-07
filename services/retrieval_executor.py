@@ -70,7 +70,7 @@ def _execute_all_patient_retrieval(plan, fhir_base_url: str, access_token: str) 
     active_ids = {e.get('subject', {}).get('reference', '').split('/')[-1] for e in encounters if e.get('subject', {}).get('reference')}
     print(f"[RETRIEVAL-EXECUTOR] Active encounters: {len(encounters)}", flush=True)
     sections = {'encounter': client.entry(encounters)}
-    for resource in [q.resource for q in plan.queries if q.resource != 'Patient']:
+    for resource in [q.resource for q in plan.queries if q.resource not in ('Patient', 'Encounter')]:
         sections[resource.lower()] = client.entry(client.fetch_all_resource(resource))
     patients = _group_patients(client, sections)
     patients = [p for p in patients if p['id'] in active_ids]
