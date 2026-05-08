@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% set active_nav = 'models' %}
+
+{% block title %}CareIT Vibe | LLM Settings{% endblock %}
+
+{% block extra_head %}
+<style>
+  .settings-wrap { max-width: 760px; }
+  .settings-card { background: var(--color-surface); border: 1px solid var(--color-border-subtle); border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); overflow: hidden; }
+  .settings-card-head { padding: var(--spacing-5) var(--spacing-6); border-bottom: 1px solid var(--color-border-subtle); }
+  .settings-card-title { margin: 0; color: var(--color-text-primary); font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); }
+  .settings-card-copy { margin: var(--spacing-1) 0 0; color: var(--color-text-secondary); font-size: var(--font-size-sm); }
+  .provider-row { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-4); min-height: 72px; padding: var(--spacing-4) var(--spacing-6); border-bottom: 1px solid var(--color-border-subtle); }
+  .provider-row:last-child { border-bottom: 0; }
+  .provider-row:hover { background: var(--color-surface-hover); }
+  .provider-copy { min-width: 0; }
+  .provider-name { display: block; color: var(--color-text-primary); font-size: var(--font-size-sm); font-weight: var(--font-weight-semibold); }
+  .provider-model { display: block; margin-top: var(--spacing-1); color: var(--color-text-muted); font-size: var(--font-size-xs); overflow-wrap: anywhere; }
+  .provider-switch { position: relative; width: 34px; height: 20px; flex: 0 0 auto; border: 0; border-radius: var(--radius-full); background: #e5e7eb; cursor: pointer; padding: 0; transition: background var(--transition-fast); }
+  .provider-switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: var(--radius-full); background: #fff; box-shadow: var(--shadow-sm); transition: transform var(--transition-fast); }
+  .provider-switch.is-on { background: var(--color-success); }
+  .provider-switch.is-on::after { transform: translateX(14px); }
+  .provider-switch:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content-header">
+  <h1>Vibe Models</h1>
+</div>
+
+<div class="content-body">
+  <section class="settings-wrap">
+    <form method="POST" class="settings-card">
+      <div class="settings-card-head">
+        <h2 class="settings-card-title">LLM Provider</h2>
+        <p class="settings-card-copy">Select the provider used for skill generation.</p>
+      </div>
+
+      {% for provider, model in providers.items() %}
+      <div class="provider-row">
+        <span class="provider-copy">
+          <span class="provider-name">{{ provider|title }}</span>
+          <span class="provider-model">{{ model }}</span>
+        </span>
+        <button type="submit" name="provider" value="{{ provider }}" class="provider-switch {% if provider == selected_provider %}is-on{% endif %}" aria-label="Select {{ provider|title }}" {% if provider == 'openai' %}disabled{% endif %}></button>
+      </div>
+      {% endfor %}
+    </form>
+  </section>
+</div>
+{% endblock %}

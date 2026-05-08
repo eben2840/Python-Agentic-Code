@@ -62,6 +62,15 @@
               <span class="nav-item-label">Automation</span>
             </a>
 
+            <a href="{{ url_for('web.llm_settings') }}" class="nav-item {% if active_nav == 'models' %}active{% endif %}" title="Models">
+              <svg class="nav-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="4" y="4" width="16" height="6" rx="1"/>
+                <rect x="4" y="14" width="16" height="6" rx="1"/>
+                <path d="M8 7h.01M12 7h4M8 17h.01M12 17h4"/>
+              </svg>
+              <span class="nav-item-label">Models</span>
+            </a>
+
           </div>
         </nav>
 

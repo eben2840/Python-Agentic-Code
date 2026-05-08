@@ -4,13 +4,15 @@ import json
 import logging
 import threading
 import re
-from flask import Blueprint, request, jsonify, url_for, current_app
+from flask import Blueprint, request, jsonify, url_for, current_app, render_template
 from utils.auth import require_bearer, require_bearer_or_basic
 from llm_service import _PROMPTS_DIR, ClaudeLLMService
+from llm.helpers import PROVIDER_MODELS, get_selected_llm
 
 logger = logging.getLogger(__name__)
 
 skills = Blueprint('skills', __name__, url_prefix='/api/skills')
+
 
 
 def _load_prompt(filename: str, **kwargs) -> str:
@@ -107,7 +109,3 @@ def extract_transcript_skills():
     return jsonify(payload)
 
 
-
-
-
-# 

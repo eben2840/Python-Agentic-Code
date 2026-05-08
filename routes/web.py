@@ -4,6 +4,7 @@ import uuid
 from datetime import datetime
 
 from flask import Blueprint, render_template, request, flash, redirect, url_for, send_from_directory, current_app
+from llm.helpers import PROVIDER_MODELS, get_selected_llm
 from models import db, Task, TaskStatus, TaskComplexity
 from llm_service import ClaudeLLMService
 from services.executor import execute_task
@@ -76,8 +77,10 @@ def automation():
 @web.route('/generate-idea', methods=['POST'])
 @require_bearer
 def generate_idea_form():
-    prompt = request.form.get('prompt', '').strip()
+    prompt = request.form.get('prompt' or '').strip()
     if not prompt:
+        flash('Please enter a prompt to generate an idea.', 'error')
+        print("No prompt provided for idea generation.")    
         return redirect(url_for('web.generate'))
     try:
         llm  = ClaudeLLMService()
@@ -130,3 +133,22 @@ def create_miniapp_form():
 @web.route('/generated_apps/<path:filename>')
 def serve_generated(filename):
     return send_from_directory(OUTPUT_FOLDER, filename)
+
+
+
+
+@web.route('/settings', methods=['GET', 'POST'])
+@require_bearer
+def llm_settings():
+    if request.method == 'POST':
+        provider = request.form.get('provider', 'anthropic')
+        current_app.config['LLM_PROVIDER'] = provider
+        current_app.config['LLM_MODEL'] = PROVIDER_MODELS[provider]
+        get_selected_llm()
+
+    selected_provider = current_app.config.get('LLM_PROVIDER', 'anthropic')
+    return render_template(
+        'setting.html',
+        providers=PROVIDER_MODELS,
+        selected_provider=selected_provider,
+    )
