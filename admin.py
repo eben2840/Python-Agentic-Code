@@ -15,7 +15,7 @@ def require_admin(f):
     return decorated
 
 
-@admin.route('/login', methods=['GET', 'POST'])
+@admin.route('/login?417761=21312', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         if validate_careit_admin_login(request.form.get('username', ''), request.form.get('password', '')):
