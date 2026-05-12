@@ -22,8 +22,6 @@ class BaseLLM:
         elif self.provider == "gemini":
             genai.configure(api_key=self.api_key)
             return genai
-        elif self.provider == "local":
-            return Anthropic(api_key=self.api_key)
         else:
             raise ValueError(f"Unsupported LLM provider: {self.provider}")
 

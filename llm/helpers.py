@@ -8,12 +8,16 @@ from .dynamic import BaseLLM
 PROVIDER_MODELS = {
     'anthropic': 'claude-sonnet-4',
     'openai': 'gpt-4.1',
+    'gemini': 'gemini-pro',
 }
 
 PROVIDER_KEYS = {
     'anthropic': 'ANTHROPIC_API_KEY',
     'openai': 'OPENAI_API_KEY',
+    'gemini': 'GEMINI_API_KEY',
 }
+
+
 
 
 def provider_from_settings():
