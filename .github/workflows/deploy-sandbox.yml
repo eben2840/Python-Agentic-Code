@@ -25,7 +25,7 @@ jobs:
             echo "STEP 1: Enter project directory"
             cd C:\inetpub\wwwroot\Sandbox_CareIT_Vibe_Miniapp
 
-            echo "STEP 2: Fetch latest code"
+            echo "STEP 2: Fetchs latest code"
             git fetch origin
 
             echo "STEP 3: Reset to origin/main"
@@ -34,4 +34,4 @@ jobs:
             echo "STEP 4: Restart IIS"
             iisreset
 
-            echo "SANDBOX DEPLOY COMPLETE"
+              echo "SANDBOX DEPLOY COMPLETE"q2
