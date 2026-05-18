@@ -1,0 +1,25 @@
+name: Sandbox Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to SANDBOX
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SANDBOX_IP }}
+          port: 33899
+          username: ${{ secrets.SANDBOX_USER }}
+          password: ${{ secrets.SANDBOX_PASSWORD }}
+
+          script: |
+            cd C:\inetpub\wwwroot\Sandbox_CareIT_Vibe_Miniapp
+            git fetch origin
+            git reset --hard origin/main
+            iisreset
