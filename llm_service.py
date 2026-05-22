@@ -70,6 +70,17 @@ class ClaudeLLMService:
         )
         return response.content[0].text
 
+    def match_questionnaire(self, catalog_text: str, user_request: str) -> str:
+        response = self.client.messages.create(
+            model=self.model,
+            max_tokens=200,
+            system="You are a JSON-only responder. Output only a raw JSON object. No explanation, no markdown, no extra text.",
+            messages=[{"role": "user", "content": _load_prompt("questionnaire_matcher.md", user_request=user_request, catalog=catalog_text)}]
+        )
+        raw = response.content[0].text.strip()
+        print(f"[QUESTIONNAIRE-MATCHER] Raw LLM response: {raw!r}")
+        return raw
+
     def review_generated_code(self, html: str, css: str, js: str, original_prompt: str) -> tuple:
         """Score the generated app 0-10 and return (score, feedback)."""
         response = self.client.messages.create(

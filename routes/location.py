@@ -28,3 +28,17 @@ def fetch_locations():
 @location.route("/api/locations", methods=["GET"])
 def get_locations():
     return jsonify({"locations": fetch_locations()})
+
+
+# % # Questionnaire Forms
+# % When the prompt includes a questionnair§e form structure:
+# % - Render the form using Jinja2 templating — use `{% for %}`, `{% if %}`, `{{ }}` syntax for all fields, sections, and labels
+# % - Never hardcode field labels, linkIds, or answer options — loop over the provided form structure
+# % - The submit button must POST to `/api/questionnaire/submit` with this JSON body:
+# %   ```json
+# %   { "questionnaire": <the full questionnaire object>, "answers": { "<linkId>": <value> } }
+# %   ```
+# % - Answers must be keyed by `linkId` exactly as provided in the form structure
+# % - The backend renders this template server-side — do not use JavaScript templating
+
+# % ---

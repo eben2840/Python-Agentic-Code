@@ -44,13 +44,10 @@
           <span class="provider-model">{{ model }}</span>
         </span>
 
-        
-
         <button type="submit" name="provider" value="{{ provider }}" 
         class="provider-switch {% if provider == selected_provider %}is-on{% endif %}" 
         aria-label="Select {{ provider|title }}" 
         {% if provider in ['openai', 'gemini'] %}disabled{% endif %}
-       
         ></button>
     
       </div>
