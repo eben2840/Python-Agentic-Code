@@ -7,11 +7,16 @@ from flask import Blueprint, render_template, request, jsonify, url_for
 
 from sqlalchemy import or_
 from models import db, Task, TaskStatus, CIWTransfer, Bookmark
+from services.patient_context_service import load_latest_patient_session
 from utils.helpers import create_combined_html
-from utils.auth import require_bearer, require_bearer_or_basic
+from utils.auth import require_bearer, require_bearer_or_basic, get_request_patient_session
 from routes.organization import fetch_departments
 from routes.location import fetch_locations
 from routes.careitweb_llm import enhance_transfer_meta
+from questionaires.questionnaire_response_validator import validate_answers
+from questionaires.questionnaire_response_builder import build_questionnaire_response
+from questionaires.questionnaire_loader import fetch_questionnaire
+from questionaires.questionnaire_response_submitter import post_questionnaire_response
 
 logger = logging.getLogger(__name__)
 mini_apps = Blueprint('mini_apps', __name__)
@@ -238,3 +243,46 @@ def mini_app_raw(task_id):
         task.html_content, task.css_content or '', task.js_content or '', task.patient_data
     )
     return html_content
+
+
+@mini_apps.route('/mini-apps/<task_id>/questionnaire/submit', methods=['POST'])
+# @require_bearer_or_basic
+def questionnaire_submit(task_id):
+    # print("[QUESTIONNAIRE-SUBMIT] Authorization header:", request.headers.get('Authorization', 'MISSING'))
+    data               = request.get_json()
+    questionnaire_id   = data.get('questionnaire_id')
+    answers            = data.get('answers', {})
+    print("[QUESTIONNAIRE-SUBMIT] questionnaire_id:", questionnaire_id)
+    print("[QUESTIONNAIRE-SUBMIT] Received answers:", answers)
+
+    if not questionnaire_id:
+        return jsonify({'status': 'error', 'error': 'Missing questionnaire_id'}), 400
+
+    questionnaire = fetch_questionnaire(questionnaire_id)
+    if not questionnaire:
+        return jsonify({'status': 'error', 'error': 'Questionnaire not found'}), 404
+    print("[QUESTIONNAIRE-SUBMIT] Questionnaire loaded:", questionnaire.get('title') or questionnaire.get('name'))
+
+    validation = validate_answers(questionnaire, answers)
+    print("[QUESTIONNAIRE-SUBMIT] Validation result:", validation)
+    if not validation['ok']:
+        return jsonify({'status': 'error', 'missing_required': validation['missing_required']}), 422
+
+    task = Task.query.get(task_id)
+    if not task:
+        print("[QUESTIONNAIRE-SUBMIT] Task not found:", task_id)
+        return jsonify({'status': 'error', 'error': 'Task not found'}), 404
+
+    print("[QUESTIONNAIRE-SUBMIT] Task patient found:", task.patient_id)
+    encounters   = (task.patient_data or {}).get('Encounter', {}).get('resources', [])
+    encounter_id = encounters[0].get('id') if encounters else None
+    print("[QUESTIONNAIRE-SUBMIT] Encounter ID:", encounter_id)
+
+    response = build_questionnaire_response(questionnaire, answers, task.patient_id, encounter_id)
+    print("[QUESTIONNAIRE-SUBMIT] Built response:", response)
+    created_response = post_questionnaire_response(response)
+    print("[QUESTIONNAIRE-SUBMIT] FHIR create response:", created_response)
+    if not created_response:
+        return jsonify({'status': 'error', 'error': 'Failed to create QuestionnaireResponse'}), 502
+
+    return jsonify({'status': 'ok', 'message': 'Form submitted successfully', 'response': created_response})

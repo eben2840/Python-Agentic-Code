@@ -251,6 +251,17 @@ If any visible control does not work, remove it or implement it properly before 
 
 ---
 
+
+# Questionnaire Form Submission
+When the generated app includes a form that submits to `${window.location.pathname}/questionnaire/submit`:
+- The request body must use exactly these keys: `questionnaire_id` (the questionnaire ID string) and `answers` (an object keyed by `linkId`) — no other key names
+- Always include `credentials: 'include'` in the fetch call so session cookies are sent automatically
+- After a successful POST (`status === "ok"`), display `response.message` to the user as a visible success message on screen
+- If the POST returns `status === "error"` with `missing_required`, highlight the missing fields and show the user which ones need to be filled in
+- Never leave the form with no visible feedback after submission
+
+---
+
 # Output
 Return exactly 3 fenced code blocks in this order:
 

@@ -71,7 +71,7 @@ Each executor calls `ClaudeLLMService` twice: once to generate HTML/CSS/JS (`gen
 - `generate_miniapp.md` — main generation prompt (receives patient context)
 - `continue_miniapp.md` — incremental change prompt
 - `generate_idea.md` — idea brainstorm prompt
-- `extraction/` — transcript extraction prompts (assembled from `index.json`)
+- `extraction/` — transcript extraction prompts used by the extraction endpoints
 
 Model is hardcoded to `claude-sonnet-4-20250514` with `max_tokens=20000`.
 

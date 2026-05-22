@@ -138,7 +138,7 @@ def serve_generated(filename):
 
 
 @web.route('/settings', methods=['GET', 'POST'])
-# @require_bearer
+@require_bearer
 def llm_settings():
     if request.method == 'POST':
         provider = request.form.get('provider', 'anthropic')

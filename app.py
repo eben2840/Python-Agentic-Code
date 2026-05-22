@@ -74,7 +74,8 @@ def add_cors_headers(response):
         response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Credentials', 'true')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Patient-Id,X-FHIR-Base')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
+    # response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH')
     return response
 
 # =============================================================================
