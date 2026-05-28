@@ -5,7 +5,7 @@ import logging
 from dotenv import load_dotenv
 load_dotenv()
 
-from flask import Flask, request, make_response, jsonify, render_template
+from flask import Flask, redirect, request, make_response, jsonify, render_template
 from models import init_db
 from utils.helpers import time_ago
 
@@ -84,9 +84,10 @@ def add_cors_headers(response):
 
 @app.errorhandler(404)
 def not_found(e):
-    if request.path.startswith('/api/'):
-        return jsonify({'error': 'Not found'}), 404
-    return render_template('unauthorized.html'), 404
+    # if request.path.startswith('/api/'):
+    #     return jsonify({'error': 'Not found'}), 404
+    return redirect('https://nursit.de/careit-vibe')
+    # return render_template('unauthorized.html'), 404
 
 
 @app.errorhandler(500)
