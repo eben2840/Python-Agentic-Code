@@ -407,7 +407,7 @@ function startTaskPolling(taskId) {
 
   window.app.pollInterval = setInterval(async () => {
     try {
-      const response = await fetch(`/api/tasks/${taskId}`);
+      const response = await fetch(`/api/tasks/${taskId}`, { credentials: 'include' });
       const task = await response.json();
 
       // Move card to correct column
@@ -489,7 +489,7 @@ function startDetailPolling(taskId) {
 }
 
 async function fetchAndUpdateTaskDetail(taskId) {
-  const response = await fetch(`/api/tasks/${taskId}`);
+  const response = await fetch(`/api/tasks/${taskId}`, { credentials: 'include' });
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
@@ -615,7 +615,7 @@ async function loadTaskLogs(taskId) {
   if (!logsContainer) return;
 
   try {
-    const response = await fetch(`/api/tasks/${taskId}/logs`);
+    const response = await fetch(`/api/tasks/${taskId}/logs`, { credentials: 'include' });
     const logs = await response.json();
 
     if (logs.length === 0) {
@@ -666,7 +666,8 @@ async function startTask() {
 
   try {
     const response = await fetch(`/api/tasks/${taskId}/run`, {
-      method: 'POST'
+      method: 'POST',
+      credentials: 'include'
     });
 
     const data = await response.json();
@@ -703,7 +704,8 @@ async function restartTask() {
 
   try {
     const response = await fetch(`/api/tasks/${taskId}/run`, {
-      method: 'POST'
+      method: 'POST',
+      credentials: 'include'
     });
 
     const data = await response.json();
@@ -727,7 +729,8 @@ async function deleteTask() {
   // No confirmation - delete directly
   try {
     const response = await fetch(`/api/tasks/${taskId}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      credentials: 'include'
     });
 
     const data = await response.json();
@@ -764,7 +767,8 @@ async function stopTask() {
 
   try {
     const response = await fetch(`/api/tasks/${taskId}/cancel`, {
-      method: 'POST'
+      method: 'POST',
+      credentials: 'include'
     });
 
     const data = await response.json();
@@ -824,6 +828,7 @@ document.getElementById('apply-changes-btn')?.addEventListener('click', async ()
     const response = await fetch(`/api/tasks/${taskId}/continue`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ changes })
     });
 
@@ -858,7 +863,7 @@ document.getElementById('edit-prompt-btn')?.addEventListener('click', async () =
   if (!taskId) return;
 
   try {
-    const response = await fetch(`/api/tasks/${taskId}`);
+    const response = await fetch(`/api/tasks/${taskId}`, { credentials: 'include' });
     const task = await response.json();
 
     // Populate the edit form
@@ -901,6 +906,7 @@ document.getElementById('save-restart-btn')?.addEventListener('click', async () 
     const updateResponse = await fetch(`/api/tasks/${taskId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ title, description, specification })
     });
 
@@ -918,7 +924,7 @@ document.getElementById('save-restart-btn')?.addEventListener('click', async () 
     }
 
     // Start the task
-    const runResponse = await fetch(`/api/tasks/${taskId}/run`, { method: 'POST' });
+    const runResponse = await fetch(`/api/tasks/${taskId}/run`, { method: 'POST', credentials: 'include' });
     const runData = await runResponse.json();
 
     if (runData.error) {
@@ -950,7 +956,7 @@ document.getElementById('preview-task-btn')?.addEventListener('click', async () 
   if (!taskId) return;
 
   try {
-    const response = await fetch(`/api/tasks/${taskId}`);
+    const response = await fetch(`/api/tasks/${taskId}`, { credentials: 'include' });
     const task = await response.json();
     openMiniAppPreview(taskId, task.title, task.final_score);
   } catch (error) {
@@ -997,7 +1003,7 @@ document.querySelectorAll('.stop-task-btn').forEach(btn => {
     if (!taskId) return;
 
     try {
-      await fetch(`/api/tasks/${taskId}/cancel`, { method: 'POST' });
+      await fetch(`/api/tasks/${taskId}/cancel`, { method: 'POST', credentials: 'include' });
       moveTaskCard(taskId, 'cancelled');
       showToast('Task stopped', 'success');
     } catch (error) {
@@ -1017,7 +1023,7 @@ async function loadMiniApps() {
   if (!grid) return;
 
   try {
-    const response = await fetch('/api/tasks');
+    const response = await fetch('/api/tasks', { credentials: 'include' });
     const tasks = await response.json();
 
     const miniApps = tasks.filter(t => t.status === 'completed' && t.html_content);
@@ -1087,7 +1093,7 @@ window.app.currentFileType = 'html';
 // Open file viewer for a task
 async function openFileViewer(taskId) {
   try {
-    const response = await fetch(`/api/tasks/${taskId}`);
+    const response = await fetch(`/api/tasks/${taskId}`, { credentials: 'include' });
     const task = await response.json();
 
     // Store file contents

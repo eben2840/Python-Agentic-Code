@@ -1,6 +1,6 @@
 from functools import wraps
 import os
-from flask import make_response, request, render_template, jsonify
+from flask import make_response, redirect, request, render_template, jsonify
 import requests as http_requests
 from models import PatientSession
 from services.patient_context_service import load_latest_patient_session
@@ -74,7 +74,9 @@ def _init_patient_session(access_token: str) -> None:
 def _deny_access():
     if request.path.startswith('/api/') or request.path.startswith('/careit-web/'):
         return jsonify({'error': 'Unauthorized'}), 401
-    return render_template('unauthorized.html'), 403
+    return redirect('https://nursit.de/careit-vibe')
+    # return render_template('unauthorized.html'), 403
+    # return render_template('unauthorized.html'), 403
 
 
 def require_bearer(f):
