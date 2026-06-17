@@ -73,7 +73,7 @@ Each executor calls `ClaudeLLMService` twice: once to generate HTML/CSS/JS (`gen
 - `generate_idea.md` — idea brainstorm prompt
 - `extraction/` — transcript extraction prompts used by the extraction endpoints
 
-Model is hardcoded to `claude-sonnet-4-20250514` with `max_tokens=20000`.
+Model is hardcoded to `claude-sonnet-4-6` with `max_tokens=20000`.
 
 ### FHIR data fetching
 

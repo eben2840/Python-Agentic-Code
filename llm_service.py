@@ -30,7 +30,7 @@ class ClaudeLLMService:
     def __init__(self):
         self.api_key = os.getenv('ANTHROPIC_API_KEY')
         self.client = Anthropic(api_key=self.api_key)
-        self.model = "claude-sonnet-4-20250514"
+        self.model = "claude-sonnet-4-6"
         self.max_tokens = 20000
 
     def generate_mini_app(self, user_prompt: str, patient_data: dict) -> tuple:
@@ -214,5 +214,5 @@ class ClaudeLLMService:
 def check_llm_available() -> dict:
     return {
         'available': bool(os.getenv('ANTHROPIC_API_KEY')),
-        'model': 'claude-sonnet-4-20250514',
+        'model': 'claude-sonnet-4-6',
     }
