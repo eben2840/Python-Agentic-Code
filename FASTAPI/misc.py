@@ -20,7 +20,7 @@ def health_check():
 
 @router.get("/api/llm/status")
 def llm_status():
-    return {"available": bool(os.getenv("ANTHROPIC_API_KEY")), "model": "claude-sonnet-4-20250514"}
+    return {"available": bool(os.getenv("ANTHROPIC_API_KEY")), "model": "claude-sonnet-4-6"}
 
 
 @router.get("/api/logs")

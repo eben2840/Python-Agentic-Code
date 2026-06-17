@@ -29,7 +29,7 @@ def extract_transcript(payload: ExtractRequest):
     if not transcript:
         raise HTTPException(status_code=400, detail="transcript is required")
     response = ClaudeLLMService().client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-6",
         max_tokens=4096,
         system=extraction_system(transcript),
         messages=[{"role": "user", "content": transcript}],
