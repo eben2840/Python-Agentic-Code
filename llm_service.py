@@ -81,6 +81,22 @@ class ClaudeLLMService:
         print(f"[QUESTIONNAIRE-MATCHER] Raw LLM response: {raw!r}")
         return raw
 
+    def validate_generation(self, prompt: str, patient_id: str, context: dict) -> str:
+        """Validate an upcoming mini-app generation against real FHIR data before it runs."""
+        patient_scope = 'all' if patient_id == 'all' else patient_id
+        response = self.client.messages.create(
+            model=self.model,
+            max_tokens=1024,
+            system="You are a JSON-only responder. Output only a raw JSON object. No explanation, no markdown, no extra text.",
+            messages=[{"role": "user", "content": _load_prompt(
+                "validate_generation.md",
+                prompt=prompt,
+                patient_scope=patient_scope,
+                data_context=self._patient_context(context),
+            )}]
+        )
+        return response.content[0].text.strip()
+
     def review_generated_code(self, html: str, css: str, js: str, original_prompt: str) -> tuple:
         """Score the generated app 0-10 and return (score, feedback)."""
         response = self.client.messages.create(
@@ -164,6 +180,8 @@ class ClaudeLLMService:
             summary = section.get('summary', [])
             if not summary:
                 continue
+            if key == 'location':
+                print(f"[DEBUG-LOCATION] location summary sent to LLM: {summary}", flush=True)
             lines.append(f"\n{key} ({section.get('count', 0)} records):")
             for item in summary:
                 lines.append(f"  {item.get('name')} | {item.get('value')} | {item.get('date')} | {item.get('status')}")
@@ -175,7 +193,7 @@ class ClaudeLLMService:
                     lines.append(f"  {rtype}: {len(records)} records")
                     for item in records:
                         lines.append(f"    {item.get('name')} | {item.get('value')} | {item.get('date')}")
-
+ 
         return "\n".join(lines) or "No patient data"
 
 

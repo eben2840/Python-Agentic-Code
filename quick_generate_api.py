@@ -11,6 +11,9 @@ from direct_fhir import get_patient_data_direct
 from utils.helpers import add_task_log
 from utils.auth import require_bearer, require_bearer_or_basic
 from services.executor import run_generation
+from services.retrieval_executor import get_supported_resources, execute_retrieval
+from services.retrieval_planner import plan_retrieval
+from services.context_formatter import format_context
 from llm_service import _PROMPTS_DIR, ClaudeLLMService
 from questionaires.questionnaire_catalog import fetch_active_questionnaire_catalog
 from questionaires.questionnaire_matcher import select_best_questionnaire
@@ -100,6 +103,42 @@ def extract_transcript():
 
 
 
+
+
+@quick_generate.route('/validate', methods=['POST'])
+@require_bearer
+def validate_generation():
+    try:
+        data          = request.get_json()
+        prompt        = data.get('prompt')
+        access_token  = data.get('accessToken')
+        fhir_base_url = data.get('fhirBaseUrl')
+        patient_id    = data.get('patientId')
+
+        if not all([prompt, access_token, fhir_base_url, patient_id]):
+            return jsonify({'status': 'error', 'error': 'Missing required fields'}), 400
+
+        print(f"[QUICK-VALIDATE] Validating generation for patient={patient_id}", flush=True)
+
+        resources = get_supported_resources(fhir_base_url, access_token, patient_id)
+        plan      = plan_retrieval(prompt, patient_id, resources)
+        raw_data  = execute_retrieval(plan, fhir_base_url, access_token, patient_id)
+        context   = format_context(raw_data, plan)
+
+        llm       = ClaudeLLMService()
+        raw       = llm.validate_generation(prompt, patient_id, context)
+        validator = _parse_json_response(raw)
+
+        payload = {
+            'status': 'ok',
+            'validator': validator,
+        }
+        print("validate response payload:", payload)
+        return jsonify(payload)
+
+    except Exception as e:
+        logger.error(f"[QUICK-VALIDATE] Error: {e}", exc_info=True)
+        return jsonify({'status': 'error', 'error': str(e)}), 500
 
 
 @quick_generate.route('/generate', methods=['POST'])
