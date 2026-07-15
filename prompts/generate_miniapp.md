@@ -17,6 +17,10 @@ $data_context
 - All displayed values MUST be read from `window.PATIENT_DATA` at runtime
 - Never hardcode clinical values, names, dates, or counts
 - Missing data → show `"No data available"`, never invent values
+- Every clinical value you render — name, ward, room, station, diagnosis, medication, vitals, date, status — must be traceable verbatim to a field in `$data_context` above
+- If a category of data (e.g. ward/room/location) has no matching entry in `$data_context`, render `"No data available"` for it — never substitute a plausible-sounding placeholder (e.g. "Station 3B", "Room 204")
+- Never infer or "fill in" a location/ward/station assignment from general medical knowledge, typical hospital conventions, or the design reference below — only from the provided FHIR data
+- In an "all patients" view, each patient's location/ward/room must come only from that same patient's own data — never borrowed from another patient's record or reused across patients
 
 ---
 
@@ -42,12 +46,15 @@ $data_context
   - `patient.resource` for any additional raw `Patient` fields
 - If the request is patient-list oriented, render the patient identity/details first, then render the patient-linked resource records underneath. Do not show anonymous counts when patient details are available.
 - **Standalone/context resources** (e.g. Location, Organization, Practitioner) are NOT inside `patient.data` — they are top-level keys on `window.PATIENT_DATA` with the structure `{ count, resources, summary }` where `resources` is the full FHIR resource array and `summary` is `[{ name, status, date, value }]`. Access them as `window.PATIENT_DATA.location`, `window.PATIENT_DATA.organization`, etc. (lowercase). Use `resources` for full detail (e.g. `resource.name`, `resource.physicalType`) or `summary` for the flattened view.
+- In the "all patients" view, each entry in the top-level `location` resource carries a `patient_id` field. You MUST match `location.patient_id` to `patient.id` to determine which patient occupies which room/ward — never assign, distribute, or guess a location for a patient without an explicit `patient_id` match. If no `location` record matches a given patient's id, show `"No data available"` for that patient's location rather than reusing another patient's room/ward.
 
 ---
 
 # Design System
 
 Follow the reference design in `prompts/_design_reference.html` **exactly**. The target is not a modern wellness dashboard. It is a dense hospital station interface modeled on the provided screenshot: teal system chrome, rigid white modules, and administrative labels. Match that structure closely.
+
+**`_design_reference.html` is a structural/visual reference only.** Any text it contains — room numbers (e.g. "Zimmer 301"), ward/station names, patient names, numbers, or dates — is placeholder content from a mockup and is not real. Copy its layout, CSS, and component structure only. Never copy, adapt, or let any of its literal text leak into your output.
 
 ## CSS Tokens (copy these verbatim into styles.css)
 ```css
@@ -259,6 +266,11 @@ When the generated app includes a form that submits to `${window.location.pathna
 - After a successful POST (`status === "ok"`), display `response.message` to the user as a visible success message on screen
 - If the POST returns `status === "error"` with `missing_required`, highlight the missing fields and show the user which ones need to be filled in
 - Never leave the form with no visible feedback after submission
+
+---
+
+# Final Grounding Check
+Before returning your answer, re-scan every name, ward, room, station, date, and clinical value you're about to render. For each one, confirm it appears in `$data_context` above. If it doesn't, replace it with "No data available" rather than guessing.
 
 ---
 

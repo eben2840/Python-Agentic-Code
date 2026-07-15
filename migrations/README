@@ -1,0 +1,17 @@
+Single-database configuration for Flask-Migrate.
+
+For a new empty database, apply migrations from the repo root:
+
+  flask --app app db upgrade
+
+For an existing database that already has the initial tables, stamp it once:
+
+  flask --app app db stamp head
+
+Do not run the initial upgrade against an existing unstamped database that already has
+the tables. Alembic will try to create those tables again.
+
+After an existing database is stamped, future schema changes use:
+
+  flask --app app db migrate -m "describe schema change"
+  flask --app app db upgrade
