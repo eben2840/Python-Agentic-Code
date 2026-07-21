@@ -52,31 +52,31 @@ def _render_dashboard():
 # -----------------------------------------------------------------------------
 
 @web.route('/', methods=['GET', 'POST'])
-# @require_bearer
+@require_bearer
 def index():
     return _render_dashboard()
 
 
 @web.route('/generate')
-# @require_bearer
+@require_bearer
 def generate():
     return render_template('generate.html')
 
 
 @web.route('/vibe-apps')
-# @require_bearer
+@require_bearer
 def vibe_apps():
     return render_template('vibe_apps.html')
 
 
 @web.route('/automation')
-# @require_bearer
+@require_bearer
 def automation():
     return render_template('automation.html')
 
 
 @web.route('/generate-idea', methods=['POST'])
-# @require_bearer
+@require_bearer
 def generate_idea_form():
     prompt = request.form.get('prompt' or '').strip()
     if not prompt:
@@ -93,7 +93,7 @@ def generate_idea_form():
 
 
 @web.route('/create-miniapp', methods=['POST'])
-# @require_bearer
+@require_bearer
 def create_miniapp_form():
     title = (request.form.get('title') or request.form.get('prompt') or 'SMART on FHIR Mini App').strip()
     description = (request.form.get('description') or request.form.get('prompt') or '').strip()
@@ -139,7 +139,7 @@ def serve_generated(filename):
 
 
 @web.route('/settings', methods=['GET', 'POST'])
-@require_bearer
+# @require_bearer
 def llm_settings():
     if request.method == 'POST':
         provider = request.form.get('provider', 'anthropic')

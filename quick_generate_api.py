@@ -10,10 +10,7 @@ from models import db, Task, TaskStatus, TaskComplexity, TaskLog
 from direct_fhir import get_patient_data_direct
 from utils.helpers import add_task_log
 from utils.auth import require_bearer, require_bearer_or_basic
-from services.executor import run_generation
-from services.retrieval_executor import get_supported_resources, execute_retrieval
-from services.retrieval_planner import plan_retrieval
-from services.context_formatter import format_context
+from services.executor import run_generation, _build_generation_context
 from llm_service import _PROMPTS_DIR, ClaudeLLMService
 from questionaires.questionnaire_catalog import fetch_active_questionnaire_catalog
 from questionaires.questionnaire_matcher import select_best_questionnaire
@@ -28,6 +25,8 @@ _QUESTIONNAIRE_RE = re.compile(
 logger = logging.getLogger(__name__)
 
 quick_generate = Blueprint('quick_generate', __name__, url_prefix='/api/quick')
+
+_VALIDATE_CACHE = {}
 
 
 def _load_prompt(filename: str, **kwargs) -> str:
@@ -120,10 +119,8 @@ def validate_generation():
 
         print(f"[QUICK-VALIDATE] Validating generation for patient={patient_id}", flush=True)
 
-        resources = get_supported_resources(fhir_base_url, access_token, patient_id)
-        plan      = plan_retrieval(prompt, patient_id, resources)
-        raw_data  = execute_retrieval(plan, fhir_base_url, access_token, patient_id)
-        context   = format_context(raw_data, plan)
+        plan, context = _build_generation_context(prompt, patient_id, fhir_base_url, access_token)
+        _VALIDATE_CACHE[(prompt, patient_id)] = context
 
         llm       = ClaudeLLMService()
         raw       = llm.validate_generation(prompt, patient_id, context)
@@ -163,9 +160,9 @@ def generate_miniapp():
         if not all([prompt, access_token, fhir_base_url, patient_id]):
             return jsonify({'status': 'error', 'error': 'Missing required fields'}), 400
 
-        patient_data = None
+        patient_data = _VALIDATE_CACHE.pop((prompt, patient_id), None)
         patient_name = 'All Patients' if patient_id == 'all' else f"Patient {patient_id}"
-        if patient_id != 'all':
+        if patient_id != 'all' and not patient_data:
             patient_data = get_patient_data_direct({
                 'fhir_base_url': fhir_base_url,
                 'patient_id': patient_id,
@@ -268,5 +265,4 @@ def get_task_status(task_id):
         response['raw_url'] = url_for('mini_apps.mini_app_raw',     task_id=task_id, _external=True)
 
     return jsonify(response)
-
 

@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from flask import Flask, redirect, request, make_response, jsonify, render_template
-from models import init_db
+from flask_migrate import Migrate
+from models import db, init_db
 from utils.helpers import time_ago
 
 logging.basicConfig(
@@ -28,6 +29,7 @@ OUTPUT_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'genera
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
 init_db(app)
+Migrate(app, db)
 app.jinja_env.globals['time_ago'] = time_ago
 
 # =============================================================================
@@ -44,7 +46,6 @@ from routes.bookmarks    import bookmarks
 from routes.extraction   import extraction
 from skills        import skills
 from admin         import admin
-# from backend_service     import backend_service
 from quick_generate_api  import quick_generate
 
 app.register_blueprint(web)

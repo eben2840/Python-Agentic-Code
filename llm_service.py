@@ -31,7 +31,7 @@ class ClaudeLLMService:
         self.api_key = os.getenv('ANTHROPIC_API_KEY')
         self.client = Anthropic(api_key=self.api_key)
         self.model = "claude-sonnet-4-6"
-        self.max_tokens = 20000
+        self.max_tokens = 32000
 
     def generate_mini_app(self, user_prompt: str, patient_data: dict) -> tuple:
         """Generate a mini app (HTML, CSS, JS) from a prompt and real FHIR patient data."""
@@ -41,17 +41,18 @@ class ClaudeLLMService:
             data_context=self._patient_context(patient_data),
         )
 
-        response = self.client.messages.create(
+        with self.client.messages.stream(
             model=self.model,
             max_tokens=self.max_tokens,
             temperature=0.3,
             system=system_prompt,
             messages=[{"role": "user", "content": f"Build this healthcare mini-app: {user_prompt}"}]
-        )
+        ) as stream:
+            response = stream.get_final_message()
 
         raw = response.content[0].text.strip()
         if response.stop_reason == "max_tokens":
-            logger.warning("LLM response was truncated")
+            raise ValueError("LLM output was truncated at the token limit — app would be broken, not saving it")
 
         html, css, js = self._parse_response(raw)
 
@@ -136,7 +137,7 @@ class ClaudeLLMService:
             data_context=self._patient_context(patient_data) if patient_data else "No patient data provided",
         )
 
-        response = self.client.messages.create(
+        with self.client.messages.stream(
             model=self.model,
             max_tokens=self.max_tokens,
             system=system_prompt,
@@ -152,7 +153,8 @@ class ClaudeLLMService:
             {existing_js}
             ```
             Apply this change: {changes}"""}]
-                    )
+        ) as stream:
+            response = stream.get_final_message()
 
         raw = response.content[0].text
         html, css, js = self._parse_response(raw)
@@ -184,7 +186,7 @@ class ClaudeLLMService:
                 print(f"[DEBUG-LOCATION] location summary sent to LLM: {summary}", flush=True)
             lines.append(f"\n{key} ({section.get('count', 0)} records):")
             for item in summary:
-                lines.append(f"  {item.get('name')} | {item.get('value')} | {item.get('date')} | {item.get('status')}")
+                lines.append(f"  {item.get('name')} | {item.get('value')} | {item.get('date')} | {item.get('status')} | {item.get('patient_id', '')}")
 
         for p in patient_data.get('patients', []):
             lines.append(f"\nPatient: {p.get('name')} | {p.get('gender')} | DOB: {p.get('birthDate')} | ID: {p.get('id')}")
@@ -192,7 +194,7 @@ class ClaudeLLMService:
                 if records:
                     lines.append(f"  {rtype}: {len(records)} records")
                     for item in records:
-                        lines.append(f"    {item.get('name')} | {item.get('value')} | {item.get('date')}")
+                        lines.append(f"    {item.get('name')} | {item.get('value')} | {item.get('date')} | {item.get('status')}")
  
         return "\n".join(lines) or "No patient data"
 
