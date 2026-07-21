@@ -14,9 +14,14 @@ python app.py
 # Install dependencies
 pip install -r requirements.txt
 
-# Run DB migrations
-python migrate_db.py
+# Run DB migrations (Flask-Migrate/Alembic; revisions live in migrations/versions/)
+FLASK_APP=app.py flask db upgrade
+
+# Create a new migration after changing models.py
+FLASK_APP=app.py flask db migrate -m "description"
 ```
+
+`init_db()` no longer calls `db.create_all()` — a fresh checkout needs `flask db upgrade` before the app will work. Note: `flask-migrate` is imported by `app.py` but is missing from `requirements.txt`; install it manually if imports fail.
 
 There are no automated tests. No linter is configured.
 
@@ -41,14 +46,15 @@ Flask app that accepts prompts from a Flutter mobile app (via FHIR credentials) 
 
 | Blueprint | File | Prefix |
 |---|---|---|
-| `web` | `routes/web.py` | `/` |
-| `backend_service` | `backend_service.py` | `/api/backend` |
-| `tasks_api` | `routes/tasks_api.py` | `/api/tasks` |
+| `web` | `routes/web.py` | — |
+| `tasks_api` | `routes/tasks_api.py` | — (routes spell out `/api/tasks/...` themselves) |
 | `quick_generate` | `quick_generate_api.py` | `/api/quick` |
 | `skills` | `skills.py` | `/api/skills` |
 | `admin` | `admin.py` | — |
-| `mini_apps` | `routes/mini_apps.py` | — |
+| `mini_apps` | `routes/mini_apps.py` | — (`/mini-apps/...` and `/careit-web/api/v1/...`) |
 | `misc_api`, `organization`, `location`, `bookmarks`, `extraction` | `routes/` | — |
+
+`backend_service.py` and its `/api/backend` blueprint were removed — if you see references to `/api/backend/...` routes anywhere, they are dead.
 
 `routes/careitweb_llm.py` is not a blueprint — it's a helper (`enhance_transfer_meta`) used by `routes/mini_apps.py` to have Claude generate a title/description/icon when a mini app is transferred.
 
@@ -58,7 +64,7 @@ Flask app that accepts prompts from a Flutter mobile app (via FHIR credentials) 
 - `@require_bearer` — accepts `Authorization: Bearer <token>` header **or** a `fhir_token` cookie. On first successful Bearer auth, the server sets the `fhir_token` cookie.
 - `@require_bearer_or_basic` — also accepts Smile CDR Basic auth (validated against `/metadata`).
 
-The Flutter app sends three headers: `Authorization: Bearer <fhir_token>`, `X-Patient-Id`, `X-FHIR-Base`. When the app is opened in a browser (not Flutter webview), `window.FHIR_CONFIG` is not set, so the JS sends `Authorization: Bearer` with no token — routes requiring `@require_bearer` will return 401.
+The Flutter app sends three headers: `Authorization: Bearer <fhir_token>`, `X-Patient-Id`, `X-FHIR-Base`. The dashboard JS (`static/js/app.js`) sends no Authorization header at all — every fetch uses `credentials: 'include'` and relies entirely on the `fhir_token` cookie set during the first Bearer-authenticated request from the webview. Opening the app in a plain browser without that cookie means `@require_bearer` routes return 401.
 
 `admin.py` is a separate, session-based login (`validate_careit_admin_login` in `utils/auth.py`) guarding an obscured `/login?417761=21312` route — unrelated to the FHIR bearer/cookie flow above.
 
@@ -77,8 +83,8 @@ All generation logic lives in `services/executor.py`, regardless of which bluepr
 
 - `execute_task()` — standard flow, called via `execute_task_in_context()` in `routes/tasks_api.py`
 - `execute_continuation_task()` — incremental "continue" flow (change requests against an already-generated app), also called from `routes/tasks_api.py`
-- `execute_miniapp_task()` — used by `backend_service.py`'s task-creation route (note: `backend_service.py` itself only serves task status/view routes — creation is where it invokes the executor)
-- `run_generation()` — used by `quick_generate_api.py` (dynamic FHIR retrieval, plus questionnaire detection — see below)
+- `execute_miniapp_task()` — orphaned: its only caller was the deleted `backend_service.py`; nothing invokes it today
+- `run_generation()` — used by `quick_generate_api.py` (dynamic FHIR retrieval, plus questionnaire detection — see below); builds its patient context via `_build_generation_context()` (same module), which is also shared with `/api/quick/validate`
 
 Each executor calls `ClaudeLLMService` twice: once to generate HTML/CSS/JS (`generate_mini_app`), then again to score the output 0–10 (`review_generated_code`). Generated files are written to `generated_apps/<task_id>/`.
 
@@ -94,17 +100,19 @@ Before running full mini-app generation, `quick_generate_api.py` checks the prom
 
 ### Pre-generation validation (quick_generate_api.py)
 
-`POST /api/quick/validate` runs before `/api/quick/generate` and lets the client show the clinician a preview to accept before any mini-app is actually generated. It takes the exact same body as `/generate` (`prompt`, `accessToken`, `fhirBaseUrl`, `patientId`), fetches real FHIR data fresh (`get_supported_resources` → `plan_retrieval` → `execute_retrieval` → `format_context` — the same chain `run_generation` uses internally), then calls `ClaudeLLMService.validate_generation()` (prompt: `prompts/validate_generation.md`) to produce a JSON preview:
+`POST /api/quick/validate` runs before `/api/quick/generate` and lets the client show the clinician a preview to accept before any mini-app is actually generated. It takes the exact same body as `/generate` (`prompt`, `accessToken`, `fhirBaseUrl`, `patientId`), fetches real FHIR data fresh via `_build_generation_context()` in `services/executor.py` (`get_supported_resources` → `plan_retrieval` → `execute_retrieval` → `format_context` — the same helper `run_generation` uses), then calls `ClaudeLLMService.validate_generation()` (prompt: `prompts/validate_generation.md`) to produce a JSON preview:
 
 ```json
 {"summary": "...", "patient_scope": "single | all", "data_sources": [...], "assumptions": [...], "warnings": [...]}
 ```
 
-Deliberately does **no caching** — health data can change between validate and generate, so `/generate` re-fetches independently rather than reusing anything from `/validate`. This means two FHIR round-trips instead of one; that's an intentional tradeoff for freshness over efficiency. The accept/reject gate is handled entirely client-side (the app just doesn't call `/generate` until the user accepts) — there's no server-side "accepted" state or endpoint.
+`/validate` stores its fetched context in `_VALIDATE_CACHE` (module-level dict in `quick_generate_api.py`, keyed by `(prompt, patient_id)`), and `/generate` consumes it with a one-shot `.pop()` — so the accepted generation runs on **exactly the data the clinician previewed**, with no second planner call or FHIR sweep. A cache miss (edited prompt, restart, generate-without-validate) silently falls back to a fresh fetch — never an error, never stale data. Note: the dict is in-process; it will miss randomly under a multi-worker deployment (gunicorn >1 worker) — move it to the DB (e.g. validate pre-creates the Task) if that ever happens. The accept/reject gate is handled entirely client-side (the app just doesn't call `/generate` until the user accepts) — there's no server-side "accepted" state or endpoint.
 
 ### LLM service & prompts
 
-`llm_service.py` wraps the Anthropic SDK directly and is what the task-generation pipeline and questionnaire matcher use. Model is hardcoded to `claude-sonnet-4-6` with `max_tokens=20000`.
+`llm_service.py` wraps the Anthropic SDK directly and is what the task-generation pipeline and questionnaire matcher use. Model is hardcoded to `claude-sonnet-4-6` with `max_tokens=32000`.
+
+**Truncated generation is a hard failure.** `generate_mini_app()` raises `ValueError` when `stop_reason == "max_tokens"` — the task goes to `failed` instead of saving a cut-off app. Do NOT downgrade this back to a warning: a truncated JS block is invalid JavaScript, the browser throws `Unexpected end of input`, nothing executes, and the app renders as an empty static shell — yet the review step still scored such an app 8/10 and marked the task completed. (Questionnaire-flow apps are the usual trigger: the matched FHIR form structure gets hardcoded into the generated JS, inflating output; that's also why `max_tokens` was raised from 20000.)
 
 Separately, `llm/` (`llm/dynamic.py`, `llm/helpers.py`) is a multi-provider abstraction (Anthropic/OpenAI/Gemini) used only by user-facing "pick your LLM provider" settings in `routes/web.py`, `routes/extraction.py`, and `skills.py` — selection is stored on `current_app.config['LLM_PROVIDER'] / ['LLM_MODEL']`. This is unrelated to the model used for mini-app generation itself, which always uses `ClaudeLLMService`.
 
@@ -122,11 +130,15 @@ All prompts live in `prompts/` as Markdown templates loaded via `string.Template
 - `services/retrieval_executor.py` — executes the retrieval plan against the FHIR server, constrained by `services/fhir_resource_allowlist.py`; for `patient_id == 'all'` it delegates to `_execute_all_patient_retrieval()`, which groups resources per patient via `_group_patients()`
 - `services/context_formatter.py` — formats raw FHIR data into a structured dict for the LLM
 
-**Known bug — location data is corrupted in the "all patients" view.** `_execute_all_patient_retrieval()` (`services/retrieval_executor.py:82`) builds the top-level `location` key via `client.entry(location_records)`, which routes already-flattened dicts (`{patient_id, name, status, date, value}` from `direct_fhir.py`'s `_fetch_locations()`) through `_flatten()` (`direct_fhir.py:178-215`) — a function meant for raw FHIR resources. `_flatten()`'s return statement is `{'name', 'status', 'date', 'value'}`, so `patient_id` is silently dropped, and its `value` extraction logic only reads FHIR-specific keys (`valueQuantity`, `valueCodeableConcept`, etc.), never the plain `value` key already set — so the ward name is wiped to `''`. Net effect: in "All Patients" mini-apps, the model has no reliable way to say which patient is in which room/ward. The single-patient path (`direct_fhir.py`'s `get_patient_data()`) does not have this bug — it assigns `location_records` directly to `summary` without going through `entry()`/`_flatten()`. Fix: build the `location` key in `_execute_all_patient_retrieval()` the same way the single-patient path does, skipping `entry()` for this key. Not yet fixed as of this writing.
+**All-patients retrieval is per-patient, not global.** `_execute_all_patient_retrieval()` finds active patients via `Encounter?status=in-progress&_count=100`, then fetches every other planned resource **for those patients specifically** via `_fetch_for_patients()` — patient IDs batched 20 per query, `_count=100`, `_sort=-_lastUpdated` (newest records survive the cap). Do NOT revert this to `fetch_all_resource()` (global first-50 on the server): that was the root cause of a long-standing bug where active patients got zero conditions/flags attached and generated apps came out empty or forced the LLM to guess — whether an app had data depended on which resource types the (nondeterministic) planner happened to pick. `metadata` is fetched once per run (`supported = dict(...)`), not per resource.
+
+**Location linkage (fixed).** The top-level `location` key is built directly from `_fetch_locations()`'s records (`{'count', 'resources', 'summary'}` — same shape as the single-patient path), NOT via `client.entry()`: `entry()` routes dicts through `_flatten()`, which silently drops `patient_id` and wipes the ward name — that bug shipped for weeks and made patient→ward mapping impossible in all-patients apps. `_patient_context()` in `llm_service.py` renders `status` and `patient_id` on every summary line so the linkage actually reaches the LLM prompt (generated apps key `window.PATIENT_DATA` location records by `patient_id`).
+
+**Known bug — `/api/quick/extract` returns 500 on every call.** `quick_generate_api.py` (`extract_transcript`): `extracted = _parse_json_response(...), transcript` — the trailing `, transcript` makes `extracted` a tuple, so `extracted.values()` throws. It burns a full LLM call before crashing; the Flutter client swallows the 500 and falls back to wrapping the prompt as `{"originalTranscript": ..., "extracted": {}}`. Fix is deleting the trailing `, transcript`; deliberately left unfixed for now per project owner.
 
 ### Database
 
-SQLite via Flask-SQLAlchemy (`instance/careit_vibe.db`). Key models in `models.py`:
+SQLite via Flask-SQLAlchemy (`instance/careit_vibe.db`), schema managed by Flask-Migrate/Alembic (`migrations/`). Key models in `models.py`:
 - `Task` — central record; holds patient data JSON blob, generated HTML/CSS/JS, status, score
 - `TaskLog` — append-only log entries per task
 - `Generation` — one row per iteration (each LLM call)
@@ -135,4 +147,4 @@ SQLite via Flask-SQLAlchemy (`instance/careit_vibe.db`). Key models in `models.p
 
 ### Frontend
 
-Static JS in `static/js/app.js`. Auth token is read from `window.FHIR_CONFIG.accessToken` (injected by Flutter webview). The dashboard polls task status via `/api/backend/task/<id>/status`. Generated apps are served at `/api/backend/view-app/<task_id>` with patient data injected as `window.PATIENT_DATA`.
+Static JS in `static/js/app.js`. All requests authenticate via the `fhir_token` cookie (`credentials: 'include'`) — see Authentication above. The dashboard polls task status via `GET /api/tasks/<task_id>`. Generated apps are previewed in an iframe pointed at `/mini-apps/<task_id>/raw` (`routes/mini_apps.py`), which assembles the stored HTML/CSS/JS with `create_combined_html()` (`utils/helpers.py`) and injects the task's patient data as `window.PATIENT_DATA`.

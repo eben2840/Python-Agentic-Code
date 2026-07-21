@@ -66,12 +66,15 @@ def _session_data(fhir_base_url: str, access_token: str, patient_id: str) -> dic
 
 def _execute_all_patient_retrieval(plan, fhir_base_url: str, access_token: str) -> dict:
     client = DirectFHIRClient(_session_data(fhir_base_url, access_token, 'all'))
-    encounters = client._bundle(client._get('Encounter', params={'status': 'in-progress', '_count': 50}))
+    encounters = client._bundle(client._get('Encounter', params={'status': 'in-progress', '_count': 100}))
     active_ids = {e.get('subject', {}).get('reference', '').split('/')[-1] for e in encounters if e.get('subject', {}).get('reference')}
-    print(f"[RETRIEVAL-EXECUTOR] Active encounters: {len(encounters)}", flush=True)
+    print(f"[RETRIEVAL-EXECUTOR] Active encounters: {len(encounters)} across {len(active_ids)} patients", flush=True)
+    supported = dict(client._supported_resource_types())
     sections = {'encounter': client.entry(encounters)}
     for resource in [q.resource for q in plan.queries if q.resource not in ('Patient', 'Encounter')]:
-        sections[resource.lower()] = client.entry(client.fetch_all_resource(resource))
+        records = _fetch_for_patients(client, resource, supported.get(resource, 'patient'), active_ids)
+        sections[resource.lower()] = client.entry(records)
+        print(f"[RETRIEVAL-EXECUTOR] {resource}: {len(records)} records for active patients", flush=True)
     patients = _group_patients(client, sections)
     patients = [p for p in patients if p['id'] in active_ids]
     print(f"[RETRIEVAL-EXECUTOR] Active patients: {len(patients)}", flush=True)
@@ -79,8 +82,16 @@ def _execute_all_patient_retrieval(plan, fhir_base_url: str, access_token: str) 
     return {
         'patient': {'id': 'all', 'name': 'All Patients', 'count': len(patients)},
         'patients': patients,
-        'location': client.entry(location_records),
+        'location': {'count': len(location_records), 'resources': location_records, 'summary': location_records},
     }
+
+
+def _fetch_for_patients(client: DirectFHIRClient, resource: str, param: str, patient_ids: set) -> list:
+    ids = sorted(patient_ids)
+    records = []
+    for start in range(0, len(ids), 20):
+        records.extend(client.search(resource, {param: ','.join(ids[start:start + 20]), '_count': 100, '_sort': '-_lastUpdated'}))
+    return records
 
 
 def _group_patients(client: DirectFHIRClient, sections: dict) -> list[dict]:
