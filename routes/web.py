@@ -57,7 +57,7 @@ def index():
     return _render_dashboard()
 
 
-@web.route('/generate')
+@web.route('/generate') 
 @require_bearer
 def generate():
     return render_template('generate.html')
