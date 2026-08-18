@@ -79,11 +79,16 @@ def _execute_all_patient_retrieval(plan, fhir_base_url: str, access_token: str) 
     patients = [p for p in patients if p['id'] in active_ids]
     print(f"[RETRIEVAL-EXECUTOR] Active patients: {len(patients)}", flush=True)
     location_records = client._fetch_locations(encounters)
-    return {
+    result = {
         'patient': {'id': 'all', 'name': 'All Patients', 'count': len(patients)},
         'patients': patients,
         'location': {'count': len(location_records), 'resources': location_records, 'summary': location_records},
     }
+    if 'Questionnaire' in [q.resource for q in plan.queries]:
+        questionnaire_records = client.search('Questionnaire', {'status': 'active', '_count': 100})
+        result['questionnaire'] = {'count': len(questionnaire_records), 'resources': questionnaire_records, 'summary': questionnaire_records}
+        print(f"[RETRIEVAL-EXECUTOR] Questionnaire: {len(questionnaire_records)} active (global fetch)", flush=True)
+    return result
 
 
 def _fetch_for_patients(client: DirectFHIRClient, resource: str, param: str, patient_ids: set) -> list:

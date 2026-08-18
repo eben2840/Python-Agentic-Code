@@ -21,8 +21,8 @@ logging.basicConfig(
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'k21vhabf2lbhyblb')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///careit_vibe.db')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 OUTPUT_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'generated_apps')
@@ -64,18 +64,20 @@ app.register_blueprint(quick_generate)
 # CORS
 # =============================================================================
 
+def allowed_origins():
+    raw = os.getenv("CORS_ALLOWED_ORIGINS")
+    return [origin.strip().rstrip("/") for origin in raw.split(",") if origin.strip()]
+
+
 @app.after_request
 def add_cors_headers(response):
     """Add CORS headers for webview compatibility"""
     origin = request.headers.get('Origin')
-    if origin:
+    if origin and origin.rstrip('/') in allowed_origins():
         response.headers.add('Access-Control-Allow-Origin', origin)
-    else:
-        response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Credentials', 'true')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,X-Patient-Id,X-FHIR-Base')
     response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE')
-    # response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS,PATCH')
     return response
 
 # =============================================================================
@@ -99,7 +101,7 @@ def server_error(e):
 # =============================================================================
 
 if __name__ == '__main__':
-    port  = int(os.getenv('PORT', 2000))
-    debug = os.getenv('FLASK_DEBUG', 'true').lower() == 'true'
+    port  = int(os.getenv('PORT'))
+    debug = os.getenv('FLASK_DEBUG')
     app.run(host='0.0.0.0', port=port, debug=debug)
     # app.run(host='0.0.0.0', port=port, debug=debug,  use_reloader=False)
