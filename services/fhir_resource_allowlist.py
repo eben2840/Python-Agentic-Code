@@ -17,6 +17,8 @@ ALL_PATIENT_RESOURCES = [
     'Medication',
     'ServiceRequest',
     'CarePlan',
+    'Questionnaire',
+    'QuestionnaireResponse',
     'CareTeam',
     'Goal',
     'Task',

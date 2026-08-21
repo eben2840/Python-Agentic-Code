@@ -46,6 +46,10 @@ def _render_dashboard():
     )
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> eeab25a41cbf72c8a7a00ee158ba49e3bff4729c
 # -----------------------------------------------------------------------------
 # Routes
 # -----------------------------------------------------------------------------
@@ -56,7 +60,11 @@ def index():
     return _render_dashboard()
 
 
+<<<<<<< HEAD
 @web.route('/generate')
+=======
+@web.route('/generate') 
+>>>>>>> eeab25a41cbf72c8a7a00ee158ba49e3bff4729c
 @require_bearer
 def generate():
     return render_template('generate.html')
@@ -138,7 +146,11 @@ def serve_generated(filename):
 
 
 @web.route('/settings', methods=['GET', 'POST'])
+<<<<<<< HEAD
 @require_bearer
+=======
+# @require_bearer
+>>>>>>> eeab25a41cbf72c8a7a00ee158ba49e3bff4729c
 def llm_settings():
     if request.method == 'POST':
         provider = request.form.get('provider', 'anthropic')

@@ -11,12 +11,16 @@ FHIR_DEFINITION_TYPES = {
 
 DATE_FIELDS = [
     'effectiveDateTime', 'issued', 'onsetDateTime', 'authoredOn',
+<<<<<<< HEAD
     'occurrenceDateTime', 'performedDateTime', 'recordedDate',
+=======
+    'occurrenceDateTime', 'performedDateTime', 'recordedDate', 'authored', 'lastModified', 'date', 'start', 'end', 
+    # 'occurrenceDateTime', 'performedDateTime', 'recordedDate', 'authored', 'lastModified', 'date', 'start', 'end', 'period', 'performedPeriod',
+>>>>>>> eeab25a41cbf72c8a7a00ee158ba49e3bff4729c
 ]
 
 
 class DirectFHIRClient:
-
     def __init__(self, session_data: dict):
         self.base_url = session_data['fhir_base_url'].rstrip('/')
         self.patient_id = session_data['patient_id']
@@ -184,6 +188,10 @@ class DirectFHIRClient:
             or (r.get('name') if isinstance(r.get('name'), str) else '')
             #   or self._display((r.get('type') or [{}])[0])
             or self._display((r.get('type') if isinstance(r.get('type'), list) else [r.get('type') or {}])[0])
+<<<<<<< HEAD
+=======
+            or (r.get('questionnaire') or '')
+>>>>>>> eeab25a41cbf72c8a7a00ee158ba49e3bff4729c
         )
 
         clinical_status = r.get('clinicalStatus') or {}
