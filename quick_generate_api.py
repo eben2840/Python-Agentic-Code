@@ -87,8 +87,12 @@ def extract_transcript():
         system=_EXTRACTION_SYSTEM,
         messages=[{"role": "user", "content": transcript}]
     )
+<<<<<<< HEAD
+    extracted = _parse_json_response(response.content[0].text), transcript
+=======
     # extracted = _parse_json_response(response.content[0].text), transcript
     extracted = _parse_json_response(response.content[0].text)
+>>>>>>> eeab25a41cbf72c8a7a00ee158ba49e3bff4729c
     print("Raw LLM response:", response.content[0].text)
     print("Extracted data:===============================", extracted)
     print("Extracted data:", extracted)
