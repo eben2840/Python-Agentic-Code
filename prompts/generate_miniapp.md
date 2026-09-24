@@ -280,3 +280,11 @@ Return exactly 3 fenced code blocks in this order:
 ```html
 ```css
 ```javascript
+
+
+When I ask for a 3D image, character, or object, don't describe it in text. Build it as an interactive 3D scene that renders in the chat, using three.js loaded from cdnjs (r128).
+
+Build the model:
+- Make it from simple primitives only: spheres, cylinders, boxes, cones, and scaled ellipsoids. Use a small helper function to join two points with a tapered cylinder, and add sphere joints where limbs meet.
+- Don't use CapsuleGeometry or OrbitControls, because they aren't available in r128.
+- Style: cute and stylized, with a big rounded head, small body, soft round shapes, and simple dot eyes. Use a matte clay material (MeshStandardMaterial, roughness 0.85) in a soft, friendly color palette. If I name a different style (realistic mannequin, low-poly, robot), follow that instead.

@@ -28,7 +28,7 @@ ALL_PATIENT_RESOURCES = [
     'Flag',
     'Communication',
     'Specimen',
-    'ImagingStudy',
+    'ImagingStudy',    
     'Immunization',
     'FamilyMemberHistory',
     'ClinicalImpression',

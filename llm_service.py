@@ -87,7 +87,7 @@ class ClaudeLLMService:
         patient_scope = 'all' if patient_id == 'all' else patient_id
         response = self.client.messages.create(
             model=self.model,
-            max_tokens=1024,
+            max_tokens=4096,
             system="You are a JSON-only responder. Output only a raw JSON object. No explanation, no markdown, no extra text.",
             messages=[{"role": "user", "content": _load_prompt(
                 "validate_generation.md",
